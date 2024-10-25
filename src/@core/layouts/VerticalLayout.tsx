@@ -19,8 +19,9 @@ import { LayoutProps } from 'src/@core/layouts/types'
 import AppBar from './components/vertical/appBar'
 import Customizer from 'src/@core/components/customizer'
 import Navigation from './components/vertical/navigation'
-import Footer from './components/shared-components/footer'
+
 import ScrollToTop from 'src/@core/components/scroll-to-top'
+import { useAuth } from 'src/hooks/useAuth'
 
 const VerticalLayoutWrapper = styled('div')({
   height: '100%',
@@ -48,7 +49,9 @@ const ContentWrapper = styled('main')(({ theme }) => ({
 
 const VerticalLayout = (props: LayoutProps) => {
   // ** Props
-  const { hidden, settings, children, scrollToTop, footerProps, contentHeightFixed, verticalLayoutProps } = props
+  const { hidden, settings, children, scrollToTop, contentHeightFixed, verticalLayoutProps } = props
+
+  const auth = useAuth()
 
   // ** Vars
   const { skin, navHidden, contentWidth } = settings
@@ -67,7 +70,7 @@ const VerticalLayout = (props: LayoutProps) => {
     <>
       <VerticalLayoutWrapper className='layout-wrapper'>
         {/* Navigation Menu */}
-        {navHidden && !(navHidden && settings.lastLayout === 'horizontal') ? null : (
+        {(navHidden && !(navHidden && settings.lastLayout === 'horizontal')) || auth.user?.role === 'client' ? null : (
           <Navigation
             navWidth={navWidth}
             navVisible={navVisible}
@@ -91,12 +94,14 @@ const VerticalLayout = (props: LayoutProps) => {
           sx={{ ...(contentHeightFixed && { maxHeight: '100vh' }) }}
         >
           {/* AppBar Component */}
-          <AppBar
-            toggleNavVisibility={toggleNavVisibility}
-            appBarContent={verticalLayoutProps.appBar?.content}
-            appBarProps={verticalLayoutProps.appBar?.componentProps}
-            {...props}
-          />
+          {auth.user?.role !== 'client' && (
+            <AppBar
+              toggleNavVisibility={toggleNavVisibility}
+              appBarContent={verticalLayoutProps.appBar?.content}
+              appBarProps={verticalLayoutProps.appBar?.componentProps}
+              {...props}
+            />
+          )}
 
           {/* Content */}
           <ContentWrapper
@@ -117,7 +122,7 @@ const VerticalLayout = (props: LayoutProps) => {
           </ContentWrapper>
 
           {/* Footer Component */}
-          <Footer footerStyles={footerProps?.sx} footerContent={footerProps?.content} {...props} />
+          {/* <Footer footerStyles={footerProps?.sx} footerContent={footerProps?.content} {...props} /> */}
         </MainContentWrapper>
       </VerticalLayoutWrapper>
 

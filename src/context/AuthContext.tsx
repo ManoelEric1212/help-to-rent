@@ -39,32 +39,45 @@ const AuthProvider = ({ children }: Props) => {
 
   useEffect(() => {
     const initAuth = async (): Promise<void> => {
-      const storedToken = window.localStorage.getItem(authConfig.storageTokenKeyName)!
-      if (storedToken) {
-        setLoading(true)
-        await axios
-          .get(authConfig.meEndpoint, {
-            headers: {
-              Authorization: storedToken
-            }
-          })
-          .then(async response => {
-            setLoading(false)
-            setUser({ ...response.data.userData })
-          })
-          .catch(() => {
-            localStorage.removeItem('userData')
-            localStorage.removeItem('refreshToken')
-            localStorage.removeItem('accessToken')
-            setUser(null)
-            setLoading(false)
-            if (authConfig.onTokenExpiration === 'logout') {
-              router.replace('/login')
-            }
-          })
-      } else {
-        setLoading(false)
+      const userFake = {
+        id: 2,
+        role: 'client',
+        email: 'client@materialize.com',
+        fullName: 'Jane Doe',
+        username: 'janedoe',
+        password: 'client'
       }
+      setUser(userFake)
+      window.localStorage.setItem('userData', JSON.stringify(userFake))
+      setLoading(false)
+
+      // const storedToken = window.localStorage.getItem(authConfig.storageTokenKeyName)!
+      // // if (storedToken) {
+      // //   setLoading(true)
+      // //   await axios
+      // //     .get(authConfig.meEndpoint, {
+      // //       headers: {
+      // //         Authorization: storedToken
+      // //       }
+      // //     })
+      // //     .then(async response => {
+      // //       setLoading(false)
+      // //       console.log('response.data.userData', response.data.userData)
+      // //       setUser({ ...response.data.userData })
+      // //     })
+      // //     .catch(() => {
+      // //       localStorage.removeItem('userData')
+      // //       localStorage.removeItem('refreshToken')
+      // //       localStorage.removeItem('accessToken')
+      // //       setUser(null)
+      // //       setLoading(false)
+      // //       if (authConfig.onTokenExpiration === 'logout') {
+      // //         router.replace('/login')
+      // //       }
+      // //     })
+      // // } else {
+      // //   setLoading(false)
+      // // }
     }
 
     initAuth()

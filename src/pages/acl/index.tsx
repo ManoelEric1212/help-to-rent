@@ -1,8 +1,8 @@
 // ** React Imports
-import { useContext } from 'react'
+// import { useContext } from 'react'
 
-// ** Context Imports
-import { AbilityContext } from 'src/layouts/components/acl/Can'
+// // ** Context Imports
+// import { AbilityContext } from 'src/layouts/components/acl/Can'
 
 // ** MUI Imports
 import Grid from '@mui/material/Grid'
@@ -13,20 +13,20 @@ import CardContent from '@mui/material/CardContent'
 
 const ACLPage = () => {
   // ** Hooks
-  const ability = useContext(AbilityContext)
+  // const ability = useContext(AbilityContext)
 
   return (
     <Grid container spacing={6}>
       <Grid item md={6} xs={12}>
         <Card>
-          <CardHeader title='Common' />
+          <CardHeader title='Página da imobiliária' />
           <CardContent>
-            <Typography sx={{ mb: 4 }}>No ability is required to view this card</Typography>
-            <Typography sx={{ color: 'primary.main' }}>This card is visible to 'user' and 'admin' both</Typography>
+            <Typography sx={{ mb: 4 }}>Página destinada para colocar o template da imobiliária</Typography>
+            <Typography sx={{ color: 'primary.main' }}>Esse card é ilustrativo para a página da imobiliária</Typography>
           </CardContent>
         </Card>
       </Grid>
-      {ability?.can('read', 'analytics') ? (
+      {/* {ability?.can('read', 'analytics') ? (
         <Grid item md={6} xs={12}>
           <Card>
             <CardHeader title='Analytics' />
@@ -36,7 +36,7 @@ const ACLPage = () => {
             </CardContent>
           </Card>
         </Grid>
-      ) : null}
+      ) : null} */}
     </Grid>
   )
 }
