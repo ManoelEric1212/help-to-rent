@@ -1,0 +1,18 @@
+import axios from 'axios'
+
+// export const PRODUCTION_API_URL = `${window.location.protocol}//${window.location.hostname}/`
+export const PRODUCTION_API_URL = `/`
+
+const DEVELOPMENT_API_URL = 'http://localhost:3333'
+
+const urls = {
+  production: PRODUCTION_API_URL,
+  development: DEVELOPMENT_API_URL,
+  test: DEVELOPMENT_API_URL
+}
+
+export const urlBase = urls[(process.env.NODE_ENV ?? 'development') as keyof typeof urls]
+console.log('urlBase', urlBase)
+export const api = axios.create({
+  baseURL: urlBase
+})

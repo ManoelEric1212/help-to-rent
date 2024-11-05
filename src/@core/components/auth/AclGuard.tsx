@@ -52,6 +52,7 @@ const AclGuard = (props: AclGuardProps) => {
   // User is logged in, build ability for the user based on his role
   if (auth.user && !ability) {
     ability = buildAbilityFor(auth.user.role, aclAbilities.subject)
+    console.log('ability', ability)
     if (router.route === '/') {
       return <Spinner />
     }
@@ -60,6 +61,7 @@ const AclGuard = (props: AclGuardProps) => {
   // If guest guard or no guard is true or any error page
   if (guestGuard || router.route === '/404' || router.route === '/500' || !authGuard) {
     // If user is logged in and his ability is built
+
     if (auth.user && ability) {
       return <AbilityContext.Provider value={ability}>{children}</AbilityContext.Provider>
     } else {
@@ -76,6 +78,11 @@ const AclGuard = (props: AclGuardProps) => {
 
     return <AbilityContext.Provider value={ability}>{children}</AbilityContext.Provider>
   }
+
+  // if (window.localStorage.getItem('userData')) {
+  //   return
+  // }
+  console.log('auth', auth.user)
 
   // Render Not Authorized component if the current user has limited access
   return (

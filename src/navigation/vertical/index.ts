@@ -6,19 +6,22 @@ const navigation = (): VerticalNavItemsType => {
     {
       title: 'Home',
       path: '/home',
-      icon: 'mdi:home-outline',
+      icon: 'mdi:home-outline'
     },
     {
-      title: 'Second Page',
-      path: '/second-page',
-      icon: 'mdi:email-outline',
+      title: 'Real state',
+      path: '/real-state',
+      icon: 'mdi:home-city-outline'
     },
     {
-      path: '/acl',
-      action: 'read',
-      subject: 'acl-page',
-      title: 'Access Control',
-      icon: 'mdi:shield-outline',
+      path: '/users',
+      title: 'Users',
+      icon: 'mdi:account-tie'
+    },
+    {
+      path: '/settings',
+      title: 'Settings',
+      icon: 'mdi:cog-outline'
     }
   ]
 }

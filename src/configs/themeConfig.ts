@@ -73,7 +73,7 @@ const themeConfig: ThemeConfig = {
   horizontalMenuAnimation: true /* true | false */,
 
   // ** AppBar Configs
-  appBar: 'fixed' /* fixed | static | hidden /*! Note: hidden value will only work for Vertical Layout */,
+  appBar: 'static' /* fixed | static | hidden /*! Note: hidden value will only work for Vertical Layout */,
   appBarBlur: true /* true | false */,
 
   // ** Other Configs

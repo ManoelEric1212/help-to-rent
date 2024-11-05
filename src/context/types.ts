@@ -7,7 +7,7 @@ export type LoginParams = {
 }
 
 export type UserDataType = {
-  id: number
+  id: string
   role: string
   email: string
   fullName: string
@@ -22,5 +22,5 @@ export type AuthValuesType = {
   user: UserDataType | null
   setLoading: (value: boolean) => void
   setUser: (value: UserDataType | null) => void
-  login: (params: LoginParams, errorCallback?: ErrCallbackType) => void
+  login: (params: LoginParams, errorCallback?: VoidFunction) => Promise<void>
 }

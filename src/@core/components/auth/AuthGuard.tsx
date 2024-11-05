@@ -24,21 +24,23 @@ const AuthGuard = (props: AuthGuardProps) => {
       }
 
       if (auth.user === null && !window.localStorage.getItem('userData')) {
-        // if (router.asPath !== '/') {
-        //   router.replace({
-        //     pathname: '/login',
-        //     query: { returnUrl: router.asPath }
-        //   })
-        // } else {
-        //   router.replace('/login')
-        // }
+        if (router.asPath !== '/') {
+          router.replace({
+            pathname: '/login',
+            query: { returnUrl: router.asPath }
+          })
+        } else {
+          console.log('sas')
+
+          // router.replace('/login')
+        }
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [router.route]
   )
 
-  if (auth.loading || auth.user === null) {
+  if (auth.loading) {
     return fallback
   }
 

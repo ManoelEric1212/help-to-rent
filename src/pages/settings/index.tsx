@@ -8,7 +8,7 @@ const Home = () => {
     <Grid container spacing={6}>
       <Grid item xs={12}>
         <Card>
-          <CardHeader title='Tela de home contendo atalhos'></CardHeader>
+          <CardHeader title='Página de configurações'></CardHeader>
         </Card>
       </Grid>
     </Grid>

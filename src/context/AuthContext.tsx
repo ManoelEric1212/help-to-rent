@@ -4,26 +4,17 @@ import { createContext, useEffect, useState, ReactNode } from 'react'
 // ** Next Import
 import { useRouter } from 'next/router'
 
-// ** Axios
-import axios from 'axios'
-
 // ** Config
 import authConfig from 'src/configs/auth'
 
 // ** Types
-import { AuthValuesType, LoginParams, ErrCallbackType, UserDataType } from './types'
+import { AuthValuesType, LoginParams, UserDataType } from './types'
+import { loginUser } from 'src/requests/usersRequest'
+import toast from 'react-hot-toast'
 
 // ** Defaults
-const defaultProvider: AuthValuesType = {
-  user: null,
-  loading: true,
-  setUser: () => null,
-  setLoading: () => Boolean,
-  login: () => Promise.resolve(),
-  logout: () => Promise.resolve()
-}
 
-const AuthContext = createContext(defaultProvider)
+const AuthContext = createContext({} as AuthValuesType)
 
 type Props = {
   children: ReactNode
@@ -31,8 +22,8 @@ type Props = {
 
 const AuthProvider = ({ children }: Props) => {
   // ** States
-  const [user, setUser] = useState<UserDataType | null>(defaultProvider.user)
-  const [loading, setLoading] = useState<boolean>(defaultProvider.loading)
+  const [user, setUser] = useState<UserDataType | null>(null)
+  const [loading, setLoading] = useState<boolean>(false)
 
   // ** Hooks
   const router = useRouter()
@@ -40,70 +31,76 @@ const AuthProvider = ({ children }: Props) => {
   useEffect(() => {
     const initAuth = async (): Promise<void> => {
       const userFake = {
-        id: 2,
+        id: 'dsnfdsjdfnhj237437bds',
         role: 'client',
         email: 'client@materialize.com',
         fullName: 'Jane Doe',
         username: 'janedoe',
         password: 'client'
       }
-      setUser(userFake)
-      window.localStorage.setItem('userData', JSON.stringify(userFake))
-      setLoading(false)
 
-      // const storedToken = window.localStorage.getItem(authConfig.storageTokenKeyName)!
-      // // if (storedToken) {
-      // //   setLoading(true)
-      // //   await axios
-      // //     .get(authConfig.meEndpoint, {
-      // //       headers: {
-      // //         Authorization: storedToken
-      // //       }
-      // //     })
-      // //     .then(async response => {
-      // //       setLoading(false)
-      // //       console.log('response.data.userData', response.data.userData)
-      // //       setUser({ ...response.data.userData })
-      // //     })
-      // //     .catch(() => {
-      // //       localStorage.removeItem('userData')
-      // //       localStorage.removeItem('refreshToken')
-      // //       localStorage.removeItem('accessToken')
-      // //       setUser(null)
-      // //       setLoading(false)
-      // //       if (authConfig.onTokenExpiration === 'logout') {
-      // //         router.replace('/login')
-      // //       }
-      // //     })
-      // // } else {
-      // //   setLoading(false)
-      // // }
+      // const userAdmin = {
+      //   id: 1,
+      //   role: 'admin',
+      //   password: 'admin',
+      //   fullName: 'John Doe',
+      //   username: 'johndoe',
+      //   email: 'admin@materialize.com'
+      // }
+
+      if (router.pathname.includes('/acl') || router.pathname === '/') {
+        setUser(userFake)
+        window.localStorage.setItem('userData', JSON.stringify(userFake))
+        setLoading(false)
+
+        return
+      }
+      if (window.localStorage.getItem('userData')) {
+        setUser(JSON.parse(window.localStorage.getItem('userData') ?? ''))
+      }
+
+      setLoading(false)
     }
 
     initAuth()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const handleLogin = (params: LoginParams, errorCallback?: ErrCallbackType) => {
-    axios
-      .post(authConfig.loginEndpoint, params)
-      .then(async response => {
-        params.rememberMe
-          ? window.localStorage.setItem(authConfig.storageTokenKeyName, response.data.accessToken)
-          : null
+  const handleLogin = async (params: LoginParams) => {
+    try {
+      const dataUser = await loginUser(params)
+      if (dataUser) {
+        console.log('dataLogin', dataUser)
+        if (dataUser.role !== 'ADMIN') {
+          toast.error('User does not have permission, contact the administrator for permission')
+
+          return
+        }
+        const userAdmin = {
+          id: dataUser.id,
+          role: dataUser.role.toLowerCase(),
+          password: dataUser.password_hash,
+          fullName: dataUser.name,
+          username: dataUser.name,
+          email: dataUser.email
+        }
+        setUser(userAdmin)
         const returnUrl = router.query.returnUrl
-
-        setUser({ ...response.data.userData })
-        params.rememberMe ? window.localStorage.setItem('userData', JSON.stringify(response.data.userData)) : null
-
+        window.localStorage.setItem('userData', JSON.stringify(userAdmin))
         const redirectURL = returnUrl && returnUrl !== '/' ? returnUrl : '/'
-
         router.replace(redirectURL as string)
-      })
+      }
+      if (!dataUser) {
+        toast.error('Credentials error')
 
-      .catch(err => {
-        if (errorCallback) errorCallback(err)
-      })
+        return
+      }
+    } catch (error) {
+      toast.error('Login error, verify credentials')
+      throw new Error('Error login User')
+    } finally {
+      setLoading(false)
+    }
   }
 
   const handleLogout = () => {
