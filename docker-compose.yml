@@ -1,0 +1,50 @@
+services:
+  nextapp:
+    build:
+      context: ./next-app
+      dockerfile: Dockerfile
+    ports:
+      - '3000:3000'
+    depends_on:
+      - postgres
+      - nodeapp
+    environment:
+      - API_END_POINT=http://nodeapp:5000
+    networks:
+      - next-node
+
+  nodeapp:
+    build:
+      context: ./node-app
+      dockerfile: Dockerfile
+    ports:
+      - '5000:5000'
+    depends_on:
+      - postgres
+    environment:
+      - NODE_ENV=development
+    networks:
+      - node-postgres
+      - next-node
+
+  postgres:
+    image: postgres
+    restart: always
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_USER: HelpToRent@1
+      POSTGRES_PASSWORD: HelpBy20
+      POSTGRES_DB: help-to-rent-db
+      PGDATA: /data/postgres
+    volumes:
+      - ./data/pg:/data/postgres
+    networks:
+      - node-postgres
+
+networks:
+  next-node:
+  node-postgres:
+
+volumes:
+  pgdata:

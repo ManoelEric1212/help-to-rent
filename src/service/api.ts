@@ -3,7 +3,7 @@ import axios from 'axios'
 // export const PRODUCTION_API_URL = `${window.location.protocol}//${window.location.hostname}/`
 export const PRODUCTION_API_URL = `/`
 
-const DEVELOPMENT_API_URL = 'http://localhost:3333'
+const DEVELOPMENT_API_URL = 'http://localhost:5000'
 
 const urls = {
   production: PRODUCTION_API_URL,

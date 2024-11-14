@@ -5,6 +5,7 @@ import { NavLink, NavGroup, LayoutProps, NavSectionTitle } from 'src/@core/layou
 import VerticalNavLink from './VerticalNavLink'
 import VerticalNavGroup from './VerticalNavGroup'
 import VerticalNavSectionTitle from './VerticalNavSectionTitle'
+import { useAuth } from 'src/hooks/useAuth'
 
 interface Props {
   parent?: NavGroup
@@ -29,16 +30,34 @@ const resolveNavItemComponent = (item: NavGroup | NavLink | NavSectionTitle) => 
 }
 
 const VerticalNavItems = (props: Props) => {
+  const { user } = useAuth()
+
   // ** Props
   const { verticalNavItems } = props
 
-  const RenderMenuItems = verticalNavItems?.map((item: NavGroup | NavLink | NavSectionTitle, index: number) => {
-    const TagName: any = resolveNavItemComponent(item)
+  if (user?.role === 'agent') {
+    const RenderMenuItems = verticalNavItems
+      ?.filter(item => 'path' in item && item.path !== '/users')
+      ?.map((item: NavGroup | NavLink | NavSectionTitle, index: number) => {
+        const TagName: any = resolveNavItemComponent(item)
 
-    return <TagName {...props} key={index} item={item} />
-  })
+        return <TagName {...props} key={index} item={item} />
+      })
 
-  return <>{RenderMenuItems}</>
+    return <>{RenderMenuItems}</>
+  }
+
+  if (user?.role === 'admin') {
+    const RenderMenuItems = verticalNavItems?.map((item: NavGroup | NavLink | NavSectionTitle, index: number) => {
+      const TagName: any = resolveNavItemComponent(item)
+
+      return <TagName {...props} key={index} item={item} />
+    })
+
+    return <>{RenderMenuItems}</>
+  }
+
+  return <></>
 }
 
 export default VerticalNavItems

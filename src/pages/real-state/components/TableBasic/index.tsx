@@ -1,30 +1,42 @@
 // ** MUI Imports
+import { Button, Typography } from '@mui/material'
 import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
-import CardHeader from '@mui/material/CardHeader'
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
+import { useRouter } from 'next/router'
 
 // ** Data Import
-export interface RealStateType {
+export interface RealStateTypeTable {
   id: string
-  avatar: string
   name: string
   type: string
-  action: string
-  agent_name: string
+  region: string
+  address: string
+  area: number
   inclusion_date: string
-  status: boolean
 }
 
 export interface DataGridDataRealState {
   columns: GridColDef[]
-  rows: RealStateType[]
+  rows: RealStateTypeTable[]
 }
 
 const TableBasic = ({ columns, rows }: DataGridDataRealState) => {
+  const router = useRouter()
+  console.log(router.pathname)
+
   return (
     <Card>
-      <CardHeader title='Real States' />
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', padding: 4 }}>
+        <Typography sx={{ display: 'flex', alignItems: 'center', fontWeight: 500, letterSpacing: 1.6 }}>
+          {' '}
+          Real States
+        </Typography>
+        <Button color='primary' variant='contained' onClick={() => router.push(`${router.pathname}/register`)}>
+          Register
+        </Button>
+      </Box>
+
       <Box sx={{ height: 500 }}>
         <DataGrid columns={columns} rows={rows.slice(0, 10)} />
       </Box>

@@ -11,6 +11,7 @@ import authConfig from 'src/configs/auth'
 import { AuthValuesType, LoginParams, UserDataType } from './types'
 import { loginUser } from 'src/requests/usersRequest'
 import toast from 'react-hot-toast'
+import { Agent, getAgentByEmailRequest } from 'src/requests/agentRequest'
 
 // ** Defaults
 
@@ -23,6 +24,8 @@ type Props = {
 const AuthProvider = ({ children }: Props) => {
   // ** States
   const [user, setUser] = useState<UserDataType | null>(null)
+  const [agent, setAgent] = useState<Agent | null>(null)
+
   const [loading, setLoading] = useState<boolean>(false)
 
   // ** Hooks
@@ -66,12 +69,25 @@ const AuthProvider = ({ children }: Props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  useEffect(() => {
+    if (user) {
+      console.log('router.asPath', router.asPath)
+      if (
+        user.role === 'client' &&
+        !router.asPath.startsWith('/acl') &&
+        !router.asPath.startsWith('/login') &&
+        !router.asPath.startsWith('/register')
+      ) {
+        router.replace('/acl')
+      }
+    }
+  }, [user, router.route])
+
   const handleLogin = async (params: LoginParams) => {
     try {
       const dataUser = await loginUser(params)
       if (dataUser) {
-        console.log('dataLogin', dataUser)
-        if (dataUser.role !== 'ADMIN') {
+        if (dataUser.role === 'GUEST') {
           toast.error('User does not have permission, contact the administrator for permission')
 
           return
@@ -84,11 +100,30 @@ const AuthProvider = ({ children }: Props) => {
           username: dataUser.name,
           email: dataUser.email
         }
+        if (dataUser.role === 'AGENT') {
+          const dataAgent = await getAgentByEmailRequest(dataUser.email)
+          setAgent(dataAgent)
+          if (dataAgent && !dataAgent.updatedProfile) {
+            setUser({ ...userAdmin, updatedProfile: dataAgent.updatedProfile })
+            window.localStorage.setItem(
+              'userData',
+              JSON.stringify({ ...userAdmin, updatedProfile: dataAgent.updatedProfile })
+            )
+            router.replace('/home')
+            console.log('entrou')
+
+            return
+          }
+          setUser(userAdmin)
+          window.localStorage.setItem('userData', JSON.stringify(userAdmin))
+          router.replace('/home')
+
+          return
+        }
+
         setUser(userAdmin)
-        const returnUrl = router.query.returnUrl
         window.localStorage.setItem('userData', JSON.stringify(userAdmin))
-        const redirectURL = returnUrl && returnUrl !== '/' ? returnUrl : '/'
-        router.replace(redirectURL as string)
+        router.replace('/home')
       }
       if (!dataUser) {
         toast.error('Credentials error')
@@ -114,6 +149,7 @@ const AuthProvider = ({ children }: Props) => {
     user,
     loading,
     setUser,
+    agent,
     setLoading,
     login: handleLogin,
     logout: handleLogout
