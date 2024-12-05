@@ -20,6 +20,7 @@ import { GridColDef } from '@mui/x-data-grid'
 import { FormatRealStateToTable } from './utils/format-real-states-to-table'
 import { format } from 'date-fns'
 import { getAllRealStates, RealStateType } from 'src/requests/realStateRequest'
+import { useRouter } from 'next/router'
 
 export type DateType = Date | null | undefined
 
@@ -34,6 +35,7 @@ const RealState = () => {
   const [typeFilter, setTypeFilter] = useState<string>('')
   // const [regionFilter, setRegionFilter] = useState<string>('')
   // const [addressFilter, setAdressFilter] = useState<string>('')
+  const router = useRouter()
 
   const columns: GridColDef[] = [
     {
@@ -85,6 +87,7 @@ const RealState = () => {
             variant='outlined'
             color='primary'
             onClick={() => {
+              router.push(`/real-state/register/?id=${row.id}`)
               console.log('EDIT PAGE', row)
             }}
           >

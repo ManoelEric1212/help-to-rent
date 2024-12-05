@@ -3,35 +3,40 @@ import { Button, Typography } from '@mui/material'
 import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
-import { useRouter } from 'next/router'
+
+import { Dispatch, SetStateAction } from 'react'
+import { Region } from 'src/requests/regionRequest'
 
 // ** Data Import
-export interface RealStateTypeTable {
+export interface RegionType {
   id: string
-  name: string
-  type: string
-  region: string
-  address: string
-  area: number
-  inclusion_date: string
+  region_name: string
+  description: string
 }
 
-export interface DataGridDataRealState {
+export interface DataGridDataRegion {
   columns: GridColDef[]
-  rows: RealStateTypeTable[]
+  rows: Region[]
+  setModalOpen: Dispatch<SetStateAction<boolean>>
 }
 
-const TableBasic = ({ columns, rows }: DataGridDataRealState) => {
-  const router = useRouter()
-
+const TableBasic = ({ columns, rows, setModalOpen }: DataGridDataRegion) => {
   return (
     <Card>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', padding: 4 }}>
         <Typography sx={{ display: 'flex', alignItems: 'center', fontWeight: 500, letterSpacing: 1.6 }}>
           {' '}
-          Real States
+          Regions
         </Typography>
-        <Button color='primary' variant='contained' onClick={() => router.push(`${router.pathname}/register`)}>
+        <Button
+          color='primary'
+          variant='contained'
+          onClick={() =>
+            setTimeout(() => {
+              setModalOpen(true)
+            }, 100)
+          }
+        >
           Register
         </Button>
       </Box>

@@ -4,7 +4,6 @@ import TextField from '@mui/material/TextField'
 import Box, { BoxProps } from '@mui/material/Box'
 import FormControl from '@mui/material/FormControl'
 import Typography from '@mui/material/Typography'
-import ReactFileReader from 'react-file-reader'
 
 // ** Layout Import
 
@@ -14,16 +13,18 @@ import { Controller, useForm } from 'react-hook-form'
 import * as yup from 'yup'
 import { FormControlLabel, FormGroup, FormHelperText, Grid, InputLabel, MenuItem, Select, Switch } from '@mui/material'
 import MapRegisterComponent from '../mapComponent'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { styled } from '@mui/material/styles'
 
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 
 import CloseIcon from '@mui/icons-material/Close'
-import { CreateRealStateDTO, registerRealState } from 'src/requests/realStateRequest'
+import { getRealStateById, RealStateType, registerRealState, updateRealState } from 'src/requests/realStateRequest'
 import toast from 'react-hot-toast'
 import { useRouter } from 'next/router'
 import { useMapRegister } from 'src/context/MapRegisterContext'
+import { FormatRealStateToForm } from '../../utils/format-real-state-to-form'
+import { getRegionRequest, Region } from 'src/requests/regionRequest'
 
 export const AvatarInput = styled(Box)(() => ({
   position: 'relative',
@@ -67,7 +68,7 @@ export interface FormData {
   description: string
   status: string
   region: string
-  petAccepts: hasOrAceptType
+  images: any[]
 }
 
 const schema = yup.object().shape({
@@ -95,7 +96,8 @@ const schema = yup.object().shape({
   floorPlan: yup.string(),
   status: yup.string(),
   region: yup.string(),
-  petAccepts: yup.object()
+  petAccepts: yup.object(),
+  images: yup.array()
 })
 
 const BoxWrapper = styled(Box)<BoxProps>(({ theme }) => ({
@@ -106,15 +108,83 @@ const BoxWrapper = styled(Box)<BoxProps>(({ theme }) => ({
 }))
 
 const RegisterRealStateComponent = () => {
-  const [urls, setUrls] = useState<string[]>([])
-
-  const handleFiles = (files: any) => {
-    setUrls(prev => [...prev, files.base64])
-  }
-  const onDelete = (index: number) => {
-    setUrls(prev => prev.filter((_, i) => i !== index))
-  }
+  const [previews, setPreviews] = useState<string[]>([])
+  const [files, setFiles] = useState<File[]>([])
+  const [realStateById, setRealStateById] = useState<RealStateType | null>(null)
+  const [hasFetched, setHasFetched] = useState(false)
+  const [regionOptions, setRegionOptions] = useState<Region[]>([])
   const router = useRouter()
+  const { id } = router.query
+
+  const buildImageUrl = (imagePath: string) => {
+    const { protocol, hostname } = window.location
+    const baseUrl = `${protocol}//${hostname}${`:${5000}`}`
+
+    return `${baseUrl}/uploads/${imagePath}`
+  }
+
+  const convertBackendImagesToFiles = async (images: { url: string }[]) => {
+    const filesFromBackend = await Promise.all(
+      images.map(async image => {
+        const response = await fetch(buildImageUrl(image.url))
+        const blob = await response.blob()
+
+        return new File([blob], image.url.split('/').pop() || 'image', {
+          type: blob.type
+        })
+      })
+    )
+
+    return filesFromBackend
+  }
+
+  const getRealStateByIdReq = async (idToData: string) => {
+    try {
+      const realStateById = await getRealStateById(idToData)
+      const dataFormatted = FormatRealStateToForm(realStateById)
+
+      setRealStateById(realStateById)
+      reset(dataFormatted)
+      if (dataFormatted.images.length) {
+        setPreviews(dataFormatted.images.map(item => buildImageUrl(item.url)))
+        const backendFiles = await convertBackendImagesToFiles(dataFormatted.images)
+        setFiles(prevFiles => [...prevFiles, ...backendFiles])
+      }
+    } catch (error) {
+      throw new Error('Error getRealStateById')
+    }
+  }
+
+  const getRegionOptions = async () => {
+    try {
+      const dataOptions = await getRegionRequest()
+      setRegionOptions(dataOptions)
+    } catch (error) {
+      throw new Error('Erro get region options')
+    }
+  }
+  useEffect(() => {
+    if (id && !hasFetched) {
+      setHasFetched(true) // Marca como já executado
+      getRealStateByIdReq(id as string)
+    }
+  }, [id, hasFetched])
+
+  useEffect(() => {
+    getRegionOptions()
+  }, [])
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFiles = Array.from(e.target.files || [])
+    setFiles(prevFiles => [...prevFiles, ...selectedFiles])
+
+    const selectedPreviews = selectedFiles.map(file => URL.createObjectURL(file))
+    setPreviews(prevPreviews => [...prevPreviews, ...selectedPreviews])
+  }
+  const handleRemoveImage = (index: number) => {
+    setFiles(prevFiles => prevFiles.filter((_, i) => i !== index))
+    setPreviews(prevPreviews => prevPreviews.filter((_, i) => i !== index))
+  }
 
   const { newPoint } = useMapRegister()
 
@@ -143,12 +213,15 @@ const RegisterRealStateComponent = () => {
     floorPlan: '',
     status: '',
     region: '',
-    petAccepts: { has: false, observation: '' }
+    petAccepts: { has: false, observation: '' },
+    images: []
   }
 
   const {
     control,
     handleSubmit,
+    reset,
+    setValue,
     formState: { errors }
   } = useForm({
     defaultValues,
@@ -157,22 +230,51 @@ const RegisterRealStateComponent = () => {
   })
 
   const onSubmit = async (data: FormData) => {
-    const body: CreateRealStateDTO = {
-      ...data,
-      hasAirConditioner: JSON.stringify(data.hasAirConditioner),
-      hasBalcony: JSON.stringify(data.hasBalcony),
-      hasGarage: JSON.stringify(data.hasGarage),
-      hasHotWater: JSON.stringify(data.hasHotWater),
-      hasJacuzzi: JSON.stringify(data.hasJacuzzi),
-      hasPool: JSON.stringify(data.hasPool),
-      hasTerrace: JSON.stringify(data.hasTerrace),
-      petAccepts: JSON.stringify(data.petAccepts),
-      hasWifi: data.hasWifi === 'true' ? true : false,
-      lat: newPoint?.lat ?? 0,
-      lng: newPoint?.lng ?? 0
-    }
+    const formData = new FormData()
+
+    formData.append('name', data.name)
+    formData.append('mensalRent', data.mensalRent.toString())
+    formData.append('area', data.area.toString())
+    formData.append('address', data.address)
+    formData.append('type', data.type)
+    formData.append('bathNumber', data.bathNumber.toString())
+    formData.append('roomsNumber', data.roomsNumber.toString())
+    formData.append('numberElevator', data.numberElevator.toString())
+    formData.append('orientation', data.orientation.toString())
+    formData.append('energyEfficiency', data.energyEfficiency.toString())
+    formData.append('additionalExpenses', data.additionalExpenses.toString())
+    formData.append('description', data.description.toString())
+    formData.append('hasAirConditioner', JSON.stringify(data.hasAirConditioner))
+    formData.append('hasBalcony', JSON.stringify(data.hasBalcony))
+    formData.append('hasGarage', JSON.stringify(data.hasGarage))
+    formData.append('hasHotWater', JSON.stringify(data.hasHotWater))
+    formData.append('hasJacuzzi', JSON.stringify(data.hasJacuzzi))
+    formData.append('hasPool', JSON.stringify(data.hasPool))
+    formData.append('hasTerrace', JSON.stringify(data.hasTerrace))
+    formData.append('petAccepts', JSON.stringify(data.petAcepts))
+    formData.append('hasWifi', data.hasWifi === 'true' ? 'true' : 'false')
+    formData.append('lat', (newPoint?.lat ?? 0).toString())
+    formData.append('lng', (newPoint?.lng ?? 0).toString())
+    formData.append('region', data.region)
+    formData.append('status', data.status)
+
+    // Adicionar as imagens no FormData
+    files.forEach(file => {
+      formData.append('images', file) // "images" deve ser o mesmo campo esperado no backend
+    })
+
     try {
-      const data = await registerRealState(body)
+      if (id?.length) {
+        console.log('files', files)
+        const data = await updateRealState({ body: formData, id: id as string })
+        if (data) {
+          toast.success('Real state updated!')
+          router.replace('/real-state')
+
+          return
+        }
+      }
+      const data = await registerRealState(formData)
       if (data) {
         toast.success('Real state registered!')
         router.replace('/real-state')
@@ -185,7 +287,7 @@ const RegisterRealStateComponent = () => {
   return (
     <Grid container spacing={1}>
       <Box sx={{ width: '100vw', height: '70vh' }}>
-        <MapRegisterComponent />
+        <MapRegisterComponent id={id as string} dataRealStateByid={realStateById} />
       </Box>
       <Box
         sx={{
@@ -211,7 +313,6 @@ const RegisterRealStateComponent = () => {
                 rules={{ required: true }}
                 render={({ field: { value, onChange, onBlur } }) => (
                   <TextField
-                    autoFocus
                     label='Adderess'
                     value={value}
                     onBlur={onBlur}
@@ -232,7 +333,6 @@ const RegisterRealStateComponent = () => {
                     rules={{ required: true }}
                     render={({ field: { value, onChange, onBlur } }) => (
                       <TextField
-                        autoFocus
                         label='Mensal Rent'
                         type='number'
                         value={value}
@@ -256,7 +356,6 @@ const RegisterRealStateComponent = () => {
                     rules={{ required: true }}
                     render={({ field: { value, onChange, onBlur } }) => (
                       <TextField
-                        autoFocus
                         label='Area'
                         type='number'
                         value={value}
@@ -314,7 +413,6 @@ const RegisterRealStateComponent = () => {
                     rules={{ required: true }}
                     render={({ field: { value, onChange, onBlur } }) => (
                       <TextField
-                        autoFocus
                         label='Number of Baths'
                         type='number'
                         value={value}
@@ -337,7 +435,6 @@ const RegisterRealStateComponent = () => {
                     rules={{ required: true }}
                     render={({ field: { value, onChange, onBlur } }) => (
                       <TextField
-                        autoFocus
                         label='Number of Rooms'
                         value={value}
                         type='number'
@@ -360,7 +457,6 @@ const RegisterRealStateComponent = () => {
                     rules={{ required: true }}
                     render={({ field: { value, onChange, onBlur } }) => (
                       <TextField
-                        autoFocus
                         label='Number of Elevators'
                         value={value}
                         onBlur={onBlur}
@@ -383,7 +479,6 @@ const RegisterRealStateComponent = () => {
                     rules={{ required: true }}
                     render={({ field: { value, onChange, onBlur } }) => (
                       <TextField
-                        autoFocus
                         label='Orientation'
                         value={value}
                         onBlur={onBlur}
@@ -408,7 +503,6 @@ const RegisterRealStateComponent = () => {
                     rules={{ required: true }}
                     render={({ field: { value, onChange, onBlur } }) => (
                       <TextField
-                        autoFocus
                         label='Energy Efficiency'
                         value={value}
                         onBlur={onBlur}
@@ -441,6 +535,7 @@ const RegisterRealStateComponent = () => {
                           <MenuItem value=''>
                             <em>None</em>
                           </MenuItem>
+
                           <MenuItem value='true'>Yes</MenuItem>
                           <MenuItem value='false'>Not</MenuItem>
                           {/* Add more MenuItems as needed */}
@@ -469,12 +564,23 @@ const RegisterRealStateComponent = () => {
                           onChange={onChange}
                           error={Boolean(errors.region)}
                         >
-                          <MenuItem value=''>
+                          <MenuItem value='' onClick={() => setValue('description', '')}>
                             <em>None</em>
                           </MenuItem>
-                          <MenuItem value='region1'>Region 1</MenuItem>
-                          <MenuItem value='region2'>Region 2</MenuItem>
-                          <MenuItem value='region3'>Region 3</MenuItem>
+                          {regionOptions.length ? (
+                            regionOptions.map((item, i) => (
+                              <MenuItem
+                                key={i}
+                                value={item.region_name}
+                                onClick={() => setValue('description', item.description)}
+                              >
+                                {item.region_name}
+                              </MenuItem>
+                            ))
+                          ) : (
+                            <></>
+                          )}
+
                           {/* Add more MenuItems as needed */}
                         </Select>
                         {errors.region && (
@@ -792,7 +898,7 @@ const RegisterRealStateComponent = () => {
               <Grid item sm={4} xs={12}>
                 <FormControl fullWidth sx={{ mb: 3 }}>
                   <Controller
-                    name='petAccepts'
+                    name='petAcepts'
                     control={control}
                     defaultValue={{ has: false, observation: '' }} // Define o estado inicial
                     render={({ field: { value, onChange } }) => (
@@ -831,30 +937,17 @@ const RegisterRealStateComponent = () => {
             </Grid>
 
             <Grid sx={{ display: 'flex', gap: 3, flexDirection: 'column' }}>
-              <ReactFileReader fileTypes={['.png', '.jpg']} base64={true} handleFiles={handleFiles}>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    padding: 5,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    cursor: 'pointer',
-                    border: 'solid 1px rgba(0, 0, 0, 0.2)',
-                    borderRadius: '10px'
-                  }}
-                >
-                  <CloudUploadIcon sx={{ fontSize: 40 }} />
-                  <Typography>Upload Image(s)</Typography>
-                </Box>
-              </ReactFileReader>
+              <Button variant='contained' component='label' startIcon={<CloudUploadIcon />} sx={{ marginBottom: 2 }}>
+                Upload Images
+                <input type='file' multiple hidden accept='image/*' onChange={handleImageChange} />
+              </Button>
               <Box sx={{ display: 'flex', justifyContent: 'flex-start', gap: 3, flexWrap: 'wrap' }}>
-                {urls.length ? (
-                  urls.map((item, i) => (
+                {previews.length ? (
+                  previews.map((item, i) => (
                     <AvatarInput key={i}>
                       <img src={item} alt='Avatar Placeholder' />
                       <CloseIcon
-                        onClick={() => onDelete(i)}
+                        onClick={() => handleRemoveImage(i)}
                         sx={{
                           position: 'absolute',
                           top: 0,
@@ -881,7 +974,6 @@ const RegisterRealStateComponent = () => {
                   rules={{ required: true }}
                   render={({ field: { value, onChange, onBlur } }) => (
                     <TextField
-                      autoFocus
                       label='Name'
                       value={value}
                       onBlur={onBlur}
@@ -902,7 +994,6 @@ const RegisterRealStateComponent = () => {
                   rules={{ required: true }}
                   render={({ field: { value, onChange, onBlur } }) => (
                     <TextField
-                      autoFocus
                       label='Additional Expenses'
                       value={value}
                       onBlur={onBlur}
@@ -925,7 +1016,6 @@ const RegisterRealStateComponent = () => {
                   rules={{ required: true }}
                   render={({ field: { value, onChange, onBlur } }) => (
                     <TextField
-                      autoFocus
                       label='Description'
                       multiline
                       rows={4}
@@ -945,7 +1035,7 @@ const RegisterRealStateComponent = () => {
 
             <Grid>
               <Button variant='contained' type='submit'>
-                Save
+                {id?.length ? 'Update' : 'Save'}
               </Button>
             </Grid>
           </form>

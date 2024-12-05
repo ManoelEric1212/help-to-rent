@@ -3,6 +3,7 @@ import { MarkerClusterer } from '@googlemaps/markerclusterer'
 import type { Marker } from '@googlemaps/markerclusterer'
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { useMapRegister } from 'src/context/MapRegisterContext'
+import { RealStateType } from 'src/requests/realStateRequest'
 
 type Poi = { key: string; location: google.maps.LatLngLiteral }
 
@@ -10,8 +11,12 @@ type Poi = { key: string; location: google.maps.LatLngLiteral }
 //   { key: 'valletta', location: { lat: 35.8997, lng: 14.5147 } }, // Valletta, capital de Malta
 //   { key: 'mdina', location: { lat: 35.8867, lng: 14.4033 } } // Mdina, cidade histórica
 // ]
+interface MapRegisterComponentProps {
+  id: string
+  dataRealStateByid: RealStateType | null
+}
 
-const MapRegisterComponent = () => {
+const MapRegisterComponent = ({ dataRealStateByid, id }: MapRegisterComponentProps) => {
   const [locations, setLocations] = useState<Poi[]>([])
 
   const { fetchAllPointers } = useMapRegister()
@@ -19,16 +24,21 @@ const MapRegisterComponent = () => {
   useEffect(() => {
     const fetchLocationsData = async () => {
       try {
-        const response = await fetchAllPointers()
-        if (response && response.length) {
-          setLocations(response)
+        if (!id) {
+          const response = await fetchAllPointers()
+          if (response && response.length) {
+            setLocations(response)
+          }
+        }
+        if (id && dataRealStateByid && dataRealStateByid.id) {
+          setLocations([])
         }
       } catch (error) {
         console.error('Error fetching data:', error)
       }
     }
     fetchLocationsData()
-  }, [])
+  }, [id])
 
   return (
     <APIProvider apiKey={'AIzaSyCmfoau07h6vt9oISxmC9TEnzb0rbyzFzE'} onLoad={() => console.log('Maps API has loaded.')}>
@@ -41,7 +51,7 @@ const MapRegisterComponent = () => {
         }
       >
         <PoiMarkers pois={locations} />
-        <UserMarkers />
+        <UserMarkers data={dataRealStateByid} />
       </Map>
     </APIProvider>
   )
@@ -105,11 +115,14 @@ const PoiMarkers = (props: { pois: Poi[] }) => {
     </>
   )
 }
+interface UserMarkersProps {
+  data: RealStateType | null
+}
 
-const UserMarkers = () => {
+const UserMarkers = ({ data }: UserMarkersProps) => {
   const map = useMap()
-  const [userMarker, setUserMarker] = useState<google.maps.LatLngLiteral | null>(null)
   const { setNewPoint } = useMapRegister()
+  const [userMarker, setUserMarker] = useState<google.maps.LatLngLiteral | null>(null)
 
   const handleMapClick = (ev: google.maps.MapMouseEvent) => {
     if (!ev.latLng) return
@@ -123,6 +136,12 @@ const UserMarkers = () => {
     setUserMarker(newMarkerPosition)
     setNewPoint(newMarkerPosition)
   }
+  useEffect(() => {
+    if (data) {
+      setUserMarker({ lat: data.lat, lng: data.lng })
+      setNewPoint({ lat: data.lat, lng: data.lng })
+    }
+  }, [data])
 
   useEffect(() => {
     if (map) {

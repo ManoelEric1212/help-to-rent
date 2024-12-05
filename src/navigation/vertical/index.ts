@@ -19,6 +19,11 @@ const navigation = (): VerticalNavItemsType => {
       icon: 'mdi:account-tie'
     },
     {
+      path: '/region',
+      title: 'Regions',
+      icon: 'mdi:map-marker'
+    },
+    {
       path: '/settings',
       title: 'Settings',
       icon: 'mdi:cog-outline'

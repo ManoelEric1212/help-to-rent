@@ -1,4 +1,4 @@
-import { GET_REAL_STATE, POST_REAL_STATE } from 'src/constants/urls'
+import { GET_REAL_STATE, GET_REAL_STATE_BY_ID, POST_REAL_STATE, UDPATE_REAL_STATE } from 'src/constants/urls'
 import { api } from 'src/service/api'
 
 export interface CreateRealStateDTO {
@@ -27,6 +27,7 @@ export interface CreateRealStateDTO {
   lng: number
   region: string
   status: string
+  images: any[]
 }
 
 export interface RealStateType {
@@ -58,12 +59,36 @@ export interface RealStateType {
   description: string
   lat: number
   lng: number
+  images?: any[]
   created_at: string
 }
 
-export async function registerRealState(body: CreateRealStateDTO) {
+export async function registerRealState(body: FormData) {
   try {
-    const { data } = await api.post<RealStateType>(POST_REAL_STATE, body)
+    const { data } = await api.post<RealStateType>(POST_REAL_STATE, body, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+
+    return data
+  } catch (error) {
+    throw new Error('Error - getUsers')
+  }
+}
+
+interface updateRealStateProps {
+  body: FormData
+  id: string
+}
+
+export async function updateRealState({ body, id }: updateRealStateProps) {
+  try {
+    const { data } = await api.post<RealStateType>(UDPATE_REAL_STATE(id), body, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
 
     return data
   } catch (error) {
@@ -77,6 +102,16 @@ export async function getAllRealStates() {
 
     return data
   } catch (error) {
-    throw new Error('Error - getUsers')
+    throw new Error('Error - getAllRealStates')
+  }
+}
+
+export async function getRealStateById(id: string) {
+  try {
+    const { data } = await api.get<RealStateType>(GET_REAL_STATE_BY_ID(id))
+
+    return data
+  } catch (error) {
+    throw new Error('Error - getRealStateById')
   }
 }
