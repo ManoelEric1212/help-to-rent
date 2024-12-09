@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-export const PRODUCTION_API_URL = `${window.location.protocol}//${window.location.hostname}:5000/`
+export const PRODUCTION_API_URL = `http://46.202.153.202:5000`
 
 const DEVELOPMENT_API_URL = 'http://localhost:5000'
 
