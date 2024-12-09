@@ -42,7 +42,7 @@ const MapRegisterComponent = ({ dataRealStateByid, id }: MapRegisterComponentPro
   }, [id])
 
   return (
-    <APIProvider apiKey={'AIzaSyCmfoau07h6vt9oISxmC9TEnzb0rbyzFzE'} onLoad={() => console.log('Maps API has loaded.')}>
+    <APIProvider apiKey={'AIzaSyD25YE38B53ABbhr1f12MzGqk0CchtN4Fg'} onLoad={() => console.log('Maps API has loaded.')}>
       <Map
         defaultZoom={13}
         defaultCenter={{ lat: 35.8997, lng: 14.5147 }}
