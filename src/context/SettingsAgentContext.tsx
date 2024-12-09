@@ -26,7 +26,7 @@ export const ModalProvider: React.FC<ModalProviderProps> = ({ children }) => {
     if (user && user.role === 'agent' && user.updatedProfile === false && agent) {
       openDialog('Complete Agent Register', <UpdateAgentForm dataAgent={agent} />)
     }
-  }, [user])
+  }, [agent, user])
 
   const openDialog = (title: string, content: ReactNode) => {
     setDialogTitle(title)

@@ -17,10 +17,10 @@ import {
 import { ChangeEvent, useEffect, useState } from 'react'
 import { GridColDef } from '@mui/x-data-grid'
 
-import { FormatRealStateToTable } from './utils/format-real-states-to-table'
 import { format } from 'date-fns'
 import { getAllRealStates, RealStateType } from 'src/requests/realStateRequest'
 import { useRouter } from 'next/router'
+import { FormatRealStateToTable } from 'src/utils/format-real-states-to-table'
 
 export type DateType = Date | null | undefined
 
@@ -134,6 +134,7 @@ const RealState = () => {
   }
   useEffect(() => {
     getRealStates()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   // ** States
 

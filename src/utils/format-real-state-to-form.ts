@@ -1,5 +1,5 @@
+import { FormData } from 'src/pages/real-state/components/RegisterForm'
 import { RealStateType } from 'src/requests/realStateRequest'
-import { FormData } from '../components/RegisterForm'
 
 export function FormatRealStateToForm(data: RealStateType) {
   const dataFormatted: FormData = {

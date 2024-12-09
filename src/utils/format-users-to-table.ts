@@ -1,5 +1,5 @@
+import { UserType } from 'src/pages/users/components/TableBasic'
 import { User } from 'src/requests/usersRequest'
-import { UserType } from '../components/TableBasic'
 
 export function FormatUserToTable(data: User[]) {
   const dataReturnFormat: UserType[] = data.map(item => {

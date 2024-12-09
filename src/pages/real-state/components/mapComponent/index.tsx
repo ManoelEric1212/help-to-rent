@@ -38,6 +38,7 @@ const MapRegisterComponent = ({ dataRealStateByid, id }: MapRegisterComponentPro
       }
     }
     fetchLocationsData()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id])
 
   return (
@@ -97,6 +98,7 @@ const PoiMarkers = (props: { pois: Poi[] }) => {
     if (!ev.latLng) return
     console.log('marker clicked:', ev.latLng.toString())
     map.panTo(ev.latLng)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (
@@ -141,6 +143,7 @@ const UserMarkers = ({ data }: UserMarkersProps) => {
       setUserMarker({ lat: data.lat, lng: data.lng })
       setNewPoint({ lat: data.lat, lng: data.lng })
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data])
 
   useEffect(() => {
@@ -153,6 +156,7 @@ const UserMarkers = ({ data }: UserMarkersProps) => {
         google.maps.event.clearListeners(map, 'click')
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [map])
 
   return (

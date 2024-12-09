@@ -1,5 +1,5 @@
+import { RealStateTypeTable } from 'src/pages/real-state/components/TableBasic'
 import { RealStateType } from 'src/requests/realStateRequest'
-import { RealStateTypeTable } from '../components/TableBasic'
 
 export function FormatRealStateToTable(data: RealStateType[]) {
   const dataReturnFormat: RealStateTypeTable[] = data.map(item => {

@@ -23,8 +23,9 @@ import { getRealStateById, RealStateType, registerRealState, updateRealState } f
 import toast from 'react-hot-toast'
 import { useRouter } from 'next/router'
 import { useMapRegister } from 'src/context/MapRegisterContext'
-import { FormatRealStateToForm } from '../../utils/format-real-state-to-form'
+
 import { getRegionRequest, Region } from 'src/requests/regionRequest'
+import { FormatRealStateToForm } from 'src/utils/format-real-state-to-form'
 
 export const AvatarInput = styled(Box)(() => ({
   position: 'relative',
@@ -138,6 +139,7 @@ const RegisterRealStateComponent = () => {
     return filesFromBackend
   }
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const getRealStateByIdReq = async (idToData: string) => {
     try {
       const realStateById = await getRealStateById(idToData)
@@ -168,7 +170,7 @@ const RegisterRealStateComponent = () => {
       setHasFetched(true) // Marca como já executado
       getRealStateByIdReq(id as string)
     }
-  }, [id, hasFetched])
+  }, [id, hasFetched, getRealStateByIdReq])
 
   useEffect(() => {
     getRegionOptions()

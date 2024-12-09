@@ -81,6 +81,7 @@ const AuthProvider = ({ children }: Props) => {
         router.replace('/acl')
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, router.route])
 
   const handleLogin = async (params: LoginParams) => {

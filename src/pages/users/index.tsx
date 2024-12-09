@@ -19,9 +19,10 @@ import { GridColDef } from '@mui/x-data-grid'
 
 import Chip from 'src/components/chip'
 import { getUserRequest, User } from 'src/requests/usersRequest'
-import { FormatUserToTable } from './utils/format-users-to-table'
+
 import { format } from 'date-fns'
 import DialogEdit from './components/DialogEdit'
+import { FormatUserToTable } from 'src/utils/format-users-to-table'
 
 export type DateType = Date | null | undefined
 
@@ -153,6 +154,7 @@ const Users = () => {
   }
   useEffect(() => {
     getUsers()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   // ** States
 
