@@ -149,11 +149,13 @@ const RealState = () => {
   }
 
   useEffect(() => {
-    const uniqueRegions = Array.from(new Set(realStates.map(item => item.region).filter(Boolean)))
-    setRegions(uniqueRegions)
+    if (realStates.length) {
+      const uniqueRegions = Array.from(new Set(realStates.map(item => item.region).filter(Boolean)))
+      setRegions(uniqueRegions)
 
-    const uniquePropertyTypes = Array.from(new Set(realStates.map(item => item.type)))
-    setPropertyTypes(uniquePropertyTypes)
+      const uniquePropertyTypes = Array.from(new Set(realStates.map(item => item.type)))
+      setPropertyTypes(uniquePropertyTypes)
+    }
   }, [realStates])
 
   const handleArea = (e: SelectChangeEvent<string>): void => {
