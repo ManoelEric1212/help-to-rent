@@ -67,7 +67,6 @@ const RegisterRealState = () => {
 
     return `${baseUrl}/uploads/${imagePath}`
   }
-  console.log('realStateById', realStateById)
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const getRealStateByIdReq = async (idToData: string) => {
