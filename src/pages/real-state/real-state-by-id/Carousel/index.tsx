@@ -12,7 +12,7 @@ const ImageCarousel: React.FC<CarouselProps> = ({ images }) => {
   // Configuração para o Slider de Miniaturas
   const thumbnailSettings = {
     infinite: true,
-    slidesToShow: Math.min(images.length, 5), // Mostra até 5 miniaturas
+    slidesToShow: Math.min(images?.length, 5), // Mostra até 5 miniaturas
     slidesToScroll: 1,
     focusOnSelect: true
   }
