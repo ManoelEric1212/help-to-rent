@@ -37,7 +37,7 @@ const VerticalNavItems = (props: Props) => {
 
   if (user?.role === 'agent') {
     const RenderMenuItems = verticalNavItems
-      ?.filter(item => 'path' in item && item.path !== '/users')
+      ?.filter(item => 'path' in item && item.path !== '/users' && item.path !== '/region' && item.path !== '/settings')
       ?.map((item: NavGroup | NavLink | NavSectionTitle, index: number) => {
         const TagName: any = resolveNavItemComponent(item)
 

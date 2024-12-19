@@ -20,7 +20,7 @@ const MapRegisterComponent = ({ dataRealStateByid, id }: MapRegisterComponentPro
   const [locations, setLocations] = useState<Poi[]>([])
 
   const { fetchAllPointers } = useMapRegister()
-
+  console.log('aq', locations)
   useEffect(() => {
     const fetchLocationsData = async () => {
       try {

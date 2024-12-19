@@ -8,6 +8,7 @@ import { useRouter } from 'next/router'
 // ** Data Import
 export interface RealStateTypeTable {
   id: string
+  id_number: number
   name: string
   type: string
   region: string

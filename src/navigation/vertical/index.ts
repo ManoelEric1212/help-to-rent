@@ -9,9 +9,14 @@ const navigation = (): VerticalNavItemsType => {
       icon: 'mdi:home-outline'
     },
     {
-      title: 'Real state',
+      title: 'Search properties',
       path: '/real-state',
       icon: 'mdi:home-city-outline'
+    },
+    {
+      title: 'Add properties',
+      path: '/real-state/register',
+      icon: 'mdi:plus'
     },
     {
       path: '/users',

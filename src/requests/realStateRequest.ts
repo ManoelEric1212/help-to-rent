@@ -32,6 +32,7 @@ export interface CreateRealStateDTO {
 
 export interface RealStateType {
   id: string
+  id_number: number
   name: string
   mensalRent: number
   area: number
@@ -52,6 +53,13 @@ export interface RealStateType {
   hasHotWater: string
   hasTerrace: string
 
+  intentionStatus: string
+  country_code: string
+  availabilityDate: string
+  ownerName: string
+  ownerNumber: string
+  alternativeNumberOwner: string
+
   orientation: string
   energyEfficiency: number
   hasWifi: boolean
@@ -61,6 +69,7 @@ export interface RealStateType {
   lng: number
   images?: any[]
   created_at: string
+  updated_at: string
 }
 
 export async function registerRealState(body: FormData) {

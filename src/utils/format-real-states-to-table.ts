@@ -5,6 +5,7 @@ export function FormatRealStateToTable(data: RealStateType[]) {
   const dataReturnFormat: RealStateTypeTable[] = data.map(item => {
     return {
       id: item.id,
+      id_number: item.id_number,
       name: item.name,
       address: item.address,
       area: item.area,
