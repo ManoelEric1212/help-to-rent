@@ -209,9 +209,7 @@ const RegisterRealState = () => {
               </Grid>
             </Grid>
 
-            <Box sx={{ padding: '2.5rem' }}>
-              <ImageCarousel images={previews} />
-            </Box>
+            <Box sx={{ padding: '2.5rem' }}>{previews.length && <ImageCarousel images={previews} />}</Box>
             <Box sx={{ padding: '1rem' }}>
               <Typography sx={{ fontSize: '1.5rem', fontWeight: 'bold' }}>Additional items:</Typography>
               <Box
