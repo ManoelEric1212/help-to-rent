@@ -12,7 +12,7 @@ import DialogActions from '@mui/material/DialogActions'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
-import { Grid, TextField } from '@mui/material'
+import { Grid, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from '@mui/material'
 
 import { registerRegion } from 'src/requests/regionRequest'
 
@@ -24,17 +24,22 @@ interface DialogEditProps {
 const DialogCreate = ({ open, onClose }: DialogEditProps) => {
   const [nameFilter, setNameFilter] = useState<string>('')
   const [description, setDescription] = useState<string>('')
+  const [area_region, setAreaRegion] = useState<string>('')
 
   const handleName = (event: ChangeEvent<HTMLInputElement>) => setNameFilter(event.target.value)
 
   const handleDescription = (event: ChangeEvent<HTMLInputElement>) => setDescription(event.target.value)
+  const handleAreaRegion = (event: SelectChangeEvent<string>) => {
+    setAreaRegion(event.target.value)
+  }
 
   const createRegionReq = async () => {
     try {
       if (nameFilter) {
         const body = {
           region_name: nameFilter,
-          description: description
+          description: description,
+          area_region: area_region
         }
         const dataReturn = await registerRegion(body)
 
@@ -64,7 +69,7 @@ const DialogCreate = ({ open, onClose }: DialogEditProps) => {
         <DialogContent dividers sx={{ p: 2 }}>
           <Grid sx={{ mb: 2, display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             <Grid item sm={12} xs={12}>
-              <TextField fullWidth label='Name' placeholder='Terraced House' value={nameFilter} onChange={handleName} />
+              <TextField fullWidth label='City' placeholder='Terraced House' value={nameFilter} onChange={handleName} />
             </Grid>
             <Grid item sm={12} xs={12}>
               <TextField
@@ -76,6 +81,19 @@ const DialogCreate = ({ open, onClose }: DialogEditProps) => {
                 onChange={handleDescription}
               />
             </Grid>
+            <Grid item sm={12} xs={12}>
+              <InputLabel id='type-label'>Area</InputLabel>
+              <Select labelId='type-label' value={area_region} onChange={handleAreaRegion} fullWidth>
+                <MenuItem value=''>
+                  <em>None</em>
+                </MenuItem>
+
+                <MenuItem value='NORTH'>NORTH</MenuItem>
+                <MenuItem value='CENTER'>CENTER</MenuItem>
+                <MenuItem value='SOUTH'>SOUTH</MenuItem>
+                <MenuItem value='TOURIST_REGION'>TOURIST_REGION</MenuItem>
+              </Select>
+            </Grid>
           </Grid>
         </DialogContent>
         <DialogActions sx={{ p: theme => `${theme.spacing(3)} !important` }}>
@@ -83,6 +101,9 @@ const DialogCreate = ({ open, onClose }: DialogEditProps) => {
             onClick={() => {
               createRegionReq()
               onClose()
+              setNameFilter('')
+              setDescription('')
+              setAreaRegion('')
             }}
           >
             Save changes

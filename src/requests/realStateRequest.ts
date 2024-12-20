@@ -16,10 +16,11 @@ export interface CreateRealStateDTO {
   hasJacuzzi: string
   hasGarage: string
   petAccepts: string
-  hasHotWater: string
+  ownerEmail: string
+  ownerId: string
+  area_region: string
   hasTerrace: string
   orientation: string
-  energyEfficiency: number
   hasWifi: boolean
   additionalExpenses: string
   description: string
@@ -50,7 +51,6 @@ export interface RealStateType {
   hasJacuzzi: string
   hasGarage: string
   petAccepts: string
-  hasHotWater: string
   hasTerrace: string
 
   intentionStatus: string
@@ -58,6 +58,9 @@ export interface RealStateType {
   availabilityDate: string
   ownerName: string
   ownerNumber: string
+  ownerEmail: string
+  ownerId: string
+  area_region: string
   alternativeNumberOwner: string
 
   orientation: string

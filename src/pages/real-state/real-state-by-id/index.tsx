@@ -117,12 +117,6 @@ const RegisterRealState = () => {
         icon: <BathtubIcon />
       },
       {
-        label: 'Hot Water',
-        has: JSON.parse(data?.hasHotWater ?? '').has,
-        observation: JSON.parse(data?.hasHotWater ?? '').observation,
-        icon: <HotTubIcon />
-      },
-      {
         label: 'Terrace',
         has: JSON.parse(data?.hasTerrace ?? '').has,
         observation: JSON.parse(data?.hasTerrace ?? '').observation,

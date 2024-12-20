@@ -25,6 +25,7 @@ import { useRouter } from 'next/router'
 import { FormatRealStateToTable } from 'src/utils/format-real-states-to-table'
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import { getRegionRequest, Region } from 'src/requests/regionRequest'
 
 export type DateType = Date | null | undefined
 
@@ -46,11 +47,11 @@ const RealState = () => {
   const [ownerNameFilter, setOwnerNameFilter] = useState<string>('')
   const [descriptionKeywordFilter, setDescriptionKeywordFilter] = useState<string>('')
   const [propertyTypes, setPropertyTypes] = useState<string[]>([])
-  const [regions, setRegions] = useState<string[]>([])
   const [typeFilter, setTypeFilter] = useState<string>('')
 
-  // const [regionFilter, setRegionFilter] = useState<string>('')
-  // const [addressFilter, setAdressFilter] = useState<string>('')
+  const [regionOptions, setRegionOptions] = useState<Region[]>([])
+  const [optionsRegions, setOptionsRegions] = useState<Region[]>([])
+
   const router = useRouter()
 
   const columns: GridColDef[] = [
@@ -134,6 +135,15 @@ const RealState = () => {
     }
   ]
 
+  const getRegionOptions = async () => {
+    try {
+      const dataOptions = await getRegionRequest()
+      setRegionOptions(dataOptions)
+    } catch (error) {
+      throw new Error('Erro get region options')
+    }
+  }
+
   async function getRealStates() {
     try {
       const data = await getAllRealStates()
@@ -150,15 +160,19 @@ const RealState = () => {
 
   useEffect(() => {
     if (realStates.length) {
-      const uniqueRegions = Array.from(new Set(realStates.map(item => item.region).filter(Boolean)))
-      setRegions(uniqueRegions)
-
       const uniquePropertyTypes = Array.from(new Set(realStates.map(item => item.type)))
       setPropertyTypes(uniquePropertyTypes)
     }
   }, [realStates])
 
+  useEffect(() => {
+    getRegionOptions()
+  }, [])
+
   const handleArea = (e: SelectChangeEvent<string>): void => {
+    const dataOptions = regionOptions.filter(item => item.area_region === e.target.value)
+
+    setOptionsRegions(dataOptions ?? [])
     setAreaFilter(e.target.value)
   }
 
@@ -192,15 +206,7 @@ const RealState = () => {
         ? realState.description.toLowerCase().includes(descriptionKeywordFilter.toLowerCase())
         : true
 
-      let matchesArea = true
-      if (areaFilter) {
-        const [min, max] = areaFilter.split('-').map(Number)
-        if (areaFilter === '90+') {
-          matchesArea = realState.area > 90
-        } else {
-          matchesArea = realState.area >= min && realState.area <= max
-        }
-      }
+      const matchesArea = areaFilter ? realState.area_region.toLowerCase().includes(areaFilter.toLowerCase()) : true
 
       return (
         // matchesName &&
@@ -238,23 +244,18 @@ const RealState = () => {
             <Grid container spacing={6}>
               <Grid item sm={4} xs={12}>
                 <FormControl fullWidth>
-                  <InputLabel id='area'>Area</InputLabel>
-                  <Select
-                    value={areaFilter}
-                    id='area'
-                    label='Select area range'
-                    labelId='area'
-                    onChange={handleArea}
-                    inputProps={{ placeholder: 'Select an Area Range' }}
-                  >
-                    <MenuItem value='0-10'>0-10</MenuItem>
-                    <MenuItem value='10-20'>10-20</MenuItem>
-                    <MenuItem value='20-30'>20-30</MenuItem>
-                    <MenuItem value='30-40'>30-40</MenuItem>
-                    <MenuItem value='40-50'>40-50</MenuItem>
-                    <MenuItem value='50-70'>50-70</MenuItem>
-                    <MenuItem value='70-90'>70-90</MenuItem>
-                    <MenuItem value='90+'>Above 90</MenuItem>
+                  <InputLabel id='type-label'>Area</InputLabel>
+                  <Select labelId='type-label' value={areaFilter || ''} onChange={handleArea}>
+                    <MenuItem value=''>
+                      <em>None</em>
+                    </MenuItem>
+
+                    <MenuItem value='NORTH'>NORTH</MenuItem>
+                    <MenuItem value='CENTER'>CENTER</MenuItem>
+                    <MenuItem value='SOUTH'>SOUTH</MenuItem>
+                    <MenuItem value='TOURIST_REGION'>TOURIST_REGION</MenuItem>
+
+                    {/* Add more MenuItems as needed */}
                   </Select>
                 </FormControl>
               </Grid>
@@ -268,9 +269,9 @@ const RealState = () => {
                     labelId='region'
                     onChange={(e: SelectChangeEvent<string>) => setRegionFilter(e.target.value)}
                   >
-                    {regions.map(region => (
-                      <MenuItem key={region} value={region}>
-                        {region}
+                    {optionsRegions.map(region => (
+                      <MenuItem key={region.id} value={region.region_name}>
+                        {region.region_name}
                       </MenuItem>
                     ))}
                   </Select>

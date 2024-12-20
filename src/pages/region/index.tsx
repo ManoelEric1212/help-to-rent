@@ -36,13 +36,19 @@ const Regions = () => {
       flex: 0.1,
       field: 'region_name',
       minWidth: 230,
-      headerName: 'Name'
+      headerName: 'City'
     },
     {
       flex: 0.25,
       minWidth: 80,
       field: 'description',
       headerName: 'Description'
+    },
+    {
+      flex: 0.25,
+      minWidth: 80,
+      field: 'area_region',
+      headerName: 'Area'
     },
 
     {

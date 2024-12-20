@@ -65,13 +65,15 @@ export interface FormData {
   hasGarage: hasOrAceptType
   orientation: string
   petAcepts: hasOrAceptType
-  hasHotWater: hasOrAceptType
 
   intentionStatus: string
   country_code: string
   availabilityDate: string
   ownerName: string
   ownerNumber: string
+  ownerEmail: string
+  ownerId: string
+  area_region: string
   alternativeNumberOwner: string
 
   hasWifi: string
@@ -99,7 +101,6 @@ const schema = yup.object().shape({
   hasGarage: yup.object(),
   orientation: yup.string(),
   petAcepts: yup.object(),
-  hasHotWater: yup.object(),
   energyEfficiency: yup.number(),
   hasWifi: yup.string(),
   hasTerrace: yup.object(),
@@ -108,6 +109,9 @@ const schema = yup.object().shape({
   availabilityDate: yup.string(),
   ownerName: yup.string(),
   ownerNumber: yup.string(),
+  ownerEmail: yup.string(),
+  ownerId: yup.string(),
+  area_region: yup.string(),
   alternativeNumberOwner: yup.string(),
   additionalExpenses: yup.string(),
   description: yup.string(),
@@ -131,6 +135,7 @@ const RegisterRealStateComponent = () => {
   const [realStateById, setRealStateById] = useState<RealStateType | null>(null)
   const [hasFetched, setHasFetched] = useState(false)
   const [regionOptions, setRegionOptions] = useState<Region[]>([])
+  const [optionsRegions, setOptionsRegions] = useState<Region[]>([])
   const router = useRouter()
   const { id } = router.query
 
@@ -223,12 +228,14 @@ const RegisterRealStateComponent = () => {
     hasGarage: { has: false, observation: '' },
     orientation: '',
     petAcepts: { has: false, observation: '' },
-    hasHotWater: { has: false, observation: '' },
     intentionStatus: '',
     country_code: '',
     availabilityDate: '',
     ownerName: '',
     ownerNumber: '',
+    ownerEmail: '',
+    ownerId: '',
+    area_region: '',
     alternativeNumberOwner: '',
     hasWifi: 'false',
 
@@ -247,10 +254,12 @@ const RegisterRealStateComponent = () => {
     handleSubmit,
     reset,
     setValue,
+    watch,
     formState: { errors }
   } = useForm({
     defaultValues,
     mode: 'onBlur',
+
     resolver: yupResolver(schema)
   })
 
@@ -271,14 +280,15 @@ const RegisterRealStateComponent = () => {
     formData.append('availabilityDate', data.availabilityDate)
     formData.append('ownerName', data.ownerName)
     formData.append('ownerNumber', data.ownerNumber)
+    formData.append('ownerEmail', data.ownerEmail)
+    formData.append('ownerId', data.ownerId)
+    formData.append('area_region', data.area_region)
     formData.append('alternativeNumberOwner', data.alternativeNumberOwner)
-
     formData.append('additionalExpenses', data.additionalExpenses.toString())
     formData.append('description', data.description.toString())
     formData.append('hasAirConditioner', JSON.stringify(data.hasAirConditioner))
     formData.append('hasBalcony', JSON.stringify(data.hasBalcony))
     formData.append('hasGarage', JSON.stringify(data.hasGarage))
-    formData.append('hasHotWater', JSON.stringify(data.hasHotWater))
     formData.append('hasJacuzzi', JSON.stringify(data.hasJacuzzi))
     formData.append('hasPool', JSON.stringify(data.hasPool))
     formData.append('hasTerrace', JSON.stringify(data.hasTerrace))
@@ -318,6 +328,18 @@ const RegisterRealStateComponent = () => {
   const handleButtonClick = (status: FormData['intentionStatus']) => {
     setValue('intentionStatus', status)
   }
+
+  const watchAreaRegion = watch('area_region')
+  const watchIntentionStatus = watch('intentionStatus')
+
+  useEffect(() => {
+    if (watchAreaRegion && regionOptions) {
+      const dataOptions = regionOptions.filter(item => item.area_region === watchAreaRegion)
+
+      setOptionsRegions(dataOptions ?? [])
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [watchAreaRegion])
 
   return (
     <Grid container spacing={1}>
@@ -391,7 +413,7 @@ const RegisterRealStateComponent = () => {
               </FormControl>
             </Grid>
             <Grid container spacing={6}>
-              <Grid item sm={4} xs={12}>
+              <Grid item sm={3} xs={12}>
                 <FormControl fullWidth sx={{ mb: 3 }}>
                   <Controller
                     name='mensalRent'
@@ -414,28 +436,86 @@ const RegisterRealStateComponent = () => {
                 </FormControl>
               </Grid>
 
-              <Grid item sm={4} xs={12}>
+              <Grid item sm={3} xs={12}>
                 <FormControl fullWidth sx={{ mb: 3 }}>
                   <Controller
-                    name='area'
+                    name='area_region'
                     control={control}
-                    rules={{ required: true }}
+                    rules={{ required: 'Type is required' }}
                     render={({ field: { value, onChange, onBlur } }) => (
-                      <TextField
-                        label='Area'
-                        type='number'
-                        value={value}
-                        onBlur={onBlur}
-                        onChange={onChange}
-                        error={Boolean(errors.area)}
-                      />
+                      <>
+                        <InputLabel id='type-label'>Area</InputLabel>
+                        <Select
+                          labelId='type-label'
+                          value={value || ''}
+                          onBlur={onBlur}
+                          onChange={onChange}
+                          error={Boolean(errors.type)}
+                        >
+                          <MenuItem value=''>
+                            <em>None</em>
+                          </MenuItem>
+
+                          <MenuItem value='NORTH'>NORTH</MenuItem>
+                          <MenuItem value='CENTER'>CENTER</MenuItem>
+                          <MenuItem value='SOUTH'>SOUTH</MenuItem>
+                          <MenuItem value='TOURIST_REGION'>TOURIST_REGION</MenuItem>
+
+                          {/* Add more MenuItems as needed */}
+                        </Select>
+                        {errors.type && (
+                          <FormHelperText sx={{ color: 'error.main' }}>{errors.type.message}</FormHelperText>
+                        )}
+                      </>
                     )}
                   />
-                  {errors.area && <FormHelperText sx={{ color: 'error.main' }}>{errors.area.message}</FormHelperText>}
+                </FormControl>
+              </Grid>
+              <Grid item sm={3} xs={12}>
+                <FormControl fullWidth sx={{ mb: 3 }}>
+                  <Controller
+                    name='region'
+                    control={control}
+                    rules={{ required: 'Region is required' }}
+                    render={({ field: { value, onChange, onBlur } }) => (
+                      <>
+                        <InputLabel id='region-label'>Region</InputLabel>
+                        <Select
+                          labelId='region-label'
+                          value={value || ''}
+                          onBlur={onBlur}
+                          onChange={onChange}
+                          error={Boolean(errors.region)}
+                        >
+                          <MenuItem value='' onClick={() => setValue('description', '')}>
+                            <em>None</em>
+                          </MenuItem>
+                          {optionsRegions.length ? (
+                            optionsRegions.map((item, i) => (
+                              <MenuItem
+                                key={i}
+                                value={item.region_name}
+                                onClick={() => setValue('description', item.description)}
+                              >
+                                {item.region_name}
+                              </MenuItem>
+                            ))
+                          ) : (
+                            <></>
+                          )}
+
+                          {/* Add more MenuItems as needed */}
+                        </Select>
+                        {errors.region && (
+                          <FormHelperText sx={{ color: 'error.main' }}>{errors.region.message}</FormHelperText>
+                        )}
+                      </>
+                    )}
+                  />
                 </FormControl>
               </Grid>
 
-              <Grid item sm={4} xs={12}>
+              <Grid item sm={3} xs={12}>
                 <FormControl fullWidth sx={{ mb: 3 }}>
                   <Controller
                     name='type'
@@ -628,35 +708,51 @@ const RegisterRealStateComponent = () => {
                   )}
                 </FormControl>
               </Grid>
-
               <Grid item sm={3} xs={12}>
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <FormControl fullWidth sx={{ mb: 3 }}>
-                    <Controller
-                      name='availabilityDate'
-                      control={control}
-                      rules={{ required: true }}
-                      render={({ field: { value, onChange } }) => (
-                        <DatePicker
-                          label='Availability Date'
-                          value={value ? dayjs(value) : null} // Garantindo que o valor seja manipulado como dayjs
-                          onChange={newValue => onChange(newValue ? newValue.toISOString() : '')} // Formatando a data antes de setar
-                          renderInput={params => (
-                            <TextField
-                              {...params}
-                              error={Boolean(errors.availabilityDate)}
-                              helperText={errors.availabilityDate?.message}
-                            />
-                          )}
-                        />
-                      )}
-                    />
-                  </FormControl>
-                </LocalizationProvider>
+                <FormControl fullWidth sx={{ mb: 3 }}>
+                  <Controller
+                    name='ownerEmail'
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange, onBlur } }) => (
+                      <TextField
+                        label='Owner email'
+                        value={value}
+                        onBlur={onBlur}
+                        onChange={onChange}
+                        error={Boolean(errors.alternativeNumberOwner)}
+                      />
+                    )}
+                  />
+                  {errors.ownerEmail && (
+                    <FormHelperText sx={{ color: 'error.main' }}>{errors.ownerEmail.message}</FormHelperText>
+                  )}
+                </FormControl>
               </Grid>
             </Grid>
 
             <Grid container spacing={6}>
+              <Grid item sm={3} xs={12}>
+                <FormControl fullWidth sx={{ mb: 3 }}>
+                  <Controller
+                    name='ownerId'
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange, onBlur } }) => (
+                      <TextField
+                        label='Owner ID'
+                        value={value}
+                        onBlur={onBlur}
+                        onChange={onChange}
+                        error={Boolean(errors.country_code)}
+                      />
+                    )}
+                  />
+                  {errors.ownerId && (
+                    <FormHelperText sx={{ color: 'error.main' }}>{errors.ownerId.message}</FormHelperText>
+                  )}
+                </FormControl>
+              </Grid>
               <Grid item sm={3} xs={12}>
                 <FormControl fullWidth sx={{ mb: 3 }}>
                   <Controller
@@ -710,49 +806,7 @@ const RegisterRealStateComponent = () => {
                   />
                 </FormControl>
               </Grid>
-              <Grid item sm={3} xs={12}>
-                <FormControl fullWidth sx={{ mb: 3 }}>
-                  <Controller
-                    name='region'
-                    control={control}
-                    rules={{ required: 'Region is required' }}
-                    render={({ field: { value, onChange, onBlur } }) => (
-                      <>
-                        <InputLabel id='region-label'>Region</InputLabel>
-                        <Select
-                          labelId='region-label'
-                          value={value || ''}
-                          onBlur={onBlur}
-                          onChange={onChange}
-                          error={Boolean(errors.region)}
-                        >
-                          <MenuItem value='' onClick={() => setValue('description', '')}>
-                            <em>None</em>
-                          </MenuItem>
-                          {regionOptions.length ? (
-                            regionOptions.map((item, i) => (
-                              <MenuItem
-                                key={i}
-                                value={item.region_name}
-                                onClick={() => setValue('description', item.description)}
-                              >
-                                {item.region_name}
-                              </MenuItem>
-                            ))
-                          ) : (
-                            <></>
-                          )}
 
-                          {/* Add more MenuItems as needed */}
-                        </Select>
-                        {errors.region && (
-                          <FormHelperText sx={{ color: 'error.main' }}>{errors.region.message}</FormHelperText>
-                        )}
-                      </>
-                    )}
-                  />
-                </FormControl>
-              </Grid>
               <Grid item sm={3} xs={12}>
                 <FormControl fullWidth sx={{ mb: 3 }}>
                   <Controller
@@ -785,6 +839,57 @@ const RegisterRealStateComponent = () => {
                     )}
                   />
                 </FormControl>
+              </Grid>
+            </Grid>
+            <Grid container spacing={6}>
+              {watchIntentionStatus !== '' && watchIntentionStatus !== 'FOR_RENT' && (
+                <Grid item sm={3} xs={12}>
+                  <FormControl fullWidth sx={{ mb: 3 }}>
+                    <Controller
+                      name='area'
+                      control={control}
+                      rules={{ required: true }}
+                      render={({ field: { value, onChange, onBlur } }) => (
+                        <TextField
+                          label='Dimensions'
+                          type='number'
+                          value={value}
+                          onBlur={onBlur}
+                          onChange={onChange}
+                          error={Boolean(errors.mensalRent)}
+                        />
+                      )}
+                    />
+                    {errors.mensalRent && (
+                      <FormHelperText sx={{ color: 'error.main' }}>{errors.mensalRent.message}</FormHelperText>
+                    )}
+                  </FormControl>
+                </Grid>
+              )}
+              <Grid item sm={3} xs={12}>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <FormControl fullWidth sx={{ mb: 3 }}>
+                    <Controller
+                      name='availabilityDate'
+                      control={control}
+                      rules={{ required: true }}
+                      render={({ field: { value, onChange } }) => (
+                        <DatePicker
+                          label='Availability Date'
+                          value={value ? dayjs(value) : null} // Garantindo que o valor seja manipulado como dayjs
+                          onChange={newValue => onChange(newValue ? newValue.toISOString() : '')} // Formatando a data antes de setar
+                          renderInput={params => (
+                            <TextField
+                              {...params}
+                              error={Boolean(errors.availabilityDate)}
+                              helperText={errors.availabilityDate?.message}
+                            />
+                          )}
+                        />
+                      )}
+                    />
+                  </FormControl>
+                </LocalizationProvider>
               </Grid>
             </Grid>
             <Grid container spacing={6}>
@@ -938,45 +1043,6 @@ const RegisterRealStateComponent = () => {
                   {errors.hasJacuzzi?.observation && (
                     <FormHelperText sx={{ color: 'error.main' }}>
                       {errors.hasJacuzzi.observation.message}
-                    </FormHelperText>
-                  )}
-                </FormControl>
-              </Grid>
-              <Grid item sm={4} xs={12}>
-                <FormControl fullWidth sx={{ mb: 3 }}>
-                  <Controller
-                    name='hasHotWater'
-                    control={control}
-                    defaultValue={{ has: false, observation: '' }} // Define o estado inicial
-                    render={({ field: { value, onChange } }) => (
-                      <FormGroup row>
-                        <FormControlLabel
-                          control={
-                            <Switch
-                              checked={value.has}
-                              onChange={
-                                e => onChange({ ...value, has: e.target.checked }) // Atualiza apenas a propriedade 'has'
-                              }
-                            />
-                          }
-                          label='Hot water'
-                        />
-                        {value.has && (
-                          <TextField
-                            label='Observation'
-                            value={value.observation || ''}
-                            onChange={
-                              e => onChange({ ...value, observation: e.target.value }) // Atualiza apenas a propriedade 'observation'
-                            }
-                            sx={{ ml: 2 }}
-                          />
-                        )}
-                      </FormGroup>
-                    )}
-                  />
-                  {errors.hasHotWater?.observation && (
-                    <FormHelperText sx={{ color: 'error.main' }}>
-                      {errors.hasHotWater.observation.message}
                     </FormHelperText>
                   )}
                 </FormControl>

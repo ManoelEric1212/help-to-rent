@@ -12,6 +12,7 @@ export interface RegionType {
   id: string
   region_name: string
   description: string
+  area_region: string
 }
 
 export interface DataGridDataRegion {

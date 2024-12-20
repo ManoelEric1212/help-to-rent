@@ -13,7 +13,7 @@ import DialogActions from '@mui/material/DialogActions'
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
 import { RegionType } from '../TableBasic'
-import { Grid, TextField } from '@mui/material'
+import { Grid, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from '@mui/material'
 
 import { updateRegion } from 'src/requests/regionRequest'
 
@@ -26,6 +26,10 @@ interface DialogEditProps {
 const DialogEdit = ({ open, onClose, data }: DialogEditProps) => {
   const [nameFilter, setNameFilter] = useState<string>('')
   const [description, setDescription] = useState<string>('')
+  const [area_region, setAreaRegion] = useState<string>('')
+  const handleAreaRegion = (event: SelectChangeEvent<string>) => {
+    setAreaRegion(event.target.value)
+  }
 
   const handleName = (event: ChangeEvent<HTMLInputElement>) => setNameFilter(event.target.value)
 
@@ -37,7 +41,8 @@ const DialogEdit = ({ open, onClose, data }: DialogEditProps) => {
         const body = {
           id: data.id,
           region_name: nameFilter,
-          description: description
+          description: description,
+          area_region: area_region
         }
         const dataReturn = await updateRegion(body)
 
@@ -53,6 +58,7 @@ const DialogEdit = ({ open, onClose, data }: DialogEditProps) => {
     if (data) {
       setNameFilter(data.region_name)
       setDescription(data.description)
+      setAreaRegion(data.area_region)
     }
   }, [data])
 
@@ -85,6 +91,19 @@ const DialogEdit = ({ open, onClose, data }: DialogEditProps) => {
                 value={description}
                 onChange={handleDescription}
               />
+            </Grid>
+            <Grid item sm={12} xs={12}>
+              <InputLabel id='type-label'>Area</InputLabel>
+              <Select labelId='type-label' value={area_region} onChange={handleAreaRegion} fullWidth>
+                <MenuItem value=''>
+                  <em>None</em>
+                </MenuItem>
+
+                <MenuItem value='NORTH'>NORTH</MenuItem>
+                <MenuItem value='CENTER'>CENTER</MenuItem>
+                <MenuItem value='SOUTH'>SOUTH</MenuItem>
+                <MenuItem value='TOURIST_REGION'>TOURIST_REGION</MenuItem>
+              </Select>
             </Grid>
           </Grid>
         </DialogContent>

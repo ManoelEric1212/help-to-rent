@@ -5,6 +5,7 @@ export interface Region {
   id: string
   region_name: string
   description: string
+  area_region: string
 }
 
 export async function getRegionRequest() {
@@ -20,6 +21,7 @@ export async function getRegionRequest() {
 export interface CreateRegionDTO {
   region_name: string
   description: string
+  area_region: string
 }
 
 export async function registerRegion(body: CreateRegionDTO) {
