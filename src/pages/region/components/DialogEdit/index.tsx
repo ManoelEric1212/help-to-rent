@@ -1,7 +1,5 @@
-// ** React Imports
 import { ChangeEvent, useEffect, useState } from 'react'
 
-// ** MUI Imports
 import Button from '@mui/material/Button'
 import Dialog from '@mui/material/Dialog'
 import IconButton from '@mui/material/IconButton'
@@ -10,7 +8,6 @@ import DialogTitle from '@mui/material/DialogTitle'
 import DialogContent from '@mui/material/DialogContent'
 import DialogActions from '@mui/material/DialogActions'
 
-// ** Icon Imports
 import Icon from 'src/@core/components/icon'
 import { RegionType } from '../TableBasic'
 import { Grid, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from '@mui/material'
@@ -53,7 +50,6 @@ const DialogEdit = ({ open, onClose, data }: DialogEditProps) => {
     }
   }
 
-  // ** State
   useEffect(() => {
     if (data) {
       setNameFilter(data.region_name)

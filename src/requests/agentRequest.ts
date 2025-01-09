@@ -1,4 +1,4 @@
-import { GET_AGENT_BY_EMAIL, UPDATE_AGENT } from 'src/constants/urls'
+import { GET_AGENT_BY_EMAIL, GET_AGENTS, UPDATE_AGENT } from 'src/constants/urls'
 import { api } from 'src/service/api'
 
 export interface Agent {
@@ -43,5 +43,15 @@ export async function updateAgent(body: UpdateAgentDTO) {
     return data
   } catch (error) {
     throw new Error('Error - getUsers')
+  }
+}
+
+export async function getAgents() {
+  try {
+    const { data } = await api.get<Agent[]>(GET_AGENTS)
+
+    return data
+  } catch (error) {
+    throw new Error('Error - getAgents')
   }
 }

@@ -61,7 +61,7 @@ const Users = () => {
     },
     {
       flex: 0.15,
-      type: 'solicitation_date',
+      type: 'string',
       minWidth: 130,
       headerName: 'Solicitation Date',
       field: 'solicitation_date',

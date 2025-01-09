@@ -24,7 +24,9 @@ const Home = () => {
             <Button variant='contained' onClick={() => router.replace('/real-state/register')}>
               Add property
             </Button>
-            <Button variant='contained'>Solicitations</Button>
+            <Button variant='contained' onClick={() => router.replace('/solicitations')}>
+              Solicitations
+            </Button>
           </Box>
         </Card>
       </Grid>

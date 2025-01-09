@@ -19,6 +19,11 @@ const navigation = (): VerticalNavItemsType => {
       icon: 'mdi:plus'
     },
     {
+      title: 'Solicitations',
+      path: '/solicitations',
+      icon: 'mdi:note-plus'
+    },
+    {
       path: '/users',
       title: 'Users',
       icon: 'mdi:account-tie'

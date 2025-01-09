@@ -459,7 +459,7 @@ const RegisterRealStateComponent = () => {
                           <MenuItem value='NORTH'>NORTH</MenuItem>
                           <MenuItem value='CENTER'>CENTER</MenuItem>
                           <MenuItem value='SOUTH'>SOUTH</MenuItem>
-                          <MenuItem value='TOURIST_REGION'>TOURIST_REGION</MenuItem>
+                          <MenuItem value='GOZO'>GOZO</MenuItem>
 
                           {/* Add more MenuItems as needed */}
                         </Select>
