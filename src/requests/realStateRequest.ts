@@ -41,7 +41,7 @@ export interface RealStateType {
   type: string
   bathNumber: number
   roomsNumber: number
-  numberElevator: number
+
   status: string
   region: string
 
@@ -62,10 +62,15 @@ export interface RealStateType {
   ownerId: string
   area_region: string
   alternativeNumberOwner: string
+  userUpdated: string
+  hasElevator: string
+  hasGarden: string
+  hasUnfurnished: string
+  hasYard: string
+  hasUse_of_Roof: string
 
-  orientation: string
   energyEfficiency: number
-  hasWifi: boolean
+
   additionalExpenses: string
   description: string
   lat: number
