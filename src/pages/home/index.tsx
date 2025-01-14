@@ -20,7 +20,7 @@ const Home = () => {
             <Button variant='contained' onClick={() => router.replace('/real-state')}>
               Search Properties
             </Button>
-            <Button variant='contained'>Latest Properties</Button>
+            <Button variant='contained'>Latest Updates</Button>
             <Button variant='contained' onClick={() => router.replace('/real-state/register')}>
               Add property
             </Button>

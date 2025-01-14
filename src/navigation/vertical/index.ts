@@ -14,7 +14,7 @@ const navigation = (): VerticalNavItemsType => {
       icon: 'mdi:home-city-outline'
     },
     {
-      title: 'Add properties',
+      title: 'Add property',
       path: '/real-state/register',
       icon: 'mdi:plus'
     },
