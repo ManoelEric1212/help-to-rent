@@ -9,19 +9,22 @@ export interface CreateRealStateDTO {
   type: string
   bathNumber: number
   roomsNumber: number
-  numberElevator: number
   hasBalcony: string
   hasAirConditioner: string
   hasPool: string
   hasJacuzzi: string
   hasGarage: string
+  hasElevator: string
+  hasGarden: string
+  hasUnfurnished: string
+  hasYard: string
+  hasUse_of_Roof: string
+  userUpdated: string
   petAccepts: string
   ownerEmail: string
   ownerId: string
   area_region: string
   hasTerrace: string
-  orientation: string
-  hasWifi: boolean
   additionalExpenses: string
   description: string
   lat: number

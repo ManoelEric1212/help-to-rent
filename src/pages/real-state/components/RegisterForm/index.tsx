@@ -393,7 +393,7 @@ const RegisterRealStateComponent = () => {
                 rules={{ required: true }}
                 render={({ field: { value, onChange, onBlur } }) => (
                   <TextField
-                    label='Adderess'
+                    label='Address'
                     value={value}
                     onBlur={onBlur}
                     onChange={onChange}
