@@ -5,6 +5,7 @@ import Box, { BoxProps } from '@mui/material/Box'
 import FormControl from '@mui/material/FormControl'
 import Typography from '@mui/material/Typography'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
+import DirectionsIcon from '@mui/icons-material/Directions'
 
 // ** Layout Import
 
@@ -12,15 +13,33 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Controller, useForm } from 'react-hook-form'
 import * as yup from 'yup'
-import { FormControlLabel, FormGroup, FormHelperText, Grid, InputLabel, MenuItem, Select, Switch } from '@mui/material'
+import {
+  FormControlLabel,
+  FormGroup,
+  FormHelperText,
+  Grid,
+  IconButton,
+  InputAdornment,
+  InputLabel,
+  MenuItem,
+  Select,
+  Switch
+} from '@mui/material'
 import MapRegisterComponent from '../mapComponent'
-import { useEffect, useState } from 'react'
+import { ChangeEvent, useEffect, useState } from 'react'
 import { styled } from '@mui/material/styles'
 
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 
 import CloseIcon from '@mui/icons-material/Close'
-import { getRealStateById, RealStateType, registerRealState, updateRealState } from 'src/requests/realStateRequest'
+import {
+  getLatAndLng,
+  getLatAndLngReq,
+  getRealStateById,
+  RealStateType,
+  registerRealState,
+  updateRealState
+} from 'src/requests/realStateRequest'
 import toast from 'react-hot-toast'
 import { useRouter } from 'next/router'
 import { useMapRegister } from 'src/context/MapRegisterContext'
@@ -143,6 +162,10 @@ const RegisterRealStateComponent = () => {
   const [hasFetched, setHasFetched] = useState(false)
   const [regionOptions, setRegionOptions] = useState<Region[]>([])
   const [optionsRegions, setOptionsRegions] = useState<Region[]>([])
+  const [addressSearch, setAddressSearch] = useState<string>('')
+
+  // const [regionSearch, setRegionSearch] = useState<string>('')
+
   const router = useRouter()
   const { id } = router.query
 
@@ -196,6 +219,7 @@ const RegisterRealStateComponent = () => {
       throw new Error('Erro get region options')
     }
   }
+
   useEffect(() => {
     if (id && !hasFetched) {
       setHasFetched(true) // Marca como já executado
@@ -215,7 +239,16 @@ const RegisterRealStateComponent = () => {
     setPreviews(prevPreviews => prevPreviews.filter((_, i) => i !== index))
   }
 
-  const { newPoint } = useMapRegister()
+  const { newPoint, setNewPointAddress } = useMapRegister()
+
+  const getLatAndLng = async (data: getLatAndLng) => {
+    try {
+      const dataLatAndLng = await getLatAndLngReq(data)
+      setNewPointAddress({ lat: parseFloat(dataLatAndLng[0].lat), lng: parseFloat(dataLatAndLng[0].lon) })
+    } catch (error) {
+      throw new Error('Erro get region options')
+    }
+  }
 
   const defaultValues = {
     name: '',
@@ -352,6 +385,12 @@ const RegisterRealStateComponent = () => {
     setValue('intentionStatus', status)
   }
 
+  function convertTextForAddressSearch(texto: string) {
+    const partes = texto.split(',', 2)
+
+    return partes.map(parte => parte.trim())
+  }
+
   const watchAreaRegion = watch('area_region')
   const watchIntentionStatus = watch('intentionStatus')
 
@@ -366,7 +405,38 @@ const RegisterRealStateComponent = () => {
 
   return (
     <Grid container spacing={1}>
-      <Box sx={{ width: '100vw', height: '70vh' }}>
+      <Grid container spacing={6}>
+        <Grid item sm={4} xs={12}>
+          <TextField
+            label='Search Address Map'
+            value={addressSearch}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position='end'>
+                  <IconButton
+                    type='button'
+                    sx={{ p: '10px' }}
+                    aria-label='search'
+                    onClick={async () => {
+                      if (addressSearch.length) {
+                        const data = convertTextForAddressSearch(addressSearch)
+                        await getLatAndLng({ address: data[0], region: data[1] })
+                      } else {
+                        setNewPointAddress(null)
+                      }
+                    }}
+                  >
+                    <DirectionsIcon />
+                  </IconButton>
+                </InputAdornment>
+              )
+            }}
+            onChange={(e: ChangeEvent<HTMLInputElement>) => setAddressSearch(e.target.value)}
+            fullWidth
+          />
+        </Grid>
+      </Grid>
+      <Box sx={{ width: '100vw', height: '70vh', marginTop: '0.3rem' }}>
         <MapRegisterComponent id={id as string} dataRealStateByid={realStateById} />
       </Box>
       <Box

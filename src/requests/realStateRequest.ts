@@ -1,3 +1,4 @@
+import axios from 'axios'
 import { GET_REAL_STATE, GET_REAL_STATE_BY_ID, POST_REAL_STATE, UDPATE_REAL_STATE } from 'src/constants/urls'
 import { api } from 'src/service/api'
 
@@ -129,6 +130,44 @@ export async function getAllRealStates() {
 export async function getRealStateById(id: string) {
   try {
     const { data } = await api.get<RealStateType>(GET_REAL_STATE_BY_ID(id))
+
+    return data
+  } catch (error) {
+    throw new Error('Error - getRealStateById')
+  }
+}
+
+export interface getLatAndLng {
+  address: string
+  region: string
+}
+
+export interface OpenStretMapReturn {
+  place_id: number
+  licence: string
+  osm_type: string
+  osm_id: number
+  lat: string
+  lon: string
+  class: string
+  type: string
+  place_rank: number
+  importance: number
+  addresstype: string
+  name: string
+  display_name: string
+  boundingbox: string[]
+}
+
+export async function getLatAndLngReq({ address, region }: getLatAndLng) {
+  try {
+    const { data } = await axios.get<OpenStretMapReturn[]>('https://nominatim.openstreetmap.org/search', {
+      params: {
+        q: `${address},+${region}`,
+        format: 'json',
+        limit: 5
+      }
+    })
 
     return data
   } catch (error) {

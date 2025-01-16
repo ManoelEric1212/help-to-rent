@@ -3,7 +3,9 @@ import { getAllRealStates } from 'src/requests/realStateRequest'
 
 type MapRegisterContextType = {
   setNewPoint: (value: pointRegisterType | null) => void
+  setNewPointAddress: (value: pointRegisterType | null) => void
   newPoint: pointRegisterType | null
+  newPointAddress: pointRegisterType | null
   fetchAllPointers: () => Promise<
     | {
         key: string
@@ -29,6 +31,7 @@ type MapRegisterProps = {
 
 export const MapRegisterProvider: React.FC<MapRegisterProps> = ({ children }) => {
   const [newPoint, setNewPoint] = useState<pointRegisterType | null>(null)
+  const [newPointAddress, setNewPointAddress] = useState<pointRegisterType | null>(null)
 
   const fetchAllPointers = async () => {
     try {
@@ -52,7 +55,9 @@ export const MapRegisterProvider: React.FC<MapRegisterProps> = ({ children }) =>
   }
 
   return (
-    <MapRegisterContext.Provider value={{ setNewPoint, newPoint, fetchAllPointers }}>
+    <MapRegisterContext.Provider
+      value={{ setNewPoint, newPoint, fetchAllPointers, setNewPointAddress, newPointAddress }}
+    >
       {children}
     </MapRegisterContext.Provider>
   )
