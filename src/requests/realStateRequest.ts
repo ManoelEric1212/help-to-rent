@@ -163,7 +163,7 @@ export async function getLatAndLngReq({ address, region }: getLatAndLng) {
   try {
     const { data } = await axios.get<OpenStretMapReturn[]>('https://nominatim.openstreetmap.org/search', {
       params: {
-        q: `${address},+${region}`,
+        q: region.length ? `${address},+${region}` : `${address}`,
         format: 'json',
         limit: 5
       }

@@ -242,11 +242,12 @@ const RegisterRealStateComponent = () => {
   const { newPoint, setNewPointAddress } = useMapRegister()
 
   const getLatAndLng = async (data: getLatAndLng) => {
+    console.log('data', data)
     try {
       const dataLatAndLng = await getLatAndLngReq(data)
       setNewPointAddress({ lat: parseFloat(dataLatAndLng[0].lat), lng: parseFloat(dataLatAndLng[0].lon) })
     } catch (error) {
-      throw new Error('Erro get region options')
+      throw new Error('getLatAndLng')
     }
   }
 
@@ -420,7 +421,7 @@ const RegisterRealStateComponent = () => {
                     onClick={async () => {
                       if (addressSearch.length) {
                         const data = convertTextForAddressSearch(addressSearch)
-                        await getLatAndLng({ address: data[0], region: data[1] })
+                        await getLatAndLng({ address: data[0], region: data[1] ?? '' })
                       } else {
                         setNewPointAddress(null)
                       }
