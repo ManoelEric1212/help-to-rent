@@ -8,13 +8,13 @@ import {
   TextField,
   IconButton,
   Box,
-  Button,
-  useTheme
+  Button
 } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { getAllRealStates, RealStateType } from 'src/requests/realStateRequest'
 import { getRegionRequest, Region } from 'src/requests/regionRequest'
 import SearchIcon from '@mui/icons-material/Search'
+import console from 'console'
 
 const SearchFiltersItem = () => {
   const [areaFilter, setAreaFilter] = useState<string>('')
@@ -25,12 +25,12 @@ const SearchFiltersItem = () => {
   const [realStates, setRealStates] = useState<RealStateType[]>([])
   const [intentionStatus, setIntentionStatus] = useState<string>('')
 
-  const [realStatesFilter, setRealStatesFilter] = useState<RealStateType[]>([])
+  // const [realStatesFilter, setRealStatesFilter] = useState<RealStateType[]>([])
 
   const [minPrice, setMinPrice] = useState<string>('')
   const [maxPrice, setMaxPrice] = useState<string>('')
 
-  const theme = useTheme()
+  // const theme = useTheme()
 
   const handleArea = (e: SelectChangeEvent<string>): void => {
     const dataOptions = regionOptions.filter(item => item.area_region === e.target.value)
@@ -86,7 +86,7 @@ const SearchFiltersItem = () => {
       return matchesArea && matchesRegion && matchesMinPrice && matchesMaxPrice && matchesBedrooms
     })
 
-    setRealStatesFilter(filtered)
+    // setRealStatesFilter(filtered)
     console.log('realStatesFilter', filtered)
   }
 
