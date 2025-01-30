@@ -14,7 +14,6 @@ import { useEffect, useState } from 'react'
 import { getAllRealStates, RealStateType } from 'src/requests/realStateRequest'
 import { getRegionRequest, Region } from 'src/requests/regionRequest'
 import SearchIcon from '@mui/icons-material/Search'
-import console from 'console'
 
 const SearchFiltersItem = () => {
   const [areaFilter, setAreaFilter] = useState<string>('')
