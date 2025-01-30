@@ -485,7 +485,6 @@ const RegisterRealStateComponent = () => {
                   render={({ field }) => (
                     <>
                       <Box sx={{ display: 'flex' }}>
-                        {/* Botões para cada intenção */}
                         {['FOR_RENT', 'FOR_SALE', 'COMMERCIAL_SALE', 'COMMERCIAL_LEASE'].map(status => (
                           <Button
                             key={status}

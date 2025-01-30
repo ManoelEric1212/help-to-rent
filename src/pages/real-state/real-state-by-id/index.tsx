@@ -42,7 +42,6 @@ const RegisterRealState = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [modalTitle, setModalTitle] = useState('')
-  console.log('isModalOpen', isModalOpen)
 
   const [modalContent, setModalContent] = useState<React.ReactNode>(null)
 

@@ -36,15 +36,14 @@ const MainContentWrapper = styled(Box)<BoxProps>({
   flexDirection: 'column'
 })
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const ContentWrapper = styled('main')(({ theme }) => ({
   flexGrow: 1,
   width: '100%',
-  padding: theme.spacing(6),
-  transition: 'padding .25s ease-in-out',
-  [theme.breakpoints.down('sm')]: {
-    paddingLeft: theme.spacing(4),
-    paddingRight: theme.spacing(4)
-  }
+
+  // padding: theme.spacing(6),
+  padding: 0,
+  transition: 'padding .25s ease-in-out'
 }))
 
 const VerticalLayout = (props: LayoutProps) => {
@@ -113,7 +112,7 @@ const VerticalLayout = (props: LayoutProps) => {
               }),
               ...(contentWidth === 'boxed' && {
                 mx: 'auto',
-                '@media (min-width:1440px)': { maxWidth: 1440 },
+                '@media (min-width:1440px)': { maxWidth: 1800 },
                 '@media (min-width:1200px)': { maxWidth: '100%' }
               })
             }}
