@@ -222,18 +222,71 @@ const RegisterRealStateComponent = () => {
 
   useEffect(() => {
     if (id && !hasFetched) {
-      setHasFetched(true) // Marca como já executado
+      setHasFetched(true)
       getRealStateByIdReq(id as string)
     }
   }, [id, hasFetched, getRealStateByIdReq])
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFiles = Array.from(e.target.files || [])
-    setFiles(prevFiles => [...prevFiles, ...selectedFiles])
 
-    const selectedPreviews = selectedFiles.map(file => URL.createObjectURL(file))
+    const processedFiles = await Promise.all(selectedFiles.map(file => addWatermark(file, '/images/watermarker3.png')))
+
+    const selectedPreviews = processedFiles.map(file => URL.createObjectURL(file))
+
+    setFiles(prevFiles => [...prevFiles, ...processedFiles])
     setPreviews(prevPreviews => [...prevPreviews, ...selectedPreviews])
   }
+
+  const addWatermark = (file: File, watermarkSrc: string): Promise<File> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      reader.readAsDataURL(file)
+
+      reader.onload = event => {
+        const img = new Image()
+        img.src = event.target?.result as string
+        img.onload = () => {
+          const canvas = document.createElement('canvas')
+          const ctx = canvas.getContext('2d')
+
+          if (!ctx) return reject('Erro ao obter contexto do Canvas')
+
+          canvas.width = img.width
+          canvas.height = img.height
+          ctx.drawImage(img, 0, 0)
+
+          const watermark = new Image()
+          watermark.src = watermarkSrc
+          watermark.crossOrigin = 'anonymous'
+          watermark.onload = () => {
+            const scale = 0.3
+            const wmWidth = img.width * scale
+            const wmHeight = (watermark.height / watermark.width) * wmWidth
+
+            const x = img.width / 3
+            const y = (img.height - wmHeight) / 2
+
+            ctx.drawImage(watermark, x, y, wmWidth, wmHeight)
+
+            canvas.toBlob(blob => {
+              if (blob) {
+                const newFile = new File([blob], file.name, { type: file.type })
+                resolve(newFile)
+              } else {
+                reject('Erro ao criar Blob')
+              }
+            }, file.type)
+          }
+
+          watermark.onerror = () => reject("Erro ao carregar a marca d'água")
+        }
+      }
+
+      reader.onerror = error => reject(error)
+    })
+  }
+
   const handleRemoveImage = (index: number) => {
     setFiles(prevFiles => prevFiles.filter((_, i) => i !== index))
     setPreviews(prevPreviews => prevPreviews.filter((_, i) => i !== index))
