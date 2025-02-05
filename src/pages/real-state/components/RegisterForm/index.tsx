@@ -173,7 +173,10 @@ const RegisterRealStateComponent = () => {
 
   const buildImageUrl = (imagePath: string) => {
     const { protocol, hostname } = window.location
-    const baseUrl = `${protocol}//${hostname}${`:${5000}`}`
+
+    // development
+    // const baseUrl = `${protocol}//${hostname}${`:${5000}`}`
+    const baseUrl = `${protocol}//${hostname}`
 
     return `${baseUrl}/uploads/${imagePath}`
   }

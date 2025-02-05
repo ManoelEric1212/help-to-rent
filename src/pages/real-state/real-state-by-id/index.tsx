@@ -62,7 +62,10 @@ const RegisterRealState = () => {
 
   const buildImageUrl = (imagePath: string) => {
     const { protocol, hostname } = window.location
-    const baseUrl = `${protocol}//${hostname}${`:${5000}`}`
+
+    // development
+    // const baseUrl = `${protocol}//${hostname}${`:${5000}`}`
+    const baseUrl = `${protocol}//${hostname}`
 
     return `${baseUrl}/uploads/${imagePath}`
   }
@@ -76,6 +79,10 @@ const RegisterRealState = () => {
       setRealStateById(realStateById)
       if (dataFormatted.images.length) {
         setPreviews(dataFormatted.images.map(item => buildImageUrl(item.url)))
+        console.log(
+          'dataFormatted.images.map(item => buildImageUrl(item.url))',
+          dataFormatted.images.map(item => buildImageUrl(item.url))
+        )
       }
     } catch (error) {
       throw new Error('Error getRealStateById')
