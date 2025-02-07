@@ -14,6 +14,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { Controller, useForm } from 'react-hook-form'
 import * as yup from 'yup'
 import {
+  CircularProgress,
   FormControlLabel,
   FormGroup,
   FormHelperText,
@@ -50,6 +51,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import dayjs from 'dayjs'
 import { useAuth } from 'src/hooks/useAuth'
+import LoadingOverlay from 'src/components/GlobalLoading'
 
 export const AvatarInput = styled(Box)(() => ({
   position: 'relative',
@@ -163,6 +165,7 @@ const RegisterRealStateComponent = () => {
   const [regionOptions, setRegionOptions] = useState<Region[]>([])
   const [optionsRegions, setOptionsRegions] = useState<Region[]>([])
   const [addressSearch, setAddressSearch] = useState<string>('')
+  const [loading, setLoading] = useState(false)
 
   // const [regionSearch, setRegionSearch] = useState<string>('')
 
@@ -372,6 +375,7 @@ const RegisterRealStateComponent = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   const onSubmit = async (data: FormData) => {
+    setLoading(true)
     const formData = new FormData()
 
     formData.append('name', data.name)
@@ -424,6 +428,7 @@ const RegisterRealStateComponent = () => {
         if (data) {
           toast.success('Real state updated!')
           router.replace('/real-state')
+          setLoading(false)
 
           return
         }
@@ -432,8 +437,11 @@ const RegisterRealStateComponent = () => {
       if (data) {
         toast.success('Real state registered!')
         router.replace('/real-state')
+        setLoading(false)
       }
     } catch (error) {
+      setLoading(false)
+
       toast.error('Real state not registered!')
     }
   }
@@ -1555,13 +1563,18 @@ const RegisterRealStateComponent = () => {
             </Grid>
 
             <Grid>
-              <Button variant='contained' type='submit'>
-                {id?.length ? 'Update' : 'Save'}
-              </Button>
+              {loading ? (
+                <CircularProgress />
+              ) : (
+                <Button variant='contained' type='submit' disabled={loading}>
+                  {id?.length ? 'Update' : 'Save'}
+                </Button>
+              )}
             </Grid>
           </form>
         </BoxWrapper>
       </Box>
+      <LoadingOverlay loading={loading} message='Loading informations' />
     </Grid>
   )
 }
