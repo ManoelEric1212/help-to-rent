@@ -6,7 +6,6 @@ import {
   MenuItem,
   SelectChangeEvent,
   TextField,
-  IconButton,
   Box,
   Button
 } from '@mui/material'
@@ -14,6 +13,7 @@ import { useEffect, useState } from 'react'
 import { getAllRealStates, RealStateType } from 'src/requests/realStateRequest'
 import { getRegionRequest, Region } from 'src/requests/regionRequest'
 import SearchIcon from '@mui/icons-material/Search'
+import { useItems } from 'src/context/ItemsContext'
 
 const SearchFiltersItem = () => {
   const [areaFilter, setAreaFilter] = useState<string>('')
@@ -22,9 +22,10 @@ const SearchFiltersItem = () => {
   const [optionsRegions, setOptionsRegions] = useState<Region[]>([])
   const [bedroomsFilter, setBedroomsFilter] = useState<string>('')
   const [realStates, setRealStates] = useState<RealStateType[]>([])
-  const [intentionStatus, setIntentionStatus] = useState<string>('')
+  const [intentionStatus, setIntentionStatus] = useState<string>('FOR_RENT')
 
   // const [realStatesFilter, setRealStatesFilter] = useState<RealStateType[]>([])
+  const { setItemsMosted } = useItems()
 
   const [minPrice, setMinPrice] = useState<string>('')
   const [maxPrice, setMaxPrice] = useState<string>('')
@@ -51,6 +52,7 @@ const SearchFiltersItem = () => {
     try {
       const data = await getAllRealStates()
       setRealStates(data)
+      setItemsMosted(data)
     } catch (error) {
       console.warn(error)
     }
@@ -61,10 +63,6 @@ const SearchFiltersItem = () => {
   useEffect(() => {
     getRegionOptions()
   }, [])
-
-  const handleButtonClick = (status: string) => {
-    setIntentionStatus(status)
-  }
 
   const handleFiltersValues = (): void => {
     const filtered = realStates.filter(realState => {
@@ -85,31 +83,57 @@ const SearchFiltersItem = () => {
       return matchesArea && matchesRegion && matchesMinPrice && matchesMaxPrice && matchesBedrooms
     })
 
-    // setRealStatesFilter(filtered)
-    console.log('realStatesFilter', filtered)
+    setItemsMosted(filtered)
   }
 
   return (
     <Grid item xs={12} sx={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
       <Grid container>
         <Grid item xs={12}>
-          <Box sx={{ display: 'flex', flexDirection: { md: 'row', xs: 'column', sm: 'row' } }}>
+          <Box sx={{ display: 'flex', gap: '0.7rem', flexDirection: { md: 'row', xs: 'column', sm: 'row' } }}>
             {['FOR_RENT', 'FOR_SALE', 'COMMERCIAL_SALE', 'COMMERCIAL_LEASE'].map(status => (
-              <Button
+              <Box
                 key={status}
-                variant={intentionStatus === status ? 'contained' : 'outlined'}
-                onClick={() => handleButtonClick(status)}
-                fullWidth
-                sx={{ margin: 1 }}
+                onClick={() => {
+                  setIntentionStatus(status)
+                }}
+                sx={{
+                  display: 'flex',
+                  borderRadius: '16px',
+                  border: 'solid 1px #000',
+                  cursor: 'pointer',
+                  padding: '7px',
+                  fontSize: '1rem',
+                  color: intentionStatus == status ? '#CFB53C' : '#25235D',
+                  background: intentionStatus == status ? '#25235D' : '#fff',
+                  fontWeight: 'bold',
+                  justifyContent: 'center',
+                  '&:hover': {
+                    backgroundColor: '#6e6b9e',
+                    color: '#c6b361'
+                  }
+                }}
               >
                 {status.replace('_', ' ').toUpperCase()}
-              </Button>
+              </Box>
             ))}
           </Box>
         </Grid>
       </Grid>
-      <Grid container spacing={2}>
-        <Grid item sm={3} md={4} xs={12}>
+      <Grid
+        container
+        spacing={1}
+        sx={{
+          background: 'white',
+          paddingBottom: '10px',
+          paddingRight: '5px',
+
+          borderRadius: '16px',
+          display: 'flex',
+          justifyContent: 'space-around'
+        }}
+      >
+        <Grid item sm={2} md={2} xs={12}>
           <FormControl fullWidth>
             <InputLabel id='type-label'>Area</InputLabel>
             <Select labelId='type-label' value={areaFilter || ''} onChange={handleArea}>
@@ -126,7 +150,7 @@ const SearchFiltersItem = () => {
             </Select>
           </FormControl>
         </Grid>
-        <Grid item sm={3} md={4} xs={12}>
+        <Grid item sm={2} md={2} xs={12}>
           <FormControl fullWidth>
             <InputLabel id='region'>Location</InputLabel>
             <Select
@@ -145,7 +169,7 @@ const SearchFiltersItem = () => {
           </FormControl>
         </Grid>
 
-        <Grid item sm={3} md={4} xs={12}>
+        <Grid item sm={2} md={2} xs={12}>
           <FormControl fullWidth>
             <InputLabel id='bedrooms'>Nº of Bedrooms</InputLabel>
             <Select
@@ -162,9 +186,8 @@ const SearchFiltersItem = () => {
             </Select>
           </FormControl>
         </Grid>
-      </Grid>
-      <Grid container spacing={2}>
-        <Grid item sm={3} md={4} xs={12}>
+
+        <Grid item sm={2} md={2} xs={6}>
           <TextField
             label='Min Price(€)'
             type='number'
@@ -173,7 +196,7 @@ const SearchFiltersItem = () => {
             fullWidth
           />
         </Grid>
-        <Grid item sm={3} md={4} xs={12}>
+        <Grid item sm={2} md={2} xs={6}>
           <TextField
             label='Max Price(€)'
             type='number'
@@ -184,9 +207,20 @@ const SearchFiltersItem = () => {
         </Grid>
 
         <Grid item sx={{ display: 'flex', alignItems: 'center' }}>
-          <IconButton aria-label='delete' onClick={handleFiltersValues}>
-            <SearchIcon />
-          </IconButton>
+          <Button
+            endIcon={<SearchIcon />}
+            onClick={handleFiltersValues}
+            sx={{
+              background: '#25235D',
+              color: '#fff',
+              height: '7vh',
+              '&:hover': {
+                backgroundColor: '#4c4a6f'
+              }
+            }}
+          >
+            Search
+          </Button>
         </Grid>
       </Grid>
     </Grid>

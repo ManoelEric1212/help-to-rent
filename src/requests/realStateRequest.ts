@@ -35,6 +35,13 @@ export interface CreateRealStateDTO {
   images: any[]
 }
 
+export interface images {
+  id: string
+  url: string
+  realStateId: string
+  created_at: string
+}
+
 export interface RealStateType {
   id: string
   id_number: number
@@ -79,7 +86,7 @@ export interface RealStateType {
   description: string
   lat: number
   lng: number
-  images?: any[]
+  images?: images[]
   created_at: string
   updated_at: string
 }

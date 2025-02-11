@@ -44,7 +44,7 @@ const BlankLayoutAppBar = () => {
         }}
       >
         <LinkStyled href='/'>
-          <svg width={40} fill='none' height={22} viewBox='0 0 268 150' xmlns='http://www.w3.org/2000/svg'>
+          {/* <svg width={40} fill='none' height={22} viewBox='0 0 268 150' xmlns='http://www.w3.org/2000/svg'>
             <rect
               rx='25.1443'
               width='50.2886'
@@ -113,7 +113,7 @@ const BlankLayoutAppBar = () => {
                 <stop offset='1' stopOpacity='0' />
               </linearGradient>
             </defs>
-          </svg>
+          </svg> */}
           <Typography variant='h6' sx={{ ml: 2, fontWeight: 700, lineHeight: 1.2 }}>
             {themeConfig.templateName}
           </Typography>

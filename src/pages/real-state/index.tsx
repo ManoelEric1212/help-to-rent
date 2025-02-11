@@ -69,7 +69,7 @@ const RealState = () => {
             }}
             sx={{ display: 'flex', cursor: 'pointer' }}
           >
-            <Typography sx={{ color: '#5eb1b4', textDecoration: 'underline' }}>{row.id_number}</Typography>
+            <Typography sx={{ color: '#25235D', textDecoration: 'underline' }}>{row.id_number}</Typography>
           </Box>
         )
       }

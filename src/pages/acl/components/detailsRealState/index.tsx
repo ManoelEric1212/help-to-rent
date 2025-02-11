@@ -1,17 +1,12 @@
-// ** MUI Imports
-import Card from '@mui/material/Card'
-import Grid from '@mui/material/Grid'
-import { Box, Button, Typography } from '@mui/material'
-import { useRouter } from 'next/router'
+import { Box, Button, Card, Grid, Typography } from '@mui/material'
+import { useState, useEffect } from 'react'
+import MapRegisterComponentElement from 'src/components/MapPointComponent'
+import { iconsAdditional } from 'src/pages/real-state/real-state-by-id'
+
 import { getRealStateById, RealStateType } from 'src/requests/realStateRequest'
 import { FormatRealStateToForm } from 'src/utils/format-real-state-to-form'
-import { useEffect, useState } from 'react'
-import ImageCarousel from './Carousel'
-import { format } from 'date-fns'
-
-import MapRegisterComponentElement from 'src/components/MapPointComponent'
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth'
-import InfoIcon from '@mui/icons-material/Info'
+
 import HomeIcon from '@mui/icons-material/Home'
 import WhatsAppIcon from '@mui/icons-material/WhatsApp'
 import ShareIcon from '@mui/icons-material/Share'
@@ -22,42 +17,20 @@ import HotTubIcon from '@mui/icons-material/HotTub'
 import BalconyIcon from '@mui/icons-material/Balcony'
 import GarageIcon from '@mui/icons-material/Garage'
 import PetsIcon from '@mui/icons-material/Pets'
-import ModalBase from 'src/components/Modal'
-import RegisterRealStateComponent from '../components/RegisterForm'
 
-export interface iconsAdditional {
-  label: string
-  has: boolean
-  observation: string
-  icon: JSX.Element
+import { format } from 'date-fns'
+import CarouselComponent from './carroussel'
+
+interface DetailsRealStateComponentProps {
+  data: RealStateType | null
 }
 
-const RegisterRealState = () => {
-  const router = useRouter()
+const DetailsRealStateComponent = ({ data }: DetailsRealStateComponentProps) => {
+  // const router = useRouter()
   const [hasFetched, setHasFetched] = useState(false)
 
   const [previews, setPreviews] = useState<string[]>([])
   const [realStateById, setRealStateById] = useState<RealStateType | null>(null)
-
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const [modalTitle, setModalTitle] = useState('')
-
-  const [modalContent, setModalContent] = useState<React.ReactNode>(null)
-
-  const handleOpenModal = (title: string, content: React.ReactNode) => {
-    setModalTitle(title)
-    setModalContent(content)
-    setIsModalOpen(true)
-  }
-
-  const handleCloseModal = () => {
-    setHasFetched(false)
-    setIsModalOpen(false)
-    setModalTitle('')
-    setModalContent(null)
-  }
-
-  const { id } = router.query
 
   const buildImageUrl = (imagePath: string) => {
     const { protocol, hostname } = window.location
@@ -89,13 +62,15 @@ const RegisterRealState = () => {
       throw new Error('Error getRealStateById')
     }
   }
+  console.log('previews', previews)
 
   useEffect(() => {
-    if (id && !hasFetched) {
-      setHasFetched(true) // Marca como já executado
-      getRealStateByIdReq(id as string)
+    if (data && !hasFetched) {
+      setHasFetched(true)
+      console.log('oiio')
+      getRealStateByIdReq(data.id as string)
     }
-  }, [id, hasFetched, getRealStateByIdReq])
+  }, [data, hasFetched])
 
   const formatAdditionalItems = (data: RealStateType | null) => {
     const returnData: iconsAdditional[] = [
@@ -152,7 +127,8 @@ const RegisterRealState = () => {
         container
         spacing={6}
         sx={{
-          flexDirection: { xs: 'column', sm: 'row' } // Muda para coluna em telas pequenas
+          flexDirection: { xs: 'column', sm: 'row' },
+          marginTop: '6rem' // Muda para coluna em telas pequenas
         }}
       >
         {/* Primeiro Card */}
@@ -209,14 +185,14 @@ const RegisterRealState = () => {
               </Grid>
             </Grid>
 
-            <Box sx={{ padding: '2.5rem' }}>{previews.length && <ImageCarousel images={previews} />}</Box>
+            <Box sx={{ padding: '2.5rem' }}>{previews.length && <CarouselComponent images={previews} />}</Box>
             <Box sx={{ padding: '1rem' }}>
               <Typography sx={{ fontSize: '1.5rem', fontWeight: 'bold' }}>Additional items:</Typography>
               <Box
                 sx={{
                   display: 'flex',
-                  flexWrap: 'wrap', // Permite itens quebrarem linha
-                  gap: '1rem', // Ajusta espaçamento entre itens
+                  flexWrap: 'wrap',
+                  gap: '1rem',
                   flexDirection: { xs: 'column', sm: 'row' }, // Coluna em telas pequenas e linha em telas maiores
                   alignItems: 'flex-start' // Alinhamento para manter consistência
                 }}
@@ -257,13 +233,6 @@ const RegisterRealState = () => {
             <Box
               sx={{ display: 'flex', flexDirection: 'column', gap: '0.6rem', alignContent: 'center', width: '100%' }}
             >
-              <Button
-                variant='contained'
-                startIcon={<InfoIcon />}
-                onClick={() => handleOpenModal('Edit Real state', <RegisterRealStateComponent />)}
-              >
-                Update More info
-              </Button>
               <Button variant='contained' startIcon={<WhatsAppIcon />}>
                 Check details with Owner
               </Button>
@@ -288,9 +257,7 @@ const RegisterRealState = () => {
           </Box>
         </Card>
       </Grid>
-      <ModalBase open={isModalOpen} title={modalTitle} content={modalContent} onClose={() => handleCloseModal()} />
     </>
   )
 }
-
-export default RegisterRealState
+export default DetailsRealStateComponent

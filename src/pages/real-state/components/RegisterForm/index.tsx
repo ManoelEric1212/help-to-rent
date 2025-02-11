@@ -181,6 +181,8 @@ const RegisterRealStateComponent = () => {
     // const baseUrl = `${protocol}//${hostname}${`:${5000}`}`
     const baseUrl = `${protocol}//${hostname}`
 
+    // const baseUrl = `https://atlammalta.com`
+
     return `${baseUrl}/uploads/${imagePath}`
   }
 

@@ -2,14 +2,15 @@ import * as React from 'react'
 import Grid from '@mui/material/Grid'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
-import useMediaQuery from '@mui/material/useMediaQuery'
 import { ThemeProvider, createTheme } from '@mui/material/styles'
-import { useRouter } from 'next/router'
-import HoverButton from './components/hoverButton/HoverButton'
-import InstagramIcon from '@mui/icons-material/Instagram'
-import LinkedInIcon from '@mui/icons-material/LinkedIn'
-import XIcon from '@mui/icons-material/X'
+
 import SearchFiltersItem from './components/searchItemsFilter'
+import Header from './components/header'
+import MostedItems from './components/MostedItems'
+import { useItems } from 'src/context/ItemsContext'
+import { useMediaQuery } from '@mui/material'
+import FooterComponent from './components/footer'
+import ContactUsComponent from './components/contactUs'
 
 const theme = createTheme({
   breakpoints: {
@@ -23,112 +24,80 @@ const theme = createTheme({
   }
 })
 
+const images = [
+  '/images/malta1.JPG',
+  '/images/malta2.JPG',
+  '/images/malta3.JPG',
+  '/images/malta4.JPG',
+  '/images/malta5.JPG',
+  '/images/malta6.JPG',
+  '/images/malta7.JPG',
+  '/images/malta8.JPG'
+]
+
 const ACLPage = () => {
-  const router = useRouter()
-  const matches = useMediaQuery('(min-width:500px)')
-  const matches2 = useMediaQuery('(min-width:800px)')
+  // const router = useRouter()
+  const matches = useMediaQuery('(min-width:600px)')
+  const [currentImage, setCurrentImage] = React.useState(0)
+
+  // const matches2 = useMediaQuery('(min-width:800px)')
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImage(prev => (prev + 1) % images.length)
+    }, 5000) // Muda a cada 5 segundos
+
+    return () => clearInterval(interval)
+  }, [])
+
+  const { itemsMosted } = useItems()
 
   return (
     <ThemeProvider theme={theme}>
       <>
-        <Box
-          sx={{
-            position: 'relative',
-            height: '15vh'
-          }}
-        >
-          {matches2 && (
-            <Box sx={{ background: '#000', justifyContent: 'end', display: 'flex' }}>
-              <Box sx={{ width: '50%', display: 'flex', gap: '2rem' }}>
-                <Typography sx={{ color: 'white' }}>+54 351 7608588</Typography>
-                <Typography sx={{ color: 'white' }}>info@email.com</Typography>
-                <Box sx={{ display: 'flex', gap: '10px' }}>
-                  <InstagramIcon sx={{ fill: '#fff' }} />
-                  <LinkedInIcon sx={{ fill: '#fff' }} />
-                  <XIcon sx={{ fill: '#fff' }} />
-                </Box>
-              </Box>
-            </Box>
-          )}
-
+        <Header />
+        <Grid>
           <Box
             sx={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: { xs: 'center', md: 'space-between' },
-              padding: '0 1rem 1rem 1rem',
-              gap: { xs: '1rem', md: '3.5rem' }
-            }}
-          >
-            {matches2 && (
-              <img
-                src='/images/real-state-icon.png'
-                alt='Real State Icon'
-                style={{
-                  width: '80px',
-                  height: '80px',
-                  objectFit: 'contain'
-                }}
-              />
-            )}
-            <Box sx={{ display: 'flex', gap: { xs: '0.2rem', md: '3.5rem', sm: '2rem' } }}>
-              <HoverButton
-                text='Home'
-                selected={router.pathname === '/acl' ? true : false}
-                handleOnClick={() => router.replace('/acl')}
-              />
-              <HoverButton
-                text='Properties'
-                selected={router.pathname === '/acl/properties' ? true : false}
-                handleOnClick={() => router.replace('/acl/properties')}
-              />
-              <HoverButton
-                text='Contact'
-                selected={router.pathname === '/acl/contact' ? true : false}
-                handleOnClick={() => router.replace('/acl/contact')}
-              />
-              <HoverButton
-                text='Login'
-                selected={router.pathname === '/login' ? true : false}
-                handleOnClick={() => router.replace('/login')}
-              />
-            </Box>
-          </Box>
-        </Box>
-        <Grid sx={{ marginTop: '1rem' }}>
-          <Box
-            sx={{
-              backgroundImage: `url('/images/background.svg')`,
+              backgroundImage: `url(${images[currentImage]})`,
               backgroundSize: 'cover',
               backgroundPosition: 'center',
-              height: '100vh',
+              height: '90vh',
               display: { xs: 'flex', sm: 'flex' },
               justifyContent: 'center',
               alignItems: 'start',
               opacity: 0.8
             }}
           >
-            <Grid sx={{ width: '100%' }}>
-              <Typography
-                color='white'
-                sx={{
-                  fontSize: { xs: '1.5rem', md: '2rem', lg: '3rem' },
-                  fontStyle: 'italic',
-                  fontWeight: 'bold',
-                  textAlign: 'center'
-                }}
-              >
-                Find your ideal place in Malta
-              </Typography>
+            <Grid sx={{ width: '100%', marginTop: '10rem' }}>
+              {matches && (
+                <Typography
+                  color='white'
+                  sx={{
+                    fontSize: { xs: '1.5rem', md: '2rem', lg: '3rem' },
+                    fontStyle: 'italic',
+                    fontWeight: 'bold',
+                    textAlign: 'center'
+                  }}
+                >
+                  Find your ideal place in Malta
+                </Typography>
+              )}
+
               <Grid sx={{ display: 'flex', justifyContent: 'center' }}>
-                <Grid sx={{ background: 'white', width: '70vw', borderRadius: '0.7rem', padding: '0.7rem' }}>
+                <Grid sx={{ width: '65vw' }}>
                   <SearchFiltersItem />
                 </Grid>
               </Grid>
             </Grid>
           </Box>
-          {!matches && <h1>opi</h1>}
         </Grid>
+        <Grid sx={{ padding: '1rem 2rem 1rem 2rem' }}>
+          <MostedItems data={itemsMosted} />
+          <Grid sx={{ marginTop: '1rem' }}>
+            <ContactUsComponent />
+          </Grid>
+        </Grid>
+        <FooterComponent />
       </>
     </ThemeProvider>
   )

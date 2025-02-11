@@ -18,6 +18,36 @@ const GlobalStyles = (theme: Theme) => {
   }
 
   return {
+    '.MuiButton-containedPrimary': {
+      backgroundColor: '#25235D',
+      color: '#fff',
+      '&:hover': {
+        backgroundColor: '#1F1B4A'
+      }
+    },
+    '.MuiButton-containedSecondary': {
+      backgroundColor: '#CFB53C',
+      color: '#fff',
+      '&:hover': {
+        backgroundColor: '#B59E32'
+      }
+    },
+    '.MuiButton-outlinedPrimary': {
+      borderColor: '#25235D',
+      color: '#25235D',
+      '&:hover': {
+        borderColor: '#1F1B4A',
+        backgroundColor: 'rgba(37, 35, 93, 0.1)'
+      }
+    },
+    '.MuiButton-outlinedSecondary': {
+      borderColor: '#CFB53C',
+      color: '#CFB53C',
+      '&:hover': {
+        borderColor: '#B59E32',
+        backgroundColor: 'rgba(207, 181, 60, 0.1)'
+      }
+    },
     '.demo-space-x > *': {
       marginTop: '1rem !important',
       marginRight: '1rem !important',
