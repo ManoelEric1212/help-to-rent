@@ -59,6 +59,7 @@ const SearchFiltersItem = () => {
   }
   useEffect(() => {
     getRealStates()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   useEffect(() => {
     getRegionOptions()

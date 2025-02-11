@@ -70,6 +70,7 @@ const DetailsRealStateComponent = ({ data }: DetailsRealStateComponentProps) => 
       console.log('oiio')
       getRealStateByIdReq(data.id as string)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, hasFetched])
 
   const formatAdditionalItems = (data: RealStateType | null) => {
