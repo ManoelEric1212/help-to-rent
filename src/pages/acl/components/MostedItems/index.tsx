@@ -67,10 +67,15 @@ const MostedItems = () => {
   }
 
   useEffect(() => {
-    const currentIt = formatImagesToPage(itemsMosted ?? []).slice(indexOfFirstItem, indexOfLastItem)
-    setCurrentItems(currentIt)
+    if (itemsMosted.length > 8) {
+      const currentIt = formatImagesToPage(itemsMosted ?? []).slice(indexOfFirstItem, indexOfLastItem)
+      setCurrentItems(currentIt)
+    } else {
+      formatImagesToPage(itemsMosted ?? [])
+    }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [itemsMosted])
+  }, [itemsMosted, currentPage])
   const { setItemById } = useItems()
 
   const router = useRouter()
