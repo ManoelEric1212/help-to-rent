@@ -51,16 +51,16 @@ const Header = () => {
         position='fixed'
         elevation={scrolling ? 4 : 0}
         sx={{
-          backgroundColor: scrolling ? '#fff' : 'transparent',
+          backgroundColor: scrolling ? '#25235D' : 'transparent',
           transition: 'background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out',
-          boxShadow: scrolling ? 3 : 'none',
+          boxShadow: scrolling ? 3 : 'rgba(0, 0, 0, 0.06) 0px 2px 4px 0px inset;',
           padding: scrolling ? '0 20px 20px 0' : '0 20px'
         }}
       >
         <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', padding: scrolling ? '0px' : '16px' }}>
           {router.pathname === '/acl' ? (
             scrolling ? (
-              <img src='/images/logo2.png' alt='Real State Icon' style={{ width: '270px' }} />
+              <img src='/images/logo1.png' alt='Real State Icon' style={{ width: '270px' }} />
             ) : (
               <img src='/images/logo1.png' alt='Real State Icon' style={{ width: '250px' }} />
             )
@@ -79,7 +79,7 @@ const Header = () => {
             sx={{
               display: { xs: 'none', md: 'flex' },
               gap: { xs: '0.2rem', md: '3.5rem', sm: '2rem' },
-              color: router.pathname === '/acl' ? (scrolling ? '#25235D' : '#fff') : '#25235D'
+              color: router.pathname === '/acl' ? (scrolling ? '#fff' : '#fff') : '#25235D'
             }}
           >
             <HoverButton

@@ -40,18 +40,19 @@ const CarouselComponent: React.FC<CarouselProps> = ({ images }) => {
         borderRadius: 2
       }}
     >
-      <img
-        src={images[currentIndex]}
-        alt={`Slide ${currentIndex + 1}`}
-        style={{
-          width: '100%',
-          height: '100%',
-          maxHeight: 400,
-          objectFit: 'contain' // Mantém a proporção e evita cortes
-        }}
-      />
+      {images && (
+        <img
+          src={images[currentIndex]}
+          alt={`Slide ${currentIndex + 1}`}
+          style={{
+            width: '100%',
+            height: '100%',
+            maxHeight: 400,
+            objectFit: 'contain' // Mantém a proporção e evita cortes
+          }}
+        />
+      )}
 
-      {/* Botão Esquerdo */}
       <IconButton
         onClick={handlePrev}
         sx={{
@@ -67,7 +68,6 @@ const CarouselComponent: React.FC<CarouselProps> = ({ images }) => {
         <ArrowBackIosNewIcon />
       </IconButton>
 
-      {/* Botão Direito */}
       <IconButton
         onClick={handleNext}
         sx={{

@@ -7,7 +7,6 @@ import { ThemeProvider, createTheme } from '@mui/material/styles'
 import SearchFiltersItem from './components/searchItemsFilter'
 import Header from './components/header'
 import MostedItems from './components/MostedItems'
-import { useItems } from 'src/context/ItemsContext'
 import { useMediaQuery } from '@mui/material'
 import FooterComponent from './components/footer'
 import ContactUsComponent from './components/contactUs'
@@ -49,8 +48,6 @@ const ACLPage = () => {
     return () => clearInterval(interval)
   }, [])
 
-  const { itemsMosted } = useItems()
-
   return (
     <ThemeProvider theme={theme}>
       <>
@@ -71,12 +68,12 @@ const ACLPage = () => {
             <Grid sx={{ width: '100%', marginTop: '10rem' }}>
               {matches && (
                 <Typography
-                  color='white'
                   sx={{
                     fontSize: { xs: '1.5rem', md: '2rem', lg: '3rem' },
                     fontStyle: 'italic',
                     fontWeight: 'bold',
-                    textAlign: 'center'
+                    textAlign: 'center',
+                    color: 'white'
                   }}
                 >
                   Find your ideal place in Malta
@@ -92,7 +89,7 @@ const ACLPage = () => {
           </Box>
         </Grid>
         <Grid sx={{ padding: '1rem 2rem 1rem 2rem' }}>
-          <MostedItems data={itemsMosted} />
+          <MostedItems />
           <Grid sx={{ marginTop: '1rem' }}>
             <ContactUsComponent />
           </Grid>

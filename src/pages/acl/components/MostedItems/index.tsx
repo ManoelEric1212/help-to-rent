@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Grid, Card, CardMedia, CardContent, Typography, Pagination, Box } from '@mui/material'
 import { RealStateType } from 'src/requests/realStateRequest'
 import BathtubOutlinedIcon from '@mui/icons-material/BathtubOutlined'
@@ -19,16 +19,16 @@ interface imageToPageType {
   type: string
   urlFirstImage?: string
 }
-interface dataMostedItems {
-  data: RealStateType[]
-}
+
 const itemsPerPage = 8 // Número de imóveis por página
 
-const MostedItems = ({ data }: dataMostedItems) => {
+const MostedItems = () => {
   const [currentPage, setCurrentPage] = useState(1)
+  const [currentItems, setCurrentItems] = useState<imageToPageType[]>([])
 
   const indexOfLastItem = currentPage * itemsPerPage
   const indexOfFirstItem = indexOfLastItem - itemsPerPage
+  const { itemsMosted } = useItems()
 
   const buildImageUrl = (imagePath: string) => {
     const { protocol, hostname } = window.location
@@ -43,27 +43,34 @@ const MostedItems = ({ data }: dataMostedItems) => {
   }
 
   const formatImagesToPage = (data: RealStateType[]) => {
-    const dataReturn: imageToPageType[] = data.map(item => {
-      return {
-        id: item.id,
-        roomsNumber: item.roomsNumber,
-        id_number: item.id_number,
-        intention: item.intentionStatus,
-        bathNumber: item.bathNumber,
-        regionName: item.region,
-        title: item.name,
-        value: item.mensalRent,
-        type: item.type,
-        urlFirstImage: item.images?.length ? buildImageUrl(item.images[0].url) : '/images/malta2.JPG',
-        status: item.status
-      }
-    })
+    if (data) {
+      const dataReturn: imageToPageType[] = data.map(item => {
+        return {
+          id: item.id,
+          roomsNumber: item.roomsNumber,
+          id_number: item.id_number,
+          intention: item.intentionStatus,
+          bathNumber: item.bathNumber,
+          regionName: item.region,
+          title: item.name,
+          value: item.mensalRent,
+          type: item.type,
+          urlFirstImage: item.images?.length ? buildImageUrl(item.images[0].url) : '/images/malta2.JPG',
+          status: item.status
+        }
+      })
 
-    return dataReturn
+      return dataReturn
+    }
+
+    return []
   }
-  const currentItems = formatImagesToPage(data).slice(indexOfFirstItem, indexOfLastItem)
-  console.log('currentItems', currentItems)
 
+  useEffect(() => {
+    const currentIt = formatImagesToPage(itemsMosted ?? []).slice(indexOfFirstItem, indexOfLastItem)
+    setCurrentItems(currentIt)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [itemsMosted])
   const { setItemById } = useItems()
 
   const router = useRouter()
@@ -76,7 +83,7 @@ const MostedItems = ({ data }: dataMostedItems) => {
             <Card
               sx={{ maxWidth: 445, boxShadow: 3, borderRadius: 2, height: '100%', cursor: 'pointer' }}
               onClick={() => {
-                setItemById(data.find(item => item.id === property.id) ?? null)
+                setItemById(itemsMosted.find(item => item.id === property.id) ?? null)
                 setTimeout(() => router.replace('/acl/real-state-by-id'), 500)
               }}
             >
@@ -170,7 +177,7 @@ const MostedItems = ({ data }: dataMostedItems) => {
       </Grid>
 
       <Pagination
-        count={Math.ceil(formatImagesToPage(data).length / itemsPerPage)}
+        count={Math.ceil(formatImagesToPage(itemsMosted).length / itemsPerPage)}
         page={currentPage}
         onChange={(event, value) => setCurrentPage(value)}
         color='primary'

@@ -105,13 +105,13 @@ const SearchFiltersItem = () => {
                   cursor: 'pointer',
                   padding: '7px',
                   fontSize: '1rem',
-                  color: intentionStatus == status ? '#CFB53C' : '#25235D',
-                  background: intentionStatus == status ? '#25235D' : '#fff',
+                  color: intentionStatus == status ? '#fff' : '#8B181B',
+                  background: intentionStatus == status ? '#8B181B' : '#fff',
                   fontWeight: 'bold',
                   justifyContent: 'center',
                   '&:hover': {
-                    backgroundColor: '#6e6b9e',
-                    color: '#c6b361'
+                    backgroundColor: '#804345',
+                    color: '#fff'
                   }
                 }}
               >
@@ -128,7 +128,6 @@ const SearchFiltersItem = () => {
           background: 'white',
           paddingBottom: '10px',
           paddingRight: '5px',
-
           borderRadius: '16px',
           display: 'flex',
           justifyContent: 'space-around'
@@ -136,8 +135,21 @@ const SearchFiltersItem = () => {
       >
         <Grid item sm={2} md={2} xs={12}>
           <FormControl fullWidth>
-            <InputLabel id='type-label'>Area</InputLabel>
-            <Select labelId='type-label' value={areaFilter || ''} onChange={handleArea}>
+            <InputLabel id='type-label' sx={{ color: '#8B181B', '&.Mui-focused': { color: '#8B181B' } }}>
+              Area
+            </InputLabel>
+            <Select
+              labelId='type-label'
+              value={areaFilter || ''}
+              onChange={handleArea}
+              sx={{
+                color: '#8B181B', // Cor do texto selecionado
+                '& .MuiOutlinedInput-notchedOutline': { borderColor: '#8B181B' }, // Cor da borda normal
+                '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: '#8B181B' }, // Borda ao passar o mouse
+                '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: '#8B181B' }, // Borda quando focado
+                '& .MuiSelect-icon': { color: '#8B181B' } // Ícone da setinha do Select branco
+              }}
+            >
               <MenuItem value=''>
                 <em>None</em>
               </MenuItem>
@@ -153,8 +165,17 @@ const SearchFiltersItem = () => {
         </Grid>
         <Grid item sm={2} md={2} xs={12}>
           <FormControl fullWidth>
-            <InputLabel id='region'>Location</InputLabel>
+            <InputLabel id='region' sx={{ color: '#8B181B', '&.Mui-focused': { color: '#8B181B' } }}>
+              Location
+            </InputLabel>
             <Select
+              sx={{
+                color: '#8B181B', // Cor do texto selecionado
+                '& .MuiOutlinedInput-notchedOutline': { borderColor: '#8B181B' }, // Cor da borda normal
+                '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: '#8B181B' }, // Borda ao passar o mouse
+                '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: '#8B181B' }, // Borda quando focado
+                '& .MuiSelect-icon': { color: '#8B181B' } // Ícone da setinha do Select branco
+              }}
               value={regionFilter}
               id='region'
               label='Location'
@@ -172,8 +193,17 @@ const SearchFiltersItem = () => {
 
         <Grid item sm={2} md={2} xs={12}>
           <FormControl fullWidth>
-            <InputLabel id='bedrooms'>Nº of Bedrooms</InputLabel>
+            <InputLabel sx={{ color: '#8B181B', '&.Mui-focused': { color: '#8B181B' } }} id='bedrooms'>
+              Nº of Bedrooms
+            </InputLabel>
             <Select
+              sx={{
+                color: '#8B181B', // Cor do texto selecionado
+                '& .MuiOutlinedInput-notchedOutline': { borderColor: '#8B181B' }, // Cor da borda normal
+                '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: '#8B181B' }, // Borda ao passar o mouse
+                '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: '#8B181B' }, // Borda quando focado
+                '& .MuiSelect-icon': { color: '#8B181B' } // Ícone da setinha do Select branco
+              }}
               value={bedroomsFilter}
               id='bedrooms'
               label='Nº of Bedrooms'
@@ -195,6 +225,17 @@ const SearchFiltersItem = () => {
             value={minPrice}
             onChange={e => setMinPrice(e.target.value)}
             fullWidth
+            sx={{
+              '& label': { color: '#8B181B' }, // Cor do label
+              '& label.Mui-focused': { color: '#8B181B' }, // Cor do label quando focado
+              '& .MuiOutlinedInput-root': {
+                color: '#8B181B', // Cor do texto digitado
+                '& fieldset': { borderColor: '#8B181B' }, // Cor da borda normal
+                '&:hover fieldset': { borderColor: '#8B181B' }, // Borda ao passar o mouse
+                '&.Mui-focused fieldset': { borderColor: '#8B181B' } // Borda quando focado
+              },
+              '& .MuiInputBase-input': { color: '#8B181B' } // Cor do texto dentro do input
+            }}
           />
         </Grid>
         <Grid item sm={2} md={2} xs={6}>
@@ -202,6 +243,17 @@ const SearchFiltersItem = () => {
             label='Max Price(€)'
             type='number'
             value={maxPrice}
+            sx={{
+              '& label': { color: '#8B181B' }, // Cor do label
+              '& label.Mui-focused': { color: '#8B181B' }, // Cor do label quando focado
+              '& .MuiOutlinedInput-root': {
+                color: 'white', // Cor do texto digitado
+                '& fieldset': { borderColor: '#8B181B' }, // Cor da borda normal
+                '&:hover fieldset': { borderColor: '#8B181B' }, // Borda ao passar o mouse
+                '&.Mui-focused fieldset': { borderColor: '#8B181B' } // Borda quando focado
+              },
+              '& .MuiInputBase-input': { color: '#8B181B' } // Cor do texto dentro do input
+            }}
             onChange={e => setMaxPrice(e.target.value)}
             fullWidth
           />
@@ -212,11 +264,11 @@ const SearchFiltersItem = () => {
             endIcon={<SearchIcon />}
             onClick={handleFiltersValues}
             sx={{
-              background: '#25235D',
+              background: '#8B181B',
               color: '#fff',
               height: '7vh',
               '&:hover': {
-                backgroundColor: '#4c4a6f'
+                backgroundColor: '#815556'
               }
             }}
           >

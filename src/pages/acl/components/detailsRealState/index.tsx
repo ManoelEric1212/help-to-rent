@@ -62,12 +62,10 @@ const DetailsRealStateComponent = ({ data }: DetailsRealStateComponentProps) => 
       throw new Error('Error getRealStateById')
     }
   }
-  console.log('previews', previews)
 
   useEffect(() => {
     if (data && !hasFetched) {
       setHasFetched(true)
-      console.log('oiio')
       getRealStateByIdReq(data.id as string)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
