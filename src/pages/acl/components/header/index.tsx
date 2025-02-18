@@ -59,13 +59,13 @@ const Header = () => {
       >
         <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', padding: scrolling ? '0px' : '16px' }}>
           {router.pathname === '/acl' ? (
-            scrolling ? (
-              <img src='/images/logo1.png' alt='Real State Icon' style={{ width: '270px' }} />
-            ) : (
-              <img src='/images/logo1.png' alt='Real State Icon' style={{ width: '250px' }} />
-            )
+            <img src='/images/logo5.png' alt='Real State Icon' style={{ width: '270px' }} />
           ) : (
-            <img src='/images/logo2.png' alt='Real State Icon' style={{ width: '270px' }} />
+            <img
+              src={scrolling ? '/images/logo5.png' : '/images/logo2.png'}
+              alt='Real State Icon'
+              style={{ width: '270px' }}
+            />
           )}
 
           <IconButton

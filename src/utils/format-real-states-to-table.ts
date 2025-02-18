@@ -9,10 +9,11 @@ export function FormatRealStateToTable(data: RealStateType[]) {
       name: item.name,
       address: item.address,
       area: item.area,
-      inclusion_date: item.created_at,
+      inclusion_date: item.updated_at,
 
       region: item.region,
-      type: item.type
+      type: item.type,
+      srcImg: item.images?.length ? item.images[0].url : ''
     }
   })
 

@@ -30,7 +30,7 @@ const RealStateById = () => {
       <>
         <Header />
         <Grid sx={{ padding: '1rem 2rem 1rem 2rem' }}>
-          <DetailsRealStateComponent data={itemById} />
+          <DetailsRealStateComponent />
           <Grid sx={{ marginTop: '1rem' }}>
             <ContactUsComponent />
           </Grid>

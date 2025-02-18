@@ -58,7 +58,7 @@ const ACLPage = () => {
               backgroundImage: `url(${images[currentImage]})`,
               backgroundSize: 'cover',
               backgroundPosition: 'center',
-              height: '90vh',
+              height: { xs: '100vh', md: '90vh', lg: '90vh' },
               display: { xs: 'flex', sm: 'flex' },
               justifyContent: 'center',
               alignItems: 'start',
@@ -89,7 +89,9 @@ const ACLPage = () => {
           </Box>
         </Grid>
         <Grid sx={{ padding: '1rem 2rem 1rem 2rem' }}>
-          <MostedItems />
+          <Box sx={{ marginTop: { xs: '3.0rem', md: '.5rem', lg: '.5rem' } }}>
+            <MostedItems />
+          </Box>
           <Grid sx={{ marginTop: '1rem' }}>
             <ContactUsComponent />
           </Grid>
@@ -99,5 +101,4 @@ const ACLPage = () => {
     </ThemeProvider>
   )
 }
-
 export default ACLPage

@@ -138,7 +138,7 @@ const RealState = () => {
       flex: 0.15,
       type: 'inclusion_date',
       minWidth: 130,
-      headerName: 'Inclusion Date',
+      headerName: 'Update date',
       field: 'inclusion_date',
       valueGetter: params => format(new Date(params.value), 'dd/MM/yyyy HH:mm')
     },
@@ -178,7 +178,7 @@ const RealState = () => {
     try {
       const data = await getAllRealStates()
 
-      const orderedData = data.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
+      const orderedData = data.sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime())
       setRealStates(orderedData)
       const dataTable: DataGridDataRealState = {
         columns: columns,

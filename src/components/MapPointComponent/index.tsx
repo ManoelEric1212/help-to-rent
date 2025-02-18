@@ -9,9 +9,10 @@ type Poi = { key: string; location: google.maps.LatLngLiteral }
 
 interface MapRegisterComponentProps {
   dataRealStateByid: RealStateType | null
+  mostAddres?: boolean
 }
 
-const MapRegisterComponentElement = ({ dataRealStateByid }: MapRegisterComponentProps) => {
+const MapRegisterComponentElement = ({ dataRealStateByid, mostAddres = true }: MapRegisterComponentProps) => {
   const location = {
     lat: dataRealStateByid?.lat ?? 0,
     lng: dataRealStateByid?.lng ?? 0
@@ -38,7 +39,8 @@ const MapRegisterComponentElement = ({ dataRealStateByid }: MapRegisterComponent
       >
         <PoiMarkers pois={locationWithKey} />
       </Map>
-      <p style={{ marginTop: '10px', fontWeight: 'bold' }}>Endereço: {dataRealStateByid?.address}</p>
+
+      {mostAddres && <p style={{ marginTop: '10px', fontWeight: 'bold' }}>Address: {dataRealStateByid?.address}</p>}
     </APIProvider>
   )
 }

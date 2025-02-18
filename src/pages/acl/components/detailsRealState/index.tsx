@@ -5,11 +5,9 @@ import { iconsAdditional } from 'src/pages/real-state/real-state-by-id'
 
 import { getRealStateById, RealStateType } from 'src/requests/realStateRequest'
 import { FormatRealStateToForm } from 'src/utils/format-real-state-to-form'
-import CalendarMonthIcon from '@mui/icons-material/CalendarMonth'
 
 import HomeIcon from '@mui/icons-material/Home'
 import WhatsAppIcon from '@mui/icons-material/WhatsApp'
-import ShareIcon from '@mui/icons-material/Share'
 import AcUnitIcon from '@mui/icons-material/AcUnit'
 import PoolIcon from '@mui/icons-material/Pool'
 import BathtubIcon from '@mui/icons-material/Bathtub'
@@ -17,20 +15,28 @@ import HotTubIcon from '@mui/icons-material/HotTub'
 import BalconyIcon from '@mui/icons-material/Balcony'
 import GarageIcon from '@mui/icons-material/Garage'
 import PetsIcon from '@mui/icons-material/Pets'
+import ElevatorIcon from '@mui/icons-material/Elevator'
+import YardIcon from '@mui/icons-material/Yard'
+import SingleBedIcon from '@mui/icons-material/SingleBed'
+import RoofingIcon from '@mui/icons-material/Roofing'
+import LocalDrinkOutlinedIcon from '@mui/icons-material/LocalDrinkOutlined'
+import LocalLaundryServiceOutlinedIcon from '@mui/icons-material/LocalLaundryServiceOutlined'
+import HouseboatOutlinedIcon from '@mui/icons-material/HouseboatOutlined'
+import SurfingOutlinedIcon from '@mui/icons-material/SurfingOutlined'
 
-import { format } from 'date-fns'
 import CarouselComponent from './carroussel'
+import { useRouter } from 'next/router'
+import { shareToWhatsAppNumber } from 'src/@core/components/WhatssAppComponent'
 
-interface DetailsRealStateComponentProps {
-  data: RealStateType | null
-}
-
-const DetailsRealStateComponent = ({ data }: DetailsRealStateComponentProps) => {
+const DetailsRealStateComponent = () => {
   // const router = useRouter()
   const [hasFetched, setHasFetched] = useState(false)
 
   const [previews, setPreviews] = useState<string[]>([])
   const [realStateById, setRealStateById] = useState<RealStateType | null>(null)
+  const router = useRouter()
+
+  const { id } = router.query
 
   const buildImageUrl = (imagePath: string) => {
     const { protocol, hostname } = window.location
@@ -64,12 +70,12 @@ const DetailsRealStateComponent = ({ data }: DetailsRealStateComponentProps) => 
   }
 
   useEffect(() => {
-    if (data && !hasFetched) {
+    if (id && !hasFetched) {
       setHasFetched(true)
-      getRealStateByIdReq(data.id as string)
+      getRealStateByIdReq(id as string)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data, hasFetched])
+  }, [id, hasFetched, getRealStateByIdReq])
 
   const formatAdditionalItems = (data: RealStateType | null) => {
     const returnData: iconsAdditional[] = [
@@ -114,6 +120,66 @@ const DetailsRealStateComponent = ({ data }: DetailsRealStateComponentProps) => 
         has: JSON.parse(data?.petAccepts ?? '').has,
         observation: JSON.parse(data?.hasGarage ?? '').observation,
         icon: <PetsIcon />
+      },
+      {
+        label: 'Lift',
+        has: data?.hasLift ? JSON.parse(data?.hasLift ?? '').has : '',
+        observation: data?.hasLift ? JSON.parse(data?.hasLift ?? '').observation : '',
+        icon: <ElevatorIcon />
+      },
+      {
+        label: 'Garden',
+        has: JSON.parse(data?.hasGarden ?? '').has,
+        observation: JSON.parse(data?.hasGarden ?? '').observation,
+        icon: <YardIcon />
+      },
+      {
+        label: 'Unfurnished',
+        has: JSON.parse(data?.hasUnfurnished ?? '').has,
+        observation: JSON.parse(data?.hasUnfurnished ?? '').observation,
+        icon: <SingleBedIcon />
+      },
+      {
+        label: 'Yard',
+        has: JSON.parse(data?.hasYard ?? '').has,
+        observation: JSON.parse(data?.hasYard ?? '').observation,
+        icon: <YardIcon />
+      },
+      {
+        label: 'Use of Roof',
+        has: JSON.parse(data?.hasUse_of_Roof ?? '').has,
+        observation: JSON.parse(data?.hasUse_of_Roof ?? '').observation,
+        icon: <RoofingIcon />
+      },
+      {
+        label: 'DishWasher',
+        has: JSON.parse(data?.hasDishWasher ?? '').has,
+        observation: JSON.parse(data?.hasDishWasher ?? '').observation,
+        icon: <LocalDrinkOutlinedIcon />
+      },
+      {
+        label: 'Washing Machine',
+        has: JSON.parse(data?.hasWashingMachine ?? '').has,
+        observation: JSON.parse(data?.hasWashingMachine ?? '').observation,
+        icon: <LocalLaundryServiceOutlinedIcon />
+      },
+      {
+        label: 'Tumble Dryer',
+        has: JSON.parse(data?.hasTumbleDryer ?? '').has,
+        observation: JSON.parse(data?.hasTumbleDryer ?? '').observation,
+        icon: <LocalLaundryServiceOutlinedIcon />
+      },
+      {
+        label: 'Seafront',
+        has: JSON.parse(data?.hasSeafront ?? '').has,
+        observation: JSON.parse(data?.hasSeafront ?? '').observation,
+        icon: <HouseboatOutlinedIcon />
+      },
+      {
+        label: 'Seaview',
+        has: JSON.parse(data?.hasSeaview ?? '').has,
+        observation: JSON.parse(data?.hasSeaview ?? '').observation,
+        icon: <SurfingOutlinedIcon />
       }
     ]
 
@@ -157,7 +223,7 @@ const DetailsRealStateComponent = ({ data }: DetailsRealStateComponentProps) => 
                 textAlign: { xs: 'center', sm: 'left' }
               }}
             >
-              <Grid item xs={12} sm='auto'>
+              {/* <Grid item xs={12} sm='auto'>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
                   <CalendarMonthIcon fontSize='large' />
                   <Box>
@@ -169,9 +235,9 @@ const DetailsRealStateComponent = ({ data }: DetailsRealStateComponentProps) => 
                     )}
                   </Box>
                 </Box>
-              </Grid>
+              </Grid> */}
 
-              <Grid item xs={12} sm='auto'>
+              {/* <Grid item xs={12} sm='auto'>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
                   <CalendarMonthIcon fontSize='large' />
                   <Box>
@@ -181,7 +247,7 @@ const DetailsRealStateComponent = ({ data }: DetailsRealStateComponentProps) => 
                     )}
                   </Box>
                 </Box>
-              </Grid>
+              </Grid> */}
             </Grid>
 
             <Box sx={{ padding: '2.5rem' }}>{previews.length && <CarouselComponent images={previews} />}</Box>
@@ -232,17 +298,26 @@ const DetailsRealStateComponent = ({ data }: DetailsRealStateComponentProps) => 
             <Box
               sx={{ display: 'flex', flexDirection: 'column', gap: '0.6rem', alignContent: 'center', width: '100%' }}
             >
-              <Button variant='contained' startIcon={<WhatsAppIcon />}>
-                Check details with Owner
-              </Button>
-              <Button variant='contained' startIcon={<ShareIcon />}>
-                Share with Client
+              <Button
+                variant='contained'
+                startIcon={<WhatsAppIcon />}
+                onClick={() => {
+                  const phoneNumber = '35699321008'
+                  const message = encodeURIComponent('Hello ! I need more informations about Atlam Properties...')
+                  shareToWhatsAppNumber(phoneNumber, message)
+                }}
+              >
+                Check details with Atlam Malta
               </Button>
             </Box>
             {/* <Box>{realStateById ? <MapRegisterComponentElement dataRealStateByid={realStateById} /> : <></>}</Box> */}
 
             <Box sx={{ width: '100%', height: '60vh' }}>
-              {realStateById ? <MapRegisterComponentElement dataRealStateByid={realStateById} /> : <></>}
+              {realStateById ? (
+                <MapRegisterComponentElement dataRealStateByid={realStateById} mostAddres={false} />
+              ) : (
+                <></>
+              )}
             </Box>
             <Typography></Typography>
           </Box>

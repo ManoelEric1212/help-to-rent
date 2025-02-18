@@ -2,6 +2,7 @@ import { Box, Divider, Grid, Typography } from '@mui/material'
 import WhatsAppIcon from '@mui/icons-material/WhatsApp'
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined'
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined'
+import { shareToWhatsAppNumber } from 'src/@core/components/WhatssAppComponent'
 
 const FooterComponent = () => {
   return (
@@ -42,7 +43,16 @@ const FooterComponent = () => {
                 gap: '0.4rem',
                 alignItems: 'center',
                 color: '#fff',
-                justifyContent: { xs: 'center', sm: 'flex-start' }
+                justifyContent: { xs: 'center', sm: 'flex-start' },
+                '&:hover': {
+                  cursor: 'pointer',
+                  textDecoration: 'underline'
+                }
+              }}
+              onClick={() => {
+                const phoneNumber = '35699321008'
+                const message = encodeURIComponent('Hello ! I need more informations about Atlam Properties...')
+                shareToWhatsAppNumber(phoneNumber, message)
               }}
             >
               <WhatsAppIcon />

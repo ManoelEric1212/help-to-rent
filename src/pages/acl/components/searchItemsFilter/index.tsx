@@ -10,25 +10,32 @@ import {
   Button
 } from '@mui/material'
 import { useEffect, useState } from 'react'
-import { getAllRealStates, RealStateType } from 'src/requests/realStateRequest'
+import { filters, getAllRealStates, getFilteredRealStates, RealStateType } from 'src/requests/realStateRequest'
 import { getRegionRequest, Region } from 'src/requests/regionRequest'
 import SearchIcon from '@mui/icons-material/Search'
 import { useItems } from 'src/context/ItemsContext'
+
+export interface SubItemsIntention {
+  intention: 'FOR_RENT' | 'FOR_SALE' | 'COMMERCIAL'
+  subItems: string[]
+}
 
 const SearchFiltersItem = () => {
   const [areaFilter, setAreaFilter] = useState<string>('')
   const [regionFilter, setRegionFilter] = useState<string>('')
   const [regionOptions, setRegionOptions] = useState<Region[]>([])
   const [optionsRegions, setOptionsRegions] = useState<Region[]>([])
-  const [bedroomsFilter, setBedroomsFilter] = useState<string>('')
+  const [bedroomsFilter, setBedroomsFilter] = useState<number>(2)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [realStates, setRealStates] = useState<RealStateType[]>([])
-  const [intentionStatus, setIntentionStatus] = useState<string>('FOR_RENT')
+  const [intentionStatus, setIntentionStatus] = useState<string>('')
+  const [subIntentionStatus, setSubIntentionStatus] = useState<string>('')
 
   // const [realStatesFilter, setRealStatesFilter] = useState<RealStateType[]>([])
   const { setItemsMosted } = useItems()
 
-  const [minPrice, setMinPrice] = useState<string>('')
-  const [maxPrice, setMaxPrice] = useState<string>('')
+  const [minPrice, setMinPrice] = useState<number>(0)
+  const [maxPrice, setMaxPrice] = useState<number>(2000)
 
   // const theme = useTheme()
 
@@ -65,34 +72,63 @@ const SearchFiltersItem = () => {
     getRegionOptions()
   }, [])
 
-  const handleFiltersValues = (): void => {
-    const filtered = realStates.filter(realState => {
-      const matchesRegion = regionFilter ? realState.region === regionFilter : true
+  const formatSubIntentionStatus = (intention: string) => {
+    switch (intention) {
+      case 'FOR_RENT':
+        return ['SHORT_LET', 'LONG_LET']
+        break
+      case 'FOR_SALE':
+        return ['RESIDENTIAL', 'COMMERCIAL']
 
-      const matchesArea = areaFilter ? realState.area_region.toLowerCase().includes(areaFilter.toLowerCase()) : true
-      const matchesMinPrice = minPrice ? realState.mensalRent >= parseFloat(minPrice) : true
+        break
+      case 'COMMERCIAL':
+        return ['FOR_RENT']
+        break
+      default:
+        return ['']
+    }
+  }
 
-      const matchesMaxPrice = maxPrice ? realState.mensalRent <= parseFloat(maxPrice) : true
-      const matchesBedrooms = bedroomsFilter
-        ? (() => {
-            const [min, max] = bedroomsFilter === '6+' ? [6, Infinity] : bedroomsFilter.split('-').map(Number)
+  async function fetchRealStates(data: filters) {
+    try {
+      const realStates = await getFilteredRealStates({
+        region: data.region,
+        area_region: data.area_region,
+        intentionStatus: data.intentionStatus,
+        subIntentionStatus: data.intentionStatus,
+        minPrice: data.minPrice,
+        maxPrice: data.maxPrice,
+        roomsNumber: data.roomsNumber
+      })
 
-            return realState.roomsNumber >= min && realState.roomsNumber <= max
-          })()
-        : true
+      return realStates
+    } catch (error) {
+      console.error(error)
+    }
+  }
 
-      return matchesArea && matchesRegion && matchesMinPrice && matchesMaxPrice && matchesBedrooms
+  const handleFiltersValues = async (): Promise<void> => {
+    const data = await fetchRealStates({
+      area_region: areaFilter,
+      intentionStatus: intentionStatus,
+      maxPrice: maxPrice,
+      minPrice: minPrice,
+      region: regionFilter,
+
+      roomsNumber: bedroomsFilter,
+      subIntentionStatus: subIntentionStatus
     })
+    console.log('data', data)
 
-    setItemsMosted(filtered)
+    setItemsMosted(data ?? [])
   }
 
   return (
     <Grid item xs={12} sx={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-      <Grid container>
+      <Grid container spacing={1}>
         <Grid item xs={12}>
           <Box sx={{ display: 'flex', gap: '0.7rem', flexDirection: { md: 'row', xs: 'column', sm: 'row' } }}>
-            {['FOR_RENT', 'FOR_SALE', 'COMMERCIAL_SALE', 'COMMERCIAL_LEASE'].map(status => (
+            {['FOR_RENT', 'FOR_SALE', 'COMMERCIAL'].map(status => (
               <Box
                 key={status}
                 onClick={() => {
@@ -116,10 +152,47 @@ const SearchFiltersItem = () => {
                 }}
               >
                 {status.replace('_', ' ').toUpperCase()}
+                {}
               </Box>
             ))}
           </Box>
         </Grid>
+
+        {intentionStatus.length ? (
+          <Grid item xs={12}>
+            <Box sx={{ display: 'flex', gap: '0.7rem', flexDirection: { md: 'row', xs: 'row', sm: 'row' } }}>
+              {formatSubIntentionStatus(intentionStatus).map(status => (
+                <Box
+                  key={status}
+                  onClick={() => {
+                    setSubIntentionStatus(status)
+                  }}
+                  sx={{
+                    display: 'flex',
+                    borderRadius: '16px',
+                    border: 'solid 1px #000',
+                    cursor: 'pointer',
+                    padding: '7px',
+                    fontSize: '1rem',
+                    color: subIntentionStatus == status ? '#fff' : '#8B181B',
+                    background: subIntentionStatus == status ? '#8B181B' : '#fff',
+                    fontWeight: 'bold',
+                    justifyContent: 'center',
+                    '&:hover': {
+                      backgroundColor: '#804345',
+                      color: '#fff'
+                    }
+                  }}
+                >
+                  {status.replace('_', ' ').toUpperCase()}
+                  {}
+                </Box>
+              ))}
+            </Box>
+          </Grid>
+        ) : (
+          <></>
+        )}
       </Grid>
       <Grid
         container
@@ -204,16 +277,16 @@ const SearchFiltersItem = () => {
                 '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: '#8B181B' }, // Borda quando focado
                 '& .MuiSelect-icon': { color: '#8B181B' } // Ícone da setinha do Select branco
               }}
-              value={bedroomsFilter}
+              value={String(bedroomsFilter)}
               id='bedrooms'
               label='Nº of Bedrooms'
               labelId='bedrooms'
-              onChange={(e: SelectChangeEvent<string>) => setBedroomsFilter(e.target.value)}
+              onChange={(e: SelectChangeEvent<string>) => setBedroomsFilter(Number(e.target.value))}
             >
-              <MenuItem value='1-2'>1-2</MenuItem>
-              <MenuItem value='3-4'>3-4</MenuItem>
-              <MenuItem value='5-6'>5-6</MenuItem>
-              <MenuItem value='6+'>Above 6</MenuItem>
+              <MenuItem value='2'>1-2</MenuItem>
+              <MenuItem value='3'>3-4</MenuItem>
+              <MenuItem value='4'>5-6</MenuItem>
+              <MenuItem value='5'>Above 6</MenuItem>
             </Select>
           </FormControl>
         </Grid>
@@ -223,7 +296,7 @@ const SearchFiltersItem = () => {
             label='Min Price(€)'
             type='number'
             value={minPrice}
-            onChange={e => setMinPrice(e.target.value)}
+            onChange={e => setMinPrice(Number(e.target.value))}
             fullWidth
             sx={{
               '& label': { color: '#8B181B' }, // Cor do label
@@ -254,7 +327,7 @@ const SearchFiltersItem = () => {
               },
               '& .MuiInputBase-input': { color: '#8B181B' } // Cor do texto dentro do input
             }}
-            onChange={e => setMaxPrice(e.target.value)}
+            onChange={e => setMaxPrice(Number(e.target.value))}
             fullWidth
           />
         </Grid>

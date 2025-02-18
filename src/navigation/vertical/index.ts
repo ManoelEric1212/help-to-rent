@@ -24,10 +24,16 @@ const navigation = (): VerticalNavItemsType => {
       icon: 'mdi:note-plus'
     },
     {
+      path: '/last-updates',
+      title: 'Last Updates',
+      icon: 'mdi:clock-outline'
+    },
+    {
       path: '/users',
       title: 'Users',
       icon: 'mdi:account-tie'
     },
+
     {
       path: '/region',
       title: 'Regions',

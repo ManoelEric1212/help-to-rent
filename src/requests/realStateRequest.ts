@@ -20,6 +20,12 @@ export interface CreateRealStateDTO {
   hasUnfurnished: string
   hasYard: string
   hasUse_of_Roof: string
+  hasDishWasher: string
+  hasWashingMachine: string
+  hasTumbleDryer: string
+  hasSeafront: string
+  hasSeaview: string
+
   userUpdated: string
   petAccepts: string
   ownerEmail: string
@@ -65,6 +71,7 @@ export interface RealStateType {
   hasTerrace: string
 
   intentionStatus: string
+  subIntentionStatus: string
   country_code: string
   availabilityDate: string
   ownerName: string
@@ -79,6 +86,13 @@ export interface RealStateType {
   hasUnfurnished: string
   hasYard: string
   hasUse_of_Roof: string
+  hasLift: string
+
+  hasDishWasher: string
+  hasWashingMachine: string
+  hasTumbleDryer: string
+  hasSeafront: string
+  hasSeaview: string
 
   energyEfficiency: number
 
@@ -179,5 +193,37 @@ export async function getLatAndLngReq({ address, region }: getLatAndLng) {
     return data
   } catch (error) {
     throw new Error('Error - getRealStateById')
+  }
+}
+
+export interface filters {
+  intentionStatus?: string
+  subIntentionStatus?: string
+  region?: string
+  area_region?: string
+  maxPrice?: number
+  minPrice?: number
+  roomsNumber?: number
+}
+
+export async function getFilteredRealStates(params?: {
+  intentionStatus?: string
+  subIntentionStatus?: string
+  region?: string
+  area_region?: string
+  maxPrice?: number
+  minPrice?: number
+  roomsNumber?: number
+}): Promise<RealStateType[]> {
+  try {
+    // Remove campos undefined para evitar envio de parâmetros vazios
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const filteredParams = Object.fromEntries(Object.entries(params || {}).filter(([_, value]) => value !== undefined))
+
+    const { data } = await api.get<RealStateType[]>('/realstates/filters/real', { params: filteredParams })
+
+    return data
+  } catch (error) {
+    throw new Error('Error - getFilteredRealStates')
   }
 }

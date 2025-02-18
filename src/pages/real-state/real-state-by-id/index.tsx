@@ -24,6 +24,8 @@ import GarageIcon from '@mui/icons-material/Garage'
 import PetsIcon from '@mui/icons-material/Pets'
 import ModalBase from 'src/components/Modal'
 import RegisterRealStateComponent from '../components/RegisterForm'
+import { shareOnWhatsApp } from 'src/@core/components/WhatssAppComponent'
+import OwnerDetailsModal from './OwnerModal'
 
 export interface iconsAdditional {
   label: string
@@ -40,6 +42,8 @@ const RegisterRealState = () => {
   const [realStateById, setRealStateById] = useState<RealStateType | null>(null)
 
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isModalOpen2, setIsModalOpen2] = useState(false)
+
   const [modalTitle, setModalTitle] = useState('')
 
   const [modalContent, setModalContent] = useState<React.ReactNode>(null)
@@ -56,6 +60,9 @@ const RegisterRealState = () => {
     setModalTitle('')
     setModalContent(null)
   }
+  const handleCloseModal2 = () => {
+    setIsModalOpen2(false)
+  }
 
   const { id } = router.query
 
@@ -64,9 +71,9 @@ const RegisterRealState = () => {
 
     // development
     // const baseUrl = `${protocol}//${hostname}${`:${5000}`}`
-    const baseUrl = `${protocol}//${hostname}`
+    // const baseUrl = `${protocol}//${hostname}`
 
-    // const baseUrl = `https://atlammalta.com`
+    const baseUrl = `https://atlammalta.com`
 
     return `${baseUrl}/uploads/${imagePath}`
   }
@@ -264,10 +271,34 @@ const RegisterRealState = () => {
               >
                 Update More info
               </Button>
-              <Button variant='contained' startIcon={<WhatsAppIcon />}>
+              <Button
+                variant='contained'
+                startIcon={<WhatsAppIcon />}
+                onClick={() => {
+                  setIsModalOpen2(true)
+                }}
+              >
                 Check details with Owner
               </Button>
-              <Button variant='contained' startIcon={<ShareIcon />}>
+
+              <Button
+                variant='contained'
+                startIcon={<ShareIcon />}
+                onClick={() => {
+                  console.log('teste')
+                  shareOnWhatsApp(
+                    ` Check out the following property available on the AtlamMalta website, for more details access the following link: \n https://atlammalta.com/acl/real-state-by-id/?id=${realStateById?.id}`
+                  )
+
+                  // shareContent(
+                  //   'Details for about Real State in Malta',
+                  //   `
+                  //   Check out the following property available on the AtlamMalta website, for more details access the following link: \n
+
+                  //   https://atlammalta.com/acl/?id=${realStateById?.id}`
+                  // )
+                }}
+              >
                 Share with Client
               </Button>
             </Box>
@@ -289,6 +320,17 @@ const RegisterRealState = () => {
         </Card>
       </Grid>
       <ModalBase open={isModalOpen} title={modalTitle} content={modalContent} onClose={() => handleCloseModal()} />
+      <OwnerDetailsModal
+        handleClose={handleCloseModal2}
+        open={isModalOpen2}
+        owner={{
+          codeNumber: realStateById?.country_code ?? '',
+          mainPhone: realStateById?.ownerNumber ?? '',
+          altPhone: realStateById?.alternativeNumberOwner,
+          name: realStateById?.ownerName,
+          email: realStateById?.ownerEmail
+        }}
+      />
     </>
   )
 }

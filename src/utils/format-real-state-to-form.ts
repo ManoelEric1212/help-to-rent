@@ -2,6 +2,7 @@ import { FormData } from 'src/pages/real-state/components/RegisterForm'
 import { RealStateType } from 'src/requests/realStateRequest'
 
 export function FormatRealStateToForm(data: RealStateType) {
+  console.log('data', data)
   const dataFormatted: FormData = {
     additionalExpenses: data.additionalExpenses,
     address: data.address,
@@ -21,11 +22,19 @@ export function FormatRealStateToForm(data: RealStateType) {
     hasBalcony: JSON.parse(data.hasBalcony),
     hasGarage: JSON.parse(data.hasGarage),
     hasJacuzzi: JSON.parse(data.hasJacuzzi),
-    hasElevator: JSON.parse(data.hasJacuzzi),
-    hasGarden: JSON.parse(data.hasJacuzzi),
-    hasUnfurnished: JSON.parse(data.hasJacuzzi),
-    hasYard: JSON.parse(data.hasJacuzzi),
-    hasUse_of_Roof: JSON.parse(data.hasJacuzzi),
+    hasElevator: JSON.parse(data.hasElevator),
+    hasGarden: JSON.parse(data.hasGarden),
+    hasUnfurnished: JSON.parse(data.hasUnfurnished),
+    hasYard: JSON.parse(data.hasYard),
+    hasUse_of_Roof: JSON.parse(data.hasUse_of_Roof),
+    hasDishWasher: JSON.parse(data.hasDishWasher),
+    hasWashingMachine: JSON.parse(data.hasWashingMachine),
+    hasTumbleDryer: JSON.parse(data.hasTumbleDryer),
+    hasSeafront: JSON.parse(data.hasSeafront),
+    hasSeaview: JSON.parse(data.hasSeaview),
+    hasLift: JSON.parse(data.hasElevator),
+    subIntentionStatus: data.subIntentionStatus,
+
     userUpdated: data.userUpdated,
     hasPool: JSON.parse(data.hasPool),
     hasTerrace: JSON.parse(data.hasTerrace),

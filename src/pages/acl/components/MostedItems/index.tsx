@@ -17,6 +17,7 @@ interface imageToPageType {
   bathNumber: number
   status: string
   type: string
+  subCategogory: string
   urlFirstImage?: string
 }
 
@@ -55,6 +56,8 @@ const MostedItems = () => {
           title: item.name,
           value: item.mensalRent,
           type: item.type,
+          subCategogory: item.subIntentionStatus,
+
           urlFirstImage: item.images?.length ? buildImageUrl(item.images[0].url) : '/images/malta2.JPG',
           status: item.status
         }
@@ -64,6 +67,22 @@ const MostedItems = () => {
     }
 
     return []
+  }
+
+  const handleColorOptions = (intention: string) => {
+    switch (intention) {
+      case 'FOR_RENT':
+        return '#25235D'
+        break
+      case 'FOR_SALE':
+        return '#8B181B'
+        break
+      case 'COMMERCIAL':
+        return '#CFB53C'
+        break
+      default:
+        return '#25235D'
+    }
   }
 
   useEffect(() => {
@@ -76,7 +95,8 @@ const MostedItems = () => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [itemsMosted, currentPage])
-  const { setItemById } = useItems()
+
+  // const { setItemById } = useItems()
 
   const router = useRouter()
 
@@ -88,8 +108,8 @@ const MostedItems = () => {
             <Card
               sx={{ maxWidth: 445, boxShadow: 3, borderRadius: 2, height: '100%', cursor: 'pointer' }}
               onClick={() => {
-                setItemById(itemsMosted.find(item => item.id === property.id) ?? null)
-                setTimeout(() => router.replace('/acl/real-state-by-id'), 500)
+                // setItemById(itemsMosted.find(item => item.id === property.id) ?? null)
+                setTimeout(() => router.replace(`/acl/real-state-by-id/?id=${property.id}`), 500)
               }}
             >
               <Box sx={{ position: 'relative' }}>
@@ -98,7 +118,7 @@ const MostedItems = () => {
                     position: 'absolute',
                     top: 8,
                     left: 8,
-                    backgroundColor: '#25235D',
+                    backgroundColor: handleColorOptions(property.intention),
                     color: 'white',
                     padding: '4px 8px',
                     borderRadius: '4px',
@@ -110,13 +130,13 @@ const MostedItems = () => {
                   {property.intention.replace('_', ' ').toUpperCase()}
                 </Box>
 
-                {property.status !== 'AVAILABLE' && (
+                {property.subCategogory && (
                   <Box
                     sx={{
                       position: 'absolute',
                       top: 8,
                       right: 8,
-                      backgroundColor: '#CFB53C',
+                      backgroundColor: '#636052',
                       color: 'white',
                       padding: '4px 8px',
                       borderRadius: '4px',
@@ -125,7 +145,7 @@ const MostedItems = () => {
                       zIndex: 1
                     }}
                   >
-                    {`Property has been ${property.status.toLowerCase()}`}
+                    {`${property.subCategogory.replace('_', ' ').toUpperCase()}`}
                   </Box>
                 )}
 
