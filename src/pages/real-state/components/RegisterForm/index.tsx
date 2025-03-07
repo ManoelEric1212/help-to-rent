@@ -111,6 +111,8 @@ export interface FormData {
   alternativeNumberOwner: string
   hasTerrace: hasOrAceptType
   additionalExpenses: string
+  flagClient: string
+  parameters: string
   description: string
   status: string
   region: string
@@ -161,6 +163,8 @@ const schema = yup.object().shape({
   additionalExpenses: yup.string(),
   description: yup.string(),
   floorPlan: yup.string(),
+  flagClient: yup.string(),
+  parameters: yup.string(),
   status: yup.string(),
   region: yup.string(),
   petAccepts: yup.object(),
@@ -296,11 +300,11 @@ const RegisterRealStateComponent = () => {
           watermark.src = watermarkSrc
           watermark.crossOrigin = 'anonymous'
           watermark.onload = () => {
-            const scale = 0.3
+            const scale = 0.5
             const wmWidth = img.width * scale
             const wmHeight = (watermark.height / watermark.width) * wmWidth
 
-            const x = img.width / 3
+            const x = img.width / 4
             const y = (img.height - wmHeight) / 2
 
             ctx.drawImage(watermark, x, y, wmWidth, wmHeight)
@@ -375,6 +379,9 @@ const RegisterRealStateComponent = () => {
     availabilityDate: '',
     ownerName: '',
     ownerNumber: '',
+
+    flagClient: 'FALSE',
+    parameters: '',
     ownerEmail: '',
     ownerId: '',
     area_region: '',
@@ -462,6 +469,9 @@ const RegisterRealStateComponent = () => {
 
     formData.append('hasUse_of_Roof', JSON.stringify(data.hasUse_of_Roof))
     formData.append('userUpdated', data.userUpdated)
+
+    formData.append('flagClient', data.flagClient)
+    formData.append('parameters', data.parameters)
 
     formData.append('hasTerrace', JSON.stringify(data.hasTerrace))
     formData.append('petAccepts', JSON.stringify(data.petAcepts))
@@ -688,7 +698,7 @@ const RegisterRealStateComponent = () => {
                     rules={{ required: true }}
                     render={({ field: { value, onChange, onBlur } }) => (
                       <TextField
-                        label='Monthly'
+                        label={watchIntentionStatus === 'FOR_SALE' ? 'Price' : 'Monthly'}
                         type='number'
                         value={value}
                         onBlur={onBlur}
@@ -1053,6 +1063,38 @@ const RegisterRealStateComponent = () => {
                   {errors.country_code && (
                     <FormHelperText sx={{ color: 'error.main' }}>{errors.country_code.message}</FormHelperText>
                   )}
+                </FormControl>
+              </Grid>
+
+              <Grid item sm={3} xs={12}>
+                <FormControl fullWidth sx={{ mb: 3 }}>
+                  <Controller
+                    name='flagClient'
+                    control={control}
+                    rules={{ required: 'Type is required' }}
+                    render={({ field: { value, onChange, onBlur } }) => (
+                      <>
+                        <InputLabel id='type-label'>Show in client page</InputLabel>
+                        <Select
+                          labelId='type-label'
+                          value={value || ''}
+                          onBlur={onBlur}
+                          onChange={onChange}
+                          error={Boolean(errors.flagClient)}
+                        >
+                          <MenuItem value=''>
+                            <em>None</em>
+                          </MenuItem>
+
+                          <MenuItem value='TRUE'>YES</MenuItem>
+                          <MenuItem value='FALSE'>NOT</MenuItem>
+                        </Select>
+                        {errors.flagClient && (
+                          <FormHelperText sx={{ color: 'error.main' }}>{errors.flagClient.message}</FormHelperText>
+                        )}
+                      </>
+                    )}
+                  />
                 </FormControl>
               </Grid>
             </Grid>

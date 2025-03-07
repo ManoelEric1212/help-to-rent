@@ -2,7 +2,8 @@ import axios from 'axios'
 
 export const PRODUCTION_API_URL = `https://atlammalta.com/api`
 
-const DEVELOPMENT_API_URL = 'http://localhost:5000/api'
+// const DEVELOPMENT_API_URL = 'http://localhost:5000/api'
+const DEVELOPMENT_API_URL = 'https://atlammalta.com/api'
 
 const urls = {
   production: PRODUCTION_API_URL,

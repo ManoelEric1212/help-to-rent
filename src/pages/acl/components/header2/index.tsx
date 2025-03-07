@@ -1,6 +1,6 @@
 import { AppBar, Toolbar, Typography, IconButton, Drawer, List, ListItem, ListItemText, Box } from '@mui/material'
 import { Menu as MenuIcon } from '@mui/icons-material'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/router'
 
 const HoverButton = ({
@@ -28,54 +28,26 @@ const HoverButton = ({
   )
 }
 
-const Header = () => {
-  const [scrolling, setScrolling] = useState(false)
+const Header2 = () => {
   const [drawerOpen, setDrawerOpen] = useState(false)
-
   const router = useRouter()
-  console.log('router', router.pathname)
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolling(window.scrollY > 50)
-    }
-
-    window.addEventListener('scroll', handleScroll)
-
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
 
   return (
     <>
       <AppBar
         position='fixed'
-        elevation={scrolling ? 4 : 0}
+        elevation={4}
         sx={{
-          backgroundColor: scrolling ? '#25235D' : 'rgba(0, 0, 0, 0.3)',
+          backgroundColor: '#25235D',
           transition: 'background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out',
-          boxShadow: scrolling ? 3 : 3,
-          padding: scrolling ? '0 20px  0' : '0 20px  0'
+          boxShadow: 3,
+          padding: '0 20px 20px 0'
         }}
       >
-        <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', padding: scrolling ? '16px' : '16px' }}>
-          {router.pathname === '/acl' ? (
-            <img
-              src={scrolling ? '/images/logo5.png' : '/images/logo5.png'}
-              alt='Real State Icon'
-              style={{ width: '270px' }}
-            />
-          ) : (
-            <img
-              src={scrolling ? '/images/logo5.png' : '/images/logo2.png'}
-              alt='Real State Icon'
-              style={{ width: '270px' }}
-            />
-          )}
+        <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', padding: '5px' }}>
+          <img src={'/images/logo5.png'} alt='Real State Icon' style={{ width: '270px' }} />
 
-          <IconButton
-            sx={{ display: { xs: 'block', md: 'none' }, color: scrolling ? 'black' : 'white' }}
-            onClick={() => setDrawerOpen(true)}
-          >
+          <IconButton sx={{ display: { xs: 'block', md: 'none' }, color: 'white' }} onClick={() => setDrawerOpen(true)}>
             <MenuIcon />
           </IconButton>
 
@@ -83,7 +55,7 @@ const Header = () => {
             sx={{
               display: { xs: 'none', md: 'flex' },
               gap: { xs: '0.2rem', md: '3.5rem', sm: '2rem' },
-              color: router.pathname === '/acl' ? (scrolling ? '#fff' : '#fff') : '#25235D'
+              color: '#fff'
             }}
           >
             <HoverButton
@@ -135,4 +107,4 @@ const Header = () => {
   )
 }
 
-export default Header
+export default Header2

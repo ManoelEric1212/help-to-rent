@@ -197,9 +197,9 @@ const RegisterRealStateComponent = () => {
 
     // development
     // const baseUrl = `${protocol}//${hostname}${`:${5000}`}`
-    // const baseUrl = `${protocol}//${hostname}`
+    const baseUrl = `${protocol}//${hostname}`
 
-    const baseUrl = `https://atlammalta.com`
+    // const baseUrl = `https://atlammalta.com`
 
     return `${baseUrl}/uploads/${imagePath}`
   }
@@ -296,11 +296,11 @@ const RegisterRealStateComponent = () => {
           watermark.src = watermarkSrc
           watermark.crossOrigin = 'anonymous'
           watermark.onload = () => {
-            const scale = 0.3
+            const scale = 0.5
             const wmWidth = img.width * scale
             const wmHeight = (watermark.height / watermark.width) * wmWidth
 
-            const x = img.width / 3
+            const x = img.width / 4
             const y = (img.height - wmHeight) / 2
 
             ctx.drawImage(watermark, x, y, wmWidth, wmHeight)

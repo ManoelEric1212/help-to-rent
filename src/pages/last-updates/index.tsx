@@ -26,6 +26,7 @@ import { FormatRealStateToTable } from 'src/utils/format-real-states-to-table'
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { getRegionRequest, Region } from 'src/requests/regionRequest'
+import LoadingOverlay from 'src/components/GlobalLoading'
 
 export type DateType = Date | null | undefined
 
@@ -48,6 +49,7 @@ const RealState = () => {
   const [descriptionKeywordFilter, setDescriptionKeywordFilter] = useState<string>('')
   const [propertyTypes, setPropertyTypes] = useState<string[]>([])
   const [typeFilter, setTypeFilter] = useState<string>('')
+  const [loading, setLoading] = useState(false)
 
   const [regionOptions, setRegionOptions] = useState<Region[]>([])
   const [optionsRegions, setOptionsRegions] = useState<Region[]>([])
@@ -57,7 +59,7 @@ const RealState = () => {
   const columns: GridColDef[] = [
     {
       flex: 0.1,
-      field: 'id_number',
+      field: 'id',
       minWidth: 200,
       headerName: 'Id',
       renderCell: ({ row }: CellType) => {
@@ -86,20 +88,6 @@ const RealState = () => {
                 objectFit: 'cover'
               }}
             />
-            <Typography
-              sx={{
-                position: 'absolute', // Posiciona o texto sobre a imagem
-                color: 'white',
-                textDecoration: 'underline',
-                fontSize: '20px', // Você pode ajustar o tamanho da fonte conforme necessário
-                fontWeight: 'bold',
-                top: 0, // Alinha ao topo
-                left: 0, // Alinha à esquerda
-                padding: '8px' // Opcional: adiciona um pouco de espaço entre a borda e o texto
-              }}
-            >
-              {`#${row.id_number}`}
-            </Typography>
           </Box>
         )
       }
@@ -129,10 +117,10 @@ const RealState = () => {
       headerName: 'Address'
     },
     {
-      flex: 0.15,
+      flex: 0.1,
       minWidth: 80,
-      field: 'area',
-      headerName: 'Area'
+      field: 'id_number',
+      headerName: 'ID'
     },
     {
       flex: 0.15,
@@ -176,6 +164,8 @@ const RealState = () => {
 
   async function getRealStates() {
     try {
+      setLoading(true)
+
       const data = await getAllRealStates()
 
       const orderedData = data.sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime())
@@ -185,7 +175,10 @@ const RealState = () => {
         rows: FormatRealStateToTable(orderedData)
       }
       setData(dataTable)
+      setLoading(false)
     } catch (error) {
+      setLoading(false)
+
       console.warn(error)
     }
   }
@@ -203,15 +196,25 @@ const RealState = () => {
 
   const handleArea = (e: SelectChangeEvent<string>): void => {
     const dataOptions = regionOptions.filter(item => item.area_region === e.target.value)
-
+    if (dataOptions.length == 0) {
+      setRegionFilter('')
+    }
     setOptionsRegions(dataOptions ?? [])
     setAreaFilter(e.target.value)
   }
 
   // const handleStatus = (e: SelectChangeEvent) => setStatusFilter(e.target.value)
 
-  const handleFiltersValues = (): void => {
-    const filtered = realStates.filter(realState => {
+  const handleFiltersValues = async (): Promise<void> => {
+    setLoading(true)
+
+    const data = await getAllRealStates()
+    const orderedData = data.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
+    console.log('aq', orderedData)
+    console.log('area', areaFilter)
+    console.log('loc', regionFilter)
+
+    const filtered = orderedData.filter(realState => {
       const matchesRegion = regionFilter ? realState.region === regionFilter : true
 
       const matchesAvailability = availabilityFilter ? new Date(realState.availabilityDate) <= availabilityFilter : true
@@ -239,6 +242,7 @@ const RealState = () => {
         : true
 
       const matchesArea = areaFilter ? realState.area_region.toLowerCase().includes(areaFilter.toLowerCase()) : true
+      setLoading(false)
 
       return (
         // matchesName &&
@@ -426,6 +430,7 @@ const RealState = () => {
           <Typography>Data not exists, please research your filters</Typography>
         )}
       </Grid>
+      <LoadingOverlay loading={loading} message='Loading informations' />
     </Grid>
   )
 }

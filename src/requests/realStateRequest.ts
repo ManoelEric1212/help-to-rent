@@ -34,6 +34,8 @@ export interface CreateRealStateDTO {
   hasTerrace: string
   additionalExpenses: string
   description: string
+  flagClient: string
+  parameters: string
   lat: number
   lng: number
   region: string
@@ -93,6 +95,9 @@ export interface RealStateType {
   hasTumbleDryer: string
   hasSeafront: string
   hasSeaview: string
+
+  flagClient: string
+  parameters: string
 
   energyEfficiency: number
 
@@ -204,6 +209,7 @@ export interface filters {
   maxPrice?: number
   minPrice?: number
   roomsNumber?: number
+  type?: string
 }
 
 export async function getFilteredRealStates(params?: {
@@ -214,6 +220,7 @@ export async function getFilteredRealStates(params?: {
   maxPrice?: number
   minPrice?: number
   roomsNumber?: number
+  type?: string
 }): Promise<RealStateType[]> {
   try {
     // Remove campos undefined para evitar envio de parâmetros vazios

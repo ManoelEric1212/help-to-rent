@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react'
 import { Grid, Card, CardMedia, CardContent, Typography, Pagination, Box } from '@mui/material'
 import { RealStateType } from 'src/requests/realStateRequest'
@@ -5,6 +6,7 @@ import BathtubOutlinedIcon from '@mui/icons-material/BathtubOutlined'
 import HotelOutlinedIcon from '@mui/icons-material/HotelOutlined'
 import { useItems } from 'src/context/ItemsContext'
 import { useRouter } from 'next/router'
+import LoadingOverlay from 'src/components/GlobalLoading'
 
 interface imageToPageType {
   id: string
@@ -21,24 +23,18 @@ interface imageToPageType {
   urlFirstImage?: string
 }
 
-const itemsPerPage = 8 // Número de imóveis por página
-
 const MostedItems = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const [currentItems, setCurrentItems] = useState<imageToPageType[]>([])
 
+  const itemsPerPage = 8 // Define o número de itens por página, ajuste conforme necessário.
   const indexOfLastItem = currentPage * itemsPerPage
   const indexOfFirstItem = indexOfLastItem - itemsPerPage
-  const { itemsMosted } = useItems()
+  const { itemsMosted, loading } = useItems()
 
   const buildImageUrl = (imagePath: string) => {
     const { protocol, hostname } = window.location
-
-    // development
-    // const baseUrl = `${protocol}//${hostname}${`:${5000}`}`
     const baseUrl = `${protocol}//${hostname}`
-
-    // const baseUrl = `https://atlammalta.com`
 
     return `${baseUrl}/uploads/${imagePath}`
   }
@@ -57,7 +53,6 @@ const MostedItems = () => {
           value: item.mensalRent,
           type: item.type,
           subCategogory: item.subIntentionStatus,
-
           urlFirstImage: item.images?.length ? buildImageUrl(item.images[0].url) : '/images/malta2.JPG',
           status: item.status
         }
@@ -73,30 +68,31 @@ const MostedItems = () => {
     switch (intention) {
       case 'FOR_RENT':
         return '#25235D'
-        break
       case 'FOR_SALE':
         return '#8B181B'
-        break
       case 'COMMERCIAL':
         return '#CFB53C'
-        break
       default:
         return '#25235D'
     }
   }
 
   useEffect(() => {
-    if (itemsMosted.length > 8) {
-      const currentIt = formatImagesToPage(itemsMosted ?? []).slice(indexOfFirstItem, indexOfLastItem)
+    // Sempre que itemsMosted mudar, resetar a página para 1
+    setCurrentPage(1)
+
+    // Agora podemos aplicar o formato dos itens na página
+    if (itemsMosted.length > 0) {
+      const currentIt = formatImagesToPage(itemsMosted).slice(indexOfFirstItem, indexOfLastItem)
       setCurrentItems(currentIt)
-    } else {
-      formatImagesToPage(itemsMosted ?? [])
     }
+  }, [itemsMosted]) // Este useEffect agora depende apenas de itemsMosted
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [itemsMosted, currentPage])
-
-  // const { setItemById } = useItems()
+  useEffect(() => {
+    // Quando o currentPage mudar, também precisa atualizar os itens da página atual
+    const currentIt = formatImagesToPage(itemsMosted).slice(indexOfFirstItem, indexOfLastItem)
+    setCurrentItems(currentIt)
+  }, [currentPage, itemsMosted]) // Agora estamos observando tanto o currentPage quanto itemsMosted
 
   const router = useRouter()
 
@@ -136,7 +132,7 @@ const MostedItems = () => {
                       position: 'absolute',
                       top: 8,
                       right: 8,
-                      backgroundColor: '#636052',
+                      backgroundColor: '#CFB53C',
                       color: 'white',
                       padding: '4px 8px',
                       borderRadius: '4px',
@@ -223,6 +219,7 @@ const MostedItems = () => {
           }
         }}
       />
+      <LoadingOverlay loading={loading} message='Loading informations' />
     </>
   )
 }

@@ -73,14 +73,14 @@ const VerticalNavHeader = (props: Props) => {
 
   const svgFillSecondary = () => {
     if (mode === 'semi-dark') {
-      return `rgba(${theme.palette.customColors.dark}, 0.6)`
+      return `rgba(${theme.palette.customColors.dark}, 0.99)`
     } else {
       return theme.palette.text.secondary
     }
   }
   const svgFillDisabled = () => {
     if (mode === 'semi-dark') {
-      return `rgba(${theme.palette.customColors.dark}, 0.38)`
+      return `rgba(${theme.palette.customColors.dark}, 0.99)`
     } else {
       return theme.palette.text.disabled
     }
@@ -166,7 +166,6 @@ const VerticalNavHeader = (props: Props) => {
           ) : (
             <Box
               width={22}
-              fill='none'
               height={22}
               component='svg'
               viewBox='0 0 22 22'

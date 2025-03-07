@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   Grid,
   FormControl,
@@ -15,6 +16,10 @@ import { getRegionRequest, Region } from 'src/requests/regionRequest'
 import SearchIcon from '@mui/icons-material/Search'
 import { useItems } from 'src/context/ItemsContext'
 
+// import ManageSearchIcon from '@mui/icons-material/ManageSearch'
+import FiltersModal from './modalFilters'
+import { useRouter } from 'next/router'
+
 export interface SubItemsIntention {
   intention: 'FOR_RENT' | 'FOR_SALE' | 'COMMERCIAL'
   subItems: string[]
@@ -25,17 +30,20 @@ const SearchFiltersItem = () => {
   const [regionFilter, setRegionFilter] = useState<string>('')
   const [regionOptions, setRegionOptions] = useState<Region[]>([])
   const [optionsRegions, setOptionsRegions] = useState<Region[]>([])
-  const [bedroomsFilter, setBedroomsFilter] = useState<number>(2)
+  const [bedroomsFilter, setBedroomsFilter] = useState<number>(0)
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [realStates, setRealStates] = useState<RealStateType[]>([])
   const [intentionStatus, setIntentionStatus] = useState<string>('')
   const [subIntentionStatus, setSubIntentionStatus] = useState<string>('')
 
   // const [realStatesFilter, setRealStatesFilter] = useState<RealStateType[]>([])
-  const { setItemsMosted } = useItems()
+  const { setItemsMosted, setLoading, setItemsMosted2 } = useItems()
 
   const [minPrice, setMinPrice] = useState<number>(0)
-  const [maxPrice, setMaxPrice] = useState<number>(2000)
+  const [maxPrice, setMaxPrice] = useState<number>(0)
+  const [isModalOpen2, setIsModalOpen2] = useState(false)
+
+  const router = useRouter()
 
   // const theme = useTheme()
 
@@ -58,12 +66,18 @@ const SearchFiltersItem = () => {
   async function getRealStates() {
     try {
       const data = await getAllRealStates()
-      setRealStates(data)
-      setItemsMosted(data)
+      setItemsMosted2(data)
+      const dataFiltered = data.filter(item => item.flagClient === 'TRUE')
+      setRealStates(dataFiltered)
+      setItemsMosted(dataFiltered)
     } catch (error) {
       console.warn(error)
     }
   }
+  const handleCloseModal2 = () => {
+    setIsModalOpen2(false)
+  }
+
   useEffect(() => {
     getRealStates()
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -75,7 +89,7 @@ const SearchFiltersItem = () => {
   const formatSubIntentionStatus = (intention: string) => {
     switch (intention) {
       case 'FOR_RENT':
-        return ['SHORT_LET', 'LONG_LET']
+        return ['LONG_LET', 'SHORT_LET']
         break
       case 'FOR_SALE':
         return ['RESIDENTIAL', 'COMMERCIAL']
@@ -90,44 +104,65 @@ const SearchFiltersItem = () => {
   }
 
   async function fetchRealStates(data: filters) {
+    setLoading(true)
     try {
       const realStates = await getFilteredRealStates({
         region: data.region,
         area_region: data.area_region,
         intentionStatus: data.intentionStatus,
-        subIntentionStatus: data.intentionStatus,
+        subIntentionStatus: data.subIntentionStatus,
         minPrice: data.minPrice,
         maxPrice: data.maxPrice,
         roomsNumber: data.roomsNumber
       })
+      setLoading(false)
 
       return realStates
     } catch (error) {
+      setLoading(false)
+
       console.error(error)
     }
   }
 
   const handleFiltersValues = async (): Promise<void> => {
-    const data = await fetchRealStates({
-      area_region: areaFilter,
-      intentionStatus: intentionStatus,
+    const filters = {
+      intentionStatus,
       maxPrice: maxPrice,
-      minPrice: minPrice,
+      minPrice,
       region: regionFilter,
-
+      subIntentionStatus,
       roomsNumber: bedroomsFilter,
-      subIntentionStatus: subIntentionStatus
-    })
-    console.log('data', data)
+      area_region: areaFilter
+    }
 
-    setItemsMosted(data ?? [])
+    const filteredData = Object.fromEntries(
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      Object.entries(filters).filter(
+        ([_, value]) => value !== undefined && value !== null && value !== '' && value !== 0
+      )
+    )
+
+    const data = await fetchRealStates(filteredData)
+
+    console.log('data222', data)
+
+    setItemsMosted2(data ?? [])
+    router.replace('/acl/properties')
   }
 
   return (
     <Grid item xs={12} sx={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
       <Grid container spacing={1}>
-        <Grid item xs={12}>
-          <Box sx={{ display: 'flex', gap: '0.7rem', flexDirection: { md: 'row', xs: 'column', sm: 'row' } }}>
+        <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'space-between' }}>
+          <Box
+            sx={{
+              display: 'flex',
+              gap: '0.7rem',
+              flexDirection: { md: 'row', xs: 'column', sm: 'row' },
+              width: '100%'
+            }}
+          >
             {['FOR_RENT', 'FOR_SALE', 'COMMERCIAL'].map(status => (
               <Box
                 key={status}
@@ -156,6 +191,33 @@ const SearchFiltersItem = () => {
               </Box>
             ))}
           </Box>
+          {/* <Box>
+            <Box
+              onClick={() => {
+                setIsModalOpen2(true)
+              }}
+              sx={{
+                display: 'flex',
+                borderRadius: '16px',
+                border: 'solid 1px #ebebeb',
+                cursor: 'pointer',
+                backgroundColor: '#8B181B',
+                padding: '7px',
+                fontSize: '1rem',
+                color: '#e5e0e0',
+                fontWeight: 'bold',
+                justifyContent: 'center',
+                gap: '4px',
+                '&:hover': {
+                  backgroundColor: '#804345',
+                  color: '#fff'
+                }
+              }}
+            >
+              <ManageSearchIcon />
+              Detailed Search
+            </Box>
+          </Box> */}
         </Grid>
 
         {intentionStatus.length ? (
@@ -295,8 +357,15 @@ const SearchFiltersItem = () => {
           <TextField
             label='Min Price(€)'
             type='number'
-            value={minPrice}
-            onChange={e => setMinPrice(Number(e.target.value))}
+            value={minPrice === 0 ? '' : minPrice}
+            onChange={e => {
+              const value = e.target.value
+              if (value === '') {
+                setMinPrice(0) // Considera 0 quando o campo for vazio
+              } else {
+                setMinPrice(Number(value)) // Converte para número
+              }
+            }}
             fullWidth
             sx={{
               '& label': { color: '#8B181B' }, // Cor do label
@@ -315,7 +384,7 @@ const SearchFiltersItem = () => {
           <TextField
             label='Max Price(€)'
             type='number'
-            value={maxPrice}
+            value={maxPrice === 0 ? '' : maxPrice}
             sx={{
               '& label': { color: '#8B181B' }, // Cor do label
               '& label.Mui-focused': { color: '#8B181B' }, // Cor do label quando focado
@@ -327,7 +396,14 @@ const SearchFiltersItem = () => {
               },
               '& .MuiInputBase-input': { color: '#8B181B' } // Cor do texto dentro do input
             }}
-            onChange={e => setMaxPrice(Number(e.target.value))}
+            onChange={e => {
+              const value = e.target.value
+              if (value === '') {
+                setMaxPrice(0) // Considera 0 quando o campo for vazio
+              } else {
+                setMaxPrice(Number(value)) // Converte para número
+              }
+            }}
             fullWidth
           />
         </Grid>
@@ -341,7 +417,7 @@ const SearchFiltersItem = () => {
               color: '#fff',
               height: '7vh',
               '&:hover': {
-                backgroundColor: '#815556'
+                backgroundColor: '#8c3d3f'
               }
             }}
           >
@@ -349,6 +425,7 @@ const SearchFiltersItem = () => {
           </Button>
         </Grid>
       </Grid>
+      <FiltersModal handleClose={handleCloseModal2} open={isModalOpen2} />
     </Grid>
   )
 }

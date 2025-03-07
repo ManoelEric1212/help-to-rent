@@ -27,11 +27,13 @@ const images = [
   '/images/malta1.JPG',
   '/images/malta2.JPG',
   '/images/malta3.JPG',
-  '/images/malta4.JPG',
-  '/images/malta5.JPG',
-  '/images/malta6.JPG',
-  '/images/malta7.JPG',
-  '/images/malta8.JPG'
+  '/images/malta4.JPG'
+
+  // '/images/malta5.JPG',
+  // '/images/malta6.JPG',
+  // '/images/malta7.JPG'
+
+  // '/images/malta8.JPG'
 ]
 
 const ACLPage = () => {
@@ -62,7 +64,7 @@ const ACLPage = () => {
               display: { xs: 'flex', sm: 'flex' },
               justifyContent: 'center',
               alignItems: 'start',
-              opacity: 0.8
+              opacity: 0.9
             }}
           >
             <Grid sx={{ width: '100%', marginTop: '10rem' }}>
@@ -73,7 +75,7 @@ const ACLPage = () => {
                     fontStyle: 'italic',
                     fontWeight: 'bold',
                     textAlign: 'center',
-                    color: 'white'
+                    color: '#25235D'
                   }}
                 >
                   Find your ideal place in Malta

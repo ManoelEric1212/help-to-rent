@@ -1,27 +1,27 @@
 import React from 'react'
 import { Modal, Box, Typography, Button, useMediaQuery } from '@mui/material'
 import WhatsAppIcon from '@mui/icons-material/WhatsApp'
+import { RealStateType } from 'src/requests/realStateRequest'
 
-interface Owner {
-  mainPhone: string
-  altPhone?: string
-  name?: string
-  codeNumber: string
-  email?: string
-}
+// interface Owner {
+//   mainPhone: string
+//   altPhone?: string
+//   name?: string
+//   codeNumber: string
+//   email?: string
+// }
 
 interface OwnerDetailsModalProps {
   open: boolean
   handleClose: () => void
-  owner: Owner
+  data: RealStateType | null
 }
 
-const OwnerDetailsModal: React.FC<OwnerDetailsModalProps> = ({ open, handleClose, owner }) => {
-  const { mainPhone, altPhone, codeNumber, email, name } = owner
+const OwnerDetailsModal: React.FC<OwnerDetailsModalProps> = ({ open, handleClose, data }) => {
   const isSmallScreen = useMediaQuery('(max-width:600px)')
 
   const handleWhatsApp = () => {
-    const complete = `${codeNumber}${mainPhone}`
+    const complete = `${data?.country_code ?? ''}${data?.ownerNumber ?? ''}`
     const phoneNumber = complete.replace(/\D/g, '')
     window.open(`https://wa.me/${phoneNumber}`, '_blank')
   }
@@ -41,22 +41,28 @@ const OwnerDetailsModal: React.FC<OwnerDetailsModalProps> = ({ open, handleClose
           borderRadius: 2
         }}
       >
-        <Typography variant='h6' gutterBottom>
-          Owner Details
-        </Typography>
-        <Typography variant='body1'>Name: {name}</Typography>
-        <Typography variant='body1'>Phone: {`+${codeNumber} ${mainPhone}`}</Typography>
-        <Typography variant='body1'>Alternative number: {`+${codeNumber} ${altPhone}`}</Typography>
-        <Typography variant='body1'>Email: {email || 'Not informated'}</Typography>
-        <Button
-          variant='contained'
-          color='success'
-          startIcon={<WhatsAppIcon />}
-          sx={{ mt: 2, width: '100%' }}
-          onClick={handleWhatsApp}
-        >
-          Check in the Whatsapp
-        </Button>
+        {data && (
+          <>
+            <Typography variant='h6' gutterBottom>
+              Owner Details
+            </Typography>
+            <Typography variant='body1'>Name: {data?.ownerName ?? ''}</Typography>
+            <Typography variant='body1'>Phone: {`+${data?.country_code ?? ''} ${data?.ownerNumber ?? ''}`}</Typography>
+            <Typography variant='body1'>
+              Alternative number: {`+${data?.country_code ?? ''} ${data?.alternativeNumberOwner ?? ''}`}
+            </Typography>
+            <Typography variant='body1'>Email: {data?.ownerEmail ?? ''}</Typography>
+            <Button
+              variant='contained'
+              color='success'
+              startIcon={<WhatsAppIcon />}
+              sx={{ mt: 2, width: '100%' }}
+              onClick={handleWhatsApp}
+            >
+              Check in the Whatsapp
+            </Button>
+          </>
+        )}
       </Box>
     </Modal>
   )

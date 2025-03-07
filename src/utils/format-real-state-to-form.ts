@@ -34,6 +34,8 @@ export function FormatRealStateToForm(data: RealStateType) {
     hasSeaview: JSON.parse(data.hasSeaview),
     hasLift: JSON.parse(data.hasElevator),
     subIntentionStatus: data.subIntentionStatus,
+    flagClient: data.flagClient,
+    parameters: data.parameters,
 
     userUpdated: data.userUpdated,
     hasPool: JSON.parse(data.hasPool),

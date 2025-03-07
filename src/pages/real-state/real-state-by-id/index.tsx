@@ -71,9 +71,9 @@ const RegisterRealState = () => {
 
     // development
     // const baseUrl = `${protocol}//${hostname}${`:${5000}`}`
-    // const baseUrl = `${protocol}//${hostname}`
+    const baseUrl = `${protocol}//${hostname}`
 
-    const baseUrl = `https://atlammalta.com`
+    // const baseUrl = `https://atlammalta.com`
 
     return `${baseUrl}/uploads/${imagePath}`
   }
@@ -320,17 +320,7 @@ const RegisterRealState = () => {
         </Card>
       </Grid>
       <ModalBase open={isModalOpen} title={modalTitle} content={modalContent} onClose={() => handleCloseModal()} />
-      <OwnerDetailsModal
-        handleClose={handleCloseModal2}
-        open={isModalOpen2}
-        owner={{
-          codeNumber: realStateById?.country_code ?? '',
-          mainPhone: realStateById?.ownerNumber ?? '',
-          altPhone: realStateById?.alternativeNumberOwner,
-          name: realStateById?.ownerName,
-          email: realStateById?.ownerEmail
-        }}
-      />
+      <OwnerDetailsModal handleClose={handleCloseModal2} open={isModalOpen2} data={realStateById} />
     </>
   )
 }
