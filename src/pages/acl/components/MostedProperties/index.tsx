@@ -5,7 +5,8 @@ import { RealStateType } from 'src/requests/realStateRequest'
 import BathtubOutlinedIcon from '@mui/icons-material/BathtubOutlined'
 import HotelOutlinedIcon from '@mui/icons-material/HotelOutlined'
 import { useItems } from 'src/context/ItemsContext'
-import { useRouter } from 'next/router'
+
+// import { useRouter } from 'next/router'
 import DoNotDisturbIcon from '@mui/icons-material/DoNotDisturb'
 import SearchProperties from '../searchProperties/searchProps'
 import LoadingOverlay from 'src/components/GlobalLoading'
@@ -36,7 +37,10 @@ const MostedItems2 = () => {
 
   const buildImageUrl = (imagePath: string) => {
     const { protocol, hostname } = window.location
+
     const baseUrl = `${protocol}//${hostname}`
+
+    // const baseUrl = `https://atlammalta.com`
 
     return `${baseUrl}/uploads/${imagePath}`
   }
@@ -97,8 +101,11 @@ const MostedItems2 = () => {
   }, [currentPage, itemsMosted2])
 
   // const { setItemById } = useItems()
+  const openNewTab = (id: string) => {
+    window.open(`/acl/real-state-by-id/?id=${id}`, '_blank')
+  }
 
-  const router = useRouter()
+  // const router = useRouter()
 
   return (
     <>
@@ -113,7 +120,7 @@ const MostedItems2 = () => {
                 sx={{ maxWidth: 445, boxShadow: 3, borderRadius: 2, height: '100%', cursor: 'pointer' }}
                 onClick={() => {
                   // setItemById(itemsMosted2.find(item => item.id === property.id) ?? null)
-                  setTimeout(() => router.replace(`/acl/real-state-by-id/?id=${property.id}`), 500)
+                  setTimeout(() => openNewTab(property.id), 500)
                 }}
               >
                 <Box sx={{ position: 'relative' }}>
@@ -140,7 +147,7 @@ const MostedItems2 = () => {
                         position: 'absolute',
                         top: 8,
                         right: 8,
-                        backgroundColor: '#636052',
+                        backgroundColor: '#CFB53C',
                         color: 'white',
                         padding: '4px 8px',
                         borderRadius: '4px',
@@ -168,7 +175,7 @@ const MostedItems2 = () => {
                       zIndex: 1
                     }}
                   >
-                    {`€ ${property.value}`}
+                    {`€ ${property.value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}`}
                   </Box>
 
                   <CardMedia

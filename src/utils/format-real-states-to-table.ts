@@ -10,7 +10,7 @@ export function FormatRealStateToTable(data: RealStateType[]) {
       address: item.address,
       area: item.area,
       inclusion_date: item.updated_at,
-
+      price: item.mensalRent,
       region: item.region,
       type: item.type,
       srcImg: item.images?.length ? item.images[0].url : ''

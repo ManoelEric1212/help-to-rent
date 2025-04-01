@@ -17,16 +17,16 @@ const Home = () => {
         <Card>
           <CardHeader title={`Welcome ${user?.fullName}, how do you want to start today ?`}></CardHeader>
           <Box sx={{ display: 'flex', flexDirection: 'column', padding: '2rem', gap: '1rem' }}>
-            <Button variant='contained' onClick={() => router.replace('/real-state')}>
+            <Button variant='contained' onClick={() => router.push('/real-state')}>
               Search Properties
             </Button>
-            <Button variant='contained' onClick={() => router.replace('/last-updates')}>
+            <Button variant='contained' onClick={() => router.push('/last-updates')}>
               Last Updates
             </Button>
-            <Button variant='contained' onClick={() => router.replace('/real-state/register')}>
+            <Button variant='contained' onClick={() => router.push('/real-state/register')}>
               Add property
             </Button>
-            <Button variant='contained' onClick={() => router.replace('/solicitations')}>
+            <Button variant='contained' onClick={() => router.push('/solicitations')}>
               Solicitations
             </Button>
           </Box>

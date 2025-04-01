@@ -145,7 +145,7 @@ const Register = () => {
       if (dataRequest) {
         toast.success('User successfully registered')
         setTimeout(() => {
-          router.replace('/login')
+          router.push('/login')
         }, 400)
       }
     } catch (error) {

@@ -23,3 +23,7 @@ export const GET_SOLICITATIONS = '/requests'
 export const UPDATE_SOLICITATIONS = '/requests/update'
 export const ASSOCIATE_REQUEST = '/requests/associate'
 export const GET_REQUEST_BY_AGENT_ID = (id: string) => `/requests/agent/${id}`
+
+export const SEND_EMAIL = `/email/send`
+export const SEND_EMAIL_RENT = `/email/send/rent`
+export const SEND_EMAIL_CAREERS = `/email/send/careers`

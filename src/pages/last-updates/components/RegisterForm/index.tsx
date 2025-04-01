@@ -481,7 +481,7 @@ const RegisterRealStateComponent = () => {
         const data = await updateRealState({ body: formData, id: id as string })
         if (data) {
           toast.success('Real state updated!')
-          router.replace('/real-state')
+          router.push('/real-state')
           setLoading(false)
 
           return
@@ -491,7 +491,7 @@ const RegisterRealStateComponent = () => {
 
       if (data) {
         toast.success('Real state registered!')
-        router.replace('/real-state')
+        router.push('/real-state')
         setLoading(false)
       }
     } catch (error) {

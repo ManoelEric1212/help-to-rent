@@ -38,6 +38,8 @@ const RealState = () => {
   const [data, setData] = useState<DataGridDataRealState>({ columns: [], rows: [] })
   const [realStates, setRealStates] = useState<RealStateType[]>([])
   const [areaFilter, setAreaFilter] = useState<string>('')
+  const [minPrice, setMinPrice] = useState<number>(0)
+  const [maxPrice, setMaxPrice] = useState<number>(0)
 
   const [regionFilter, setRegionFilter] = useState<string>('')
   const [availabilityFilter, setAvailabilityFilter] = useState<Date | null>(null)
@@ -61,7 +63,7 @@ const RealState = () => {
       flex: 0.1,
       field: 'id',
       minWidth: 200,
-      headerName: 'Id',
+      headerName: 'Real State',
       renderCell: ({ row }: CellType) => {
         return (
           <Box
@@ -99,41 +101,47 @@ const RealState = () => {
       headerName: 'Name'
     },
     {
-      flex: 0.15,
-      minWidth: 80,
+      flex: 0.1,
+      minWidth: 40,
       field: 'type',
       headerName: 'Type'
     },
     {
-      flex: 0.15,
-      minWidth: 80,
+      flex: 0.08,
+      minWidth: 40,
       field: 'region',
       headerName: 'Region'
     },
     {
-      flex: 0.15,
+      flex: 0.1,
       minWidth: 80,
       field: 'address',
       headerName: 'Address'
     },
     {
-      flex: 0.1,
-      minWidth: 80,
+      flex: 0.05,
+      minWidth: 40,
       field: 'id_number',
       headerName: 'ID'
     },
     {
-      flex: 0.15,
+      flex: 0.1,
+      minWidth: 40,
+      field: 'price',
+      headerName: 'Monthly'
+    },
+    {
+      flex: 0.08,
       type: 'inclusion_date',
-      minWidth: 130,
-      headerName: 'Update date',
+      minWidth: 100,
+      headerName: 'Inclusion Date',
       field: 'inclusion_date',
       valueGetter: params => format(new Date(params.value), 'dd/MM/yyyy HH:mm')
     },
     {
       flex: 0.1,
       field: 'action',
-      minWidth: 80,
+      minWidth: 30,
       headerName: 'Action',
       renderCell: ({ row }: CellType) => {
         return (
@@ -203,6 +211,48 @@ const RealState = () => {
     setAreaFilter(e.target.value)
   }
 
+  const matchesDescription = (realState: RealStateType, descriptionKeywordFilter: string): boolean => {
+    if (descriptionKeywordFilter.length === 0) return true
+
+    const keywords = descriptionKeywordFilter
+      .toLowerCase()
+      .split(',')
+      .map(keyword => keyword.trim())
+
+    // Verificar se alguma palavra-chave corresponde à descrição
+    const matchesText = keywords.some(keyword => realState.description.toLowerCase().includes(keyword))
+
+    // Verificar se alguma palavra-chave corresponde a um atributo booleano
+    const matchesAttributes = keywords.some(keyword => {
+      // Procurar por atributos que contenham o texto digitado no filtro
+      const matchingAttributes = Object.keys(realState).filter(key => key.toLowerCase().includes(keyword.toLowerCase()))
+
+      return matchingAttributes.some(attributeName => {
+        const attributeValue = realState[attributeName as keyof RealStateType]
+
+        // Verificação para garantir que o valor seja um booleano ou algo que possa ser convertido
+        if (typeof attributeValue === 'boolean') {
+          return attributeValue === true
+        }
+
+        if (typeof attributeValue === 'string') {
+          try {
+            const parsed = JSON.parse(attributeValue)
+
+            return parsed?.has === true
+          } catch {
+            return false
+          }
+        }
+
+        // Garantindo que arrays e números não sejam considerados como verdadeiros
+        return false
+      })
+    })
+
+    return matchesText || matchesAttributes
+  }
+
   // const handleStatus = (e: SelectChangeEvent) => setStatusFilter(e.target.value)
 
   const handleFiltersValues = async (): Promise<void> => {
@@ -210,9 +260,6 @@ const RealState = () => {
 
     const data = await getAllRealStates()
     const orderedData = data.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
-    console.log('aq', orderedData)
-    console.log('area', areaFilter)
-    console.log('loc', regionFilter)
 
     const filtered = orderedData.filter(realState => {
       const matchesRegion = regionFilter ? realState.region === regionFilter : true
@@ -237,12 +284,15 @@ const RealState = () => {
         ? realState.ownerName.toLowerCase().includes(ownerNameFilter.toLowerCase())
         : true
 
-      const matchesDescription = descriptionKeywordFilter
-        ? realState.description.toLowerCase().includes(descriptionKeywordFilter.toLowerCase())
-        : true
+      // const matchesDescription = descriptionKeywordFilter
+      //   ? realState.description.toLowerCase().includes(descriptionKeywordFilter.toLowerCase())
+      //   : true
 
       const matchesArea = areaFilter ? realState.area_region.toLowerCase().includes(areaFilter.toLowerCase()) : true
       setLoading(false)
+
+      const matchesPrice =
+        minPrice !== 0 || maxPrice !== 0 ? realState.mensalRent >= minPrice && realState.mensalRent <= maxPrice : true
 
       return (
         // matchesName &&
@@ -255,7 +305,8 @@ const RealState = () => {
         matchesUpdatedSince &&
         matchesOwnerNumber &&
         matchesOwnerName &&
-        matchesDescription
+        matchesDescription(realState, descriptionKeywordFilter) &&
+        matchesPrice
       )
     })
 
@@ -411,6 +462,36 @@ const RealState = () => {
                   label='Description Keywords'
                   value={descriptionKeywordFilter}
                   onChange={(e: ChangeEvent<HTMLInputElement>) => setDescriptionKeywordFilter(e.target.value)}
+                  fullWidth
+                />
+              </Grid>
+              <Grid item sm={2} md={2} xs={6}>
+                <TextField
+                  label='Min Price(€)'
+                  value={minPrice === 0 ? '' : minPrice}
+                  onChange={e => {
+                    const value = e.target.value
+                    if (value === '') {
+                      setMinPrice(0) // Considera 0 quando o campo for vazio
+                    } else {
+                      setMinPrice(Number(value)) // Converte para número
+                    }
+                  }}
+                  fullWidth
+                />
+              </Grid>
+              <Grid item sm={2} md={2} xs={6}>
+                <TextField
+                  label='Max Price(€)'
+                  value={maxPrice === 0 ? '' : maxPrice}
+                  onChange={e => {
+                    const value = e.target.value
+                    if (value === '') {
+                      setMaxPrice(0) // Considera 0 quando o campo for vazio
+                    } else {
+                      setMaxPrice(Number(value)) // Converte para número
+                    }
+                  }}
                   fullWidth
                 />
               </Grid>

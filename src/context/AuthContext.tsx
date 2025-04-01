@@ -78,7 +78,7 @@ const AuthProvider = ({ children }: Props) => {
         !router.asPath.startsWith('/login') &&
         !router.asPath.startsWith('/register')
       ) {
-        router.replace('/acl')
+        router.push('/acl')
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -110,21 +110,21 @@ const AuthProvider = ({ children }: Props) => {
               'userData',
               JSON.stringify({ ...userAdmin, updatedProfile: dataAgent.updatedProfile })
             )
-            router.replace('/home')
+            router.push('/home')
             console.log('entrou')
 
             return
           }
           setUser(userAdmin)
           window.localStorage.setItem('userData', JSON.stringify(userAdmin))
-          router.replace('/home')
+          router.push('/home')
 
           return
         }
 
         setUser(userAdmin)
         window.localStorage.setItem('userData', JSON.stringify(userAdmin))
-        router.replace('/home')
+        router.push('/home')
       }
       if (!dataUser) {
         toast.error('Credentials error')

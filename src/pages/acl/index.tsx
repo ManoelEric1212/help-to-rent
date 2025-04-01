@@ -11,6 +11,13 @@ import { useMediaQuery } from '@mui/material'
 import FooterComponent from './components/footer'
 import ContactUsComponent from './components/contactUs'
 
+import { Montserrat } from 'next/font/google'
+
+const montserrat = Montserrat({
+  subsets: ['latin'],
+  weight: ['400', '700'] // Escolha os pesos que desejar
+})
+
 const theme = createTheme({
   breakpoints: {
     values: {
@@ -70,9 +77,9 @@ const ACLPage = () => {
             <Grid sx={{ width: '100%', marginTop: '10rem' }}>
               {matches && (
                 <Typography
+                  className={montserrat.className}
                   sx={{
                     fontSize: { xs: '1.5rem', md: '2rem', lg: '3rem' },
-                    fontStyle: 'italic',
                     fontWeight: 'bold',
                     textAlign: 'center',
                     color: '#25235D'
@@ -83,7 +90,7 @@ const ACLPage = () => {
               )}
 
               <Grid sx={{ display: 'flex', justifyContent: 'center' }}>
-                <Grid sx={{ width: '65vw' }}>
+                <Grid sx={{ width: '69vw' }}>
                   <SearchFiltersItem />
                 </Grid>
               </Grid>

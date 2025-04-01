@@ -3,11 +3,10 @@ import Grid from '@mui/material/Grid'
 
 import { ThemeProvider, createTheme } from '@mui/material/styles'
 
+import Header2 from '../components/header2'
 import ContactUsComponent from '../components/contactUs'
 import FooterComponent from '../components/footer'
-import { useItems } from 'src/context/ItemsContext'
-import DetailsRealStateComponent from '../components/detailsRealState'
-import Header3 from '../components/header3'
+import JobApplicationForm from '../components/CareersComponent'
 
 const theme = createTheme({
   breakpoints: {
@@ -21,16 +20,20 @@ const theme = createTheme({
   }
 })
 
-const RealStateById = () => {
-  const { itemById } = useItems()
-  console.log('oi', itemById)
-
+const Careers = () => {
   return (
     <ThemeProvider theme={theme}>
       <>
-        <Header3 />
+        <Header2 />
         <Grid sx={{ padding: '1rem 2rem 1rem 2rem' }}>
-          <DetailsRealStateComponent />
+          <Grid
+            sx={{
+              flexDirection: { xs: 'column', sm: 'row' },
+              marginTop: '6rem' // Muda para coluna em telas pequenas
+            }}
+          >
+            <JobApplicationForm />
+          </Grid>
           <Grid sx={{ marginTop: '1rem' }}>
             <ContactUsComponent />
           </Grid>
@@ -41,4 +44,4 @@ const RealStateById = () => {
   )
 }
 
-export default RealStateById
+export default Careers

@@ -27,6 +27,7 @@ import SurfingOutlinedIcon from '@mui/icons-material/SurfingOutlined'
 import CarouselComponent from './carroussel'
 import { useRouter } from 'next/router'
 import { shareToWhatsAppNumber } from 'src/@core/components/WhatssAppComponent'
+import ButtonRequest from './modalWhats'
 
 const DetailsRealStateComponent = () => {
   // const router = useRouter()
@@ -252,6 +253,12 @@ const DetailsRealStateComponent = () => {
 
             <Box sx={{ padding: '2.5rem' }}>{previews.length && <CarouselComponent images={previews} />}</Box>
             <Box sx={{ padding: '1rem' }}>
+              <Box sx={{ padding: '1rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                <Typography sx={{ fontSize: '1.5rem', fontWeight: 'bold' }}>ID:</Typography>
+                <Box>
+                  <Typography>{String(realStateById?.id_number).padStart(3, '0')}</Typography>
+                </Box>
+              </Box>
               <Typography sx={{ fontSize: '1.5rem', fontWeight: 'bold' }}>Additional items:</Typography>
               <Box
                 sx={{
@@ -278,6 +285,15 @@ const DetailsRealStateComponent = () => {
                         <Typography>{item.label}</Typography>
                       </Box>
                     ))}
+                {realStateById && (
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      gap: '0.5rem',
+                      alignItems: 'center' // Centraliza ícone e texto
+                    }}
+                  ></Box>
+                )}
               </Box>
             </Box>
           </Card>
@@ -309,6 +325,14 @@ const DetailsRealStateComponent = () => {
               >
                 Check details with Atlam Malta
               </Button>
+              {realStateById ? (
+                <ButtonRequest
+                  id={String(realStateById?.id_number)}
+                  link={`https://atlammalta.com/acl/real-state-by-id/?id=${realStateById.id}`}
+                />
+              ) : (
+                <></>
+              )}
             </Box>
             {/* <Box>{realStateById ? <MapRegisterComponentElement dataRealStateByid={realStateById} /> : <></>}</Box> */}
 

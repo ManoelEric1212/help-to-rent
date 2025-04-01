@@ -29,6 +29,8 @@ const SearchFiltersItem = () => {
   const [areaFilter, setAreaFilter] = useState<string>('')
   const [regionFilter, setRegionFilter] = useState<string>('')
   const [regionOptions, setRegionOptions] = useState<Region[]>([])
+  const [typeFilter, setTypeFilter] = useState<string>('')
+
   const [optionsRegions, setOptionsRegions] = useState<Region[]>([])
   const [bedroomsFilter, setBedroomsFilter] = useState<number>(0)
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -77,6 +79,9 @@ const SearchFiltersItem = () => {
   const handleCloseModal2 = () => {
     setIsModalOpen2(false)
   }
+  const handleType = (e: SelectChangeEvent<string>): void => {
+    setTypeFilter(e.target.value)
+  }
 
   useEffect(() => {
     getRealStates()
@@ -113,6 +118,7 @@ const SearchFiltersItem = () => {
         subIntentionStatus: data.subIntentionStatus,
         minPrice: data.minPrice,
         maxPrice: data.maxPrice,
+        type: data.type,
         roomsNumber: data.roomsNumber
       })
       setLoading(false)
@@ -133,7 +139,8 @@ const SearchFiltersItem = () => {
       region: regionFilter,
       subIntentionStatus,
       roomsNumber: bedroomsFilter,
-      area_region: areaFilter
+      area_region: areaFilter,
+      type: typeFilter
     }
 
     const filteredData = Object.fromEntries(
@@ -270,12 +277,14 @@ const SearchFiltersItem = () => {
       >
         <Grid item sm={2} md={2} xs={12}>
           <FormControl fullWidth>
-            <InputLabel id='type-label' sx={{ color: '#8B181B', '&.Mui-focused': { color: '#8B181B' } }}>
+            <InputLabel id='type-label' shrink sx={{ color: '#8B181B', '&.Mui-focused': { color: '#8B181B' } }}>
               Area
             </InputLabel>
             <Select
               labelId='type-label'
-              value={areaFilter || ''}
+              id='type-label'
+              label='Area'
+              value={areaFilter}
               onChange={handleArea}
               sx={{
                 color: '#8B181B', // Cor do texto selecionado
@@ -326,7 +335,90 @@ const SearchFiltersItem = () => {
           </FormControl>
         </Grid>
 
-        <Grid item sm={2} md={2} xs={12}>
+        {intentionStatus === 'COMMERCIAL' ? (
+          <>
+            <Grid item sm={2} md={2} xs={12}>
+              <FormControl fullWidth>
+                <InputLabel id='type-label' sx={{ color: '#8B181B', '&.Mui-focused': { color: '#8B181B' } }}>
+                  Type
+                </InputLabel>
+                <Select
+                  labelId='type-label'
+                  value={typeFilter || ''}
+                  onChange={handleType}
+                  label='Type'
+                  sx={{
+                    color: '#8B181B', // Cor do texto selecionado
+                    '& .MuiOutlinedInput-notchedOutline': { borderColor: '#8B181B' }, // Cor da borda normal
+                    '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: '#8B181B' }, // Borda ao passar o mouse
+                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: '#8B181B' }, // Borda quando focado
+                    '& .MuiSelect-icon': { color: '#8B181B' } // Ícone da setinha do Select branco
+                  }}
+                >
+                  <MenuItem value=''>
+                    <em>None</em>
+                  </MenuItem>
+
+                  <MenuItem value='BARS_RESTAURANTS'>Bars & Restaurants</MenuItem>
+                  <MenuItem value='COLD_STORAGE'>Cold Storage</MenuItem>
+                  <MenuItem value='FACTORY'>Factory</MenuItem>
+                  <MenuItem value='GARAGE_STORE'>Garage / Store (Industrial)</MenuItem>
+                  <MenuItem value='HOTELS_GUESTHOUSES'>Hotels & Guesthouses</MenuItem>
+                  <MenuItem value='NIGHT_CLUB'>Nightclub</MenuItem>
+                  <MenuItem value='OFFICE_OFFICE_SPACE'>Office/Office Space</MenuItem>
+                  <MenuItem value='PLOT'>Plot(Commercial)</MenuItem>
+                  <MenuItem value='SCHOOL'>School</MenuItem>
+                  <MenuItem value='SHOP'>Shop</MenuItem>
+                  <MenuItem value='SHOWROOM'>Showroom</MenuItem>
+                  <MenuItem value='SITE'>Site(Commercial)</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+          </>
+        ) : (
+          <>
+            <Grid item sm={2} md={2} xs={12}>
+              <FormControl fullWidth>
+                <InputLabel id='type' sx={{ color: '#8B181B', '&.Mui-focused': { color: '#8B181B' } }}>
+                  Type
+                </InputLabel>
+                <Select
+                  labelId='type'
+                  value={typeFilter || ''}
+                  id='type'
+                  label='Type'
+                  onChange={handleType}
+                  sx={{
+                    color: '#8B181B', // Cor do texto selecionado
+                    '& .MuiOutlinedInput-notchedOutline': { borderColor: '#8B181B' }, // Cor da borda normal
+                    '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: '#8B181B' }, // Borda ao passar o mouse
+                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: '#8B181B' }, // Borda quando focado
+                    '& .MuiSelect-icon': { color: '#8B181B' } // Ícone da setinha do Select branco
+                  }}
+                >
+                  <MenuItem value=''>
+                    <em>None</em>
+                  </MenuItem>
+
+                  <MenuItem value='APARTMENT'>APARTMENT</MenuItem>
+                  <MenuItem value='BLOCK OF APARTMENTS'>BLOCK OF APARTMENTS</MenuItem>
+                  <MenuItem value='DETACHED VILLA'>DETACHED VILLA</MenuItem>
+                  <MenuItem value='DUPLEX APARTMENT'>DUPLEX APARTMENT</MenuItem>
+                  <MenuItem value='FARMHOUSE'>FARMHOUSE</MenuItem>
+                  <MenuItem value='HOUSE OF CHARACTER'>HOUSE OF CHARACTER</MenuItem>
+                  <MenuItem value='MAISONETTE'>MAISONETTE</MenuItem>
+                  <MenuItem value='PENTHOUSE'>PENTHOUSE</MenuItem>
+                  <MenuItem value='STUDIO'>STUDIO</MenuItem>
+                  <MenuItem value='TOWNHOUSE'>TOWNHOUSE</MenuItem>
+                  <MenuItem value='VILLA'>VILLA</MenuItem>
+                  <MenuItem value='TERRACE HOUSE'>TERRACE HOUSE</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+          </>
+        )}
+
+        <Grid item sm={1.5} md={1.5} xs={12}>
           <FormControl fullWidth>
             <InputLabel sx={{ color: '#8B181B', '&.Mui-focused': { color: '#8B181B' } }} id='bedrooms'>
               Nº of Bedrooms
@@ -353,10 +445,9 @@ const SearchFiltersItem = () => {
           </FormControl>
         </Grid>
 
-        <Grid item sm={2} md={2} xs={6}>
+        <Grid item sm={1.5} md={1.5} xs={6}>
           <TextField
             label='Min Price(€)'
-            type='number'
             value={minPrice === 0 ? '' : minPrice}
             onChange={e => {
               const value = e.target.value
@@ -380,10 +471,9 @@ const SearchFiltersItem = () => {
             }}
           />
         </Grid>
-        <Grid item sm={2} md={2} xs={6}>
+        <Grid item sm={1.5} md={1.5} xs={6}>
           <TextField
             label='Max Price(€)'
-            type='number'
             value={maxPrice === 0 ? '' : maxPrice}
             sx={{
               '& label': { color: '#8B181B' }, // Cor do label

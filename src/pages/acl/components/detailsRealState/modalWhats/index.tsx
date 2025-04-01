@@ -1,14 +1,17 @@
 import { useState } from 'react'
-import { Box, Button, Modal, Typography, TextField, Grid, Card } from '@mui/material'
-import { EmailDTO, sendEmail } from 'src/requests/emailRequest'
+import { Box, Button, Modal, Typography, TextField, Grid } from '@mui/material'
+import { EmailRentDTO, sendEmailRent } from 'src/requests/emailRequest'
+import EmailIcon from '@mui/icons-material/Email'
 import toast from 'react-hot-toast'
-import { useModal } from 'src/context/SettingsAgentContext'
 
-const ContactUsComponent = () => {
+interface realProps {
+  id: string
+  link: string
+}
+const ButtonRequest = ({ id, link }: realProps) => {
+  const [open, setOpen] = useState(false)
   const [form, setForm] = useState({ name: '', email: '', message: '', phone: '' })
   const [country, setCountry] = useState('')
-
-  const { openCon, setOpenCon } = useModal()
 
   const handleChange = (e: { target: { name: any; value: any } }) => {
     const { name, value } = e.target
@@ -18,80 +21,31 @@ const ContactUsComponent = () => {
   const handleSubmit = async () => {
     // Envia a requisição para o backend
     try {
-      const body: EmailDTO = {
+      const body: EmailRentDTO = {
         email: form.email,
         message: form.message,
         name: form.name,
-        phone: `+${country} ${form.phone}`
+        phone: `+${country} ${form.phone}`,
+        idNumber: id,
+        linkToRent: link
       }
-      const data = await sendEmail(body)
+      const data = await sendEmailRent(body)
       console.log('data', data)
-      setOpenCon(false)
+      setOpen(false)
       toast.success('Your message has been sent !')
     } catch (error) {
-      setOpenCon(false)
+      setOpen(false)
       toast.error('Error a sent message, contact to admin !')
     }
   }
 
   return (
     <>
-      <Card
-        sx={{
-          position: 'relative',
-          backgroundImage: "url('/images/malta3.JPG')",
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          height: '300px',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          textAlign: 'center',
-          color: 'white',
-          padding: '2rem',
-          borderRadius: 3,
-          boxShadow: 3,
-          margin: '0 auto',
-          width: { xs: '100%', md: '100%' }
-        }}
-      >
-        <Box
-          sx={{
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-            width: '100%',
-            height: '100%',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-            padding: '1rem',
-            borderRadius: 3
-          }}
-        >
-          <Typography variant='h4' fontWeight='bold'>
-            Contact US
-          </Typography>
-          <Typography variant='body1' sx={{ maxWidth: '600px', marginTop: 2 }}>
-            Need help or have any questions? We are ready to serve you. Click the button below and contact us right now!
-          </Typography>
-          <Button
-            sx={{
-              marginTop: 3,
-              background: '#8B181B',
-              color: '#fff',
-              height: '7vh',
-              '&:hover': {
-                backgroundColor: '#4c4a6f'
-              }
-            }}
-            onClick={() => setOpenCon(true)}
-          >
-            Contact Us
-          </Button>
-        </Box>
-      </Card>
+      <Button variant='contained' startIcon={<EmailIcon />} onClick={() => setOpen(true)}>
+        Send us a request
+      </Button>
 
-      <Modal open={openCon} onClose={() => setOpenCon(false)}>
+      <Modal open={open} onClose={() => setOpen(false)}>
         <Box
           sx={{
             position: 'absolute',
@@ -106,7 +60,7 @@ const ContactUsComponent = () => {
           }}
         >
           <Typography variant='h5' fontWeight='bold' gutterBottom>
-            Contact us
+            Contact us for more informations for Real State: {id}
           </Typography>
           <Grid container spacing={2}>
             <Grid item xs={12}>
@@ -184,7 +138,7 @@ const ContactUsComponent = () => {
             >
               Send
             </Button>
-            <Button variant='outlined' color='error' onClick={() => setOpenCon(false)}>
+            <Button variant='outlined' color='error' onClick={() => setOpen(false)}>
               Close
             </Button>
           </Box>
@@ -194,4 +148,4 @@ const ContactUsComponent = () => {
   )
 }
 
-export default ContactUsComponent
+export default ButtonRequest

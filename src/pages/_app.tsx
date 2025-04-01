@@ -112,7 +112,7 @@ const App = (props: ExtendedAppProps) => {
         <meta property='og:url' content={siteUrl} />
         <meta property='og:title' content={themeConfig.templateName} />
         <meta property='og:description' content='Find your ideal place in Malta!' />
-        <meta property='og:image' content='https://atlammalta.com/images/logo2.png' />
+        <meta property='og:image' content='https://atlammalta.com/images/logo10.png' />
         <meta property='og:image:width' content='1200' />
         <meta property='og:image:height' content='630' />
 
@@ -121,12 +121,12 @@ const App = (props: ExtendedAppProps) => {
         <meta name='twitter:url' content={siteUrl} />
         <meta name='twitter:title' content={themeConfig.templateName} />
         <meta name='twitter:description' content='Find your ideal place in Malta!' />
-        <meta name='twitter:image' content='https://atlammalta.com/images/logo2.png' />
+        <meta name='twitter:image' content='https://atlammalta.com/images/logo10.png' />
 
         {/* Google (Schema.org) */}
         <meta itemProp='name' content={themeConfig.templateName} />
         <meta itemProp='description' content='Find your ideal place in Malta!' />
-        <meta itemProp='image' content='https://atlammalta.com/images/logo2.png' />
+        <meta itemProp='image' content='https://atlammalta.com/images/logo10.png' />
       </Head>
 
       <AuthProvider>

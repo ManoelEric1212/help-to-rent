@@ -2,6 +2,7 @@ import { AppBar, Toolbar, Typography, IconButton, Drawer, List, ListItem, ListIt
 import { Menu as MenuIcon } from '@mui/icons-material'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
+import { useModal } from 'src/context/SettingsAgentContext'
 
 const HoverButton = ({
   text,
@@ -32,6 +33,8 @@ const Header = () => {
   const [scrolling, setScrolling] = useState(false)
   const [drawerOpen, setDrawerOpen] = useState(false)
 
+  const { setOpenCon } = useModal()
+
   const router = useRouter()
   console.log('router', router.pathname)
 
@@ -59,21 +62,27 @@ const Header = () => {
       >
         <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', padding: scrolling ? '16px' : '16px' }}>
           {router.pathname === '/acl' ? (
-            <img
-              src={scrolling ? '/images/logo5.png' : '/images/logo5.png'}
-              alt='Real State Icon'
-              style={{ width: '270px' }}
-            />
+            <div style={{ cursor: 'pointer' }}>
+              <img
+                src={scrolling ? '/images/logo1.png' : '/images/logo5.png'}
+                alt='Real State Icon'
+                style={{ width: '270px' }}
+                onClick={() => router.push('/acl')}
+              />
+            </div>
           ) : (
-            <img
-              src={scrolling ? '/images/logo5.png' : '/images/logo2.png'}
-              alt='Real State Icon'
-              style={{ width: '270px' }}
-            />
+            <div style={{ cursor: 'pointer' }}>
+              <img
+                src={scrolling ? '/images/logo1.png' : '/images/logo2.png'}
+                alt='Real State Icon'
+                style={{ width: '270px' }}
+                onClick={() => router.push('/acl')}
+              />
+            </div>
           )}
 
           <IconButton
-            sx={{ display: { xs: 'block', md: 'none' }, color: scrolling ? 'black' : 'white' }}
+            sx={{ display: { xs: 'block', md: 'none' }, color: scrolling ? 'white' : 'white' }}
             onClick={() => setDrawerOpen(true)}
           >
             <MenuIcon />
@@ -86,25 +95,26 @@ const Header = () => {
               color: router.pathname === '/acl' ? (scrolling ? '#fff' : '#fff') : '#25235D'
             }}
           >
-            <HoverButton
-              text='Home'
-              selected={router.pathname === '/acl'}
-              handleOnClick={() => router.replace('/acl')}
-            />
+            <HoverButton text='Home' selected={router.pathname === '/acl'} handleOnClick={() => router.push('/acl')} />
             <HoverButton
               text='Properties'
               selected={router.pathname === '/acl/properties'}
-              handleOnClick={() => router.replace('/acl/properties')}
+              handleOnClick={() => router.push('/acl/properties')}
             />
             <HoverButton
               text='Contact'
               selected={router.pathname === '/acl/contact'}
-              handleOnClick={() => router.replace('/acl/contact')}
+              handleOnClick={() => setOpenCon(true)}
+            />
+            <HoverButton
+              text='Careers'
+              selected={router.pathname === '/acl/careers'}
+              handleOnClick={() => router.push('/acl/careers')}
             />
             <HoverButton
               text='Login'
               selected={router.pathname === '/login'}
-              handleOnClick={() => router.replace('/login')}
+              handleOnClick={() => router.push('/login')}
             />
           </Box>
         </Toolbar>
@@ -116,13 +126,14 @@ const Header = () => {
             { text: 'Home', path: '/acl' },
             { text: 'Properties', path: '/acl/properties' },
             { text: 'Contact', path: '/acl/contact' },
+            { text: 'Careers', path: '/acl/careers' },
             { text: 'Login', path: '/login' }
           ].map(item => (
             <ListItem
               button
               key={item.text}
               onClick={() => {
-                router.replace(item.path)
+                router.push(item.path)
                 setDrawerOpen(false)
               }}
             >

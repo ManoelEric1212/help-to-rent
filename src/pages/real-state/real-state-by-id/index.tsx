@@ -26,6 +26,7 @@ import ModalBase from 'src/components/Modal'
 import RegisterRealStateComponent from '../components/RegisterForm'
 import { shareOnWhatsApp } from 'src/@core/components/WhatssAppComponent'
 import OwnerDetailsModal from './OwnerModal'
+import { useAuth } from 'src/hooks/useAuth'
 
 export interface iconsAdditional {
   label: string
@@ -47,6 +48,7 @@ const RegisterRealState = () => {
   const [modalTitle, setModalTitle] = useState('')
 
   const [modalContent, setModalContent] = useState<React.ReactNode>(null)
+  const { user } = useAuth()
 
   const handleOpenModal = (title: string, content: React.ReactNode) => {
     setModalTitle(title)
@@ -87,10 +89,6 @@ const RegisterRealState = () => {
       setRealStateById(realStateById)
       if (dataFormatted.images.length) {
         setPreviews(dataFormatted.images.map(item => buildImageUrl(item.url)))
-        console.log(
-          'dataFormatted.images.map(item => buildImageUrl(item.url))',
-          dataFormatted.images.map(item => buildImageUrl(item.url))
-        )
       }
     } catch (error) {
       throw new Error('Error getRealStateById')
@@ -157,7 +155,7 @@ const RegisterRealState = () => {
     <>
       <Grid
         container
-        spacing={6}
+        spacing={2}
         sx={{
           flexDirection: { xs: 'column', sm: 'row' } // Muda para coluna em telas pequenas
         }}
@@ -217,6 +215,12 @@ const RegisterRealState = () => {
             </Grid>
 
             <Box sx={{ padding: '2.5rem' }}>{previews.length && <ImageCarousel images={previews} />}</Box>
+            <Box sx={{ padding: '1rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+              <Typography sx={{ fontSize: '1.5rem', fontWeight: 'bold' }}>ID:</Typography>
+              <Box>
+                <Typography>{String(realStateById?.id_number).padStart(3, '0')}</Typography>
+              </Box>
+            </Box>
             <Box sx={{ padding: '1rem' }}>
               <Typography sx={{ fontSize: '1.5rem', fontWeight: 'bold' }}>Additional items:</Typography>
               <Box
@@ -311,12 +315,20 @@ const RegisterRealState = () => {
           </Box>
         </Grid>
       </Grid>
-      <Grid>
+      <Grid sx={{ marginTop: '10px' }}>
         <Card sx={{ padding: '1rem' }}>
           <Box>
             <Typography sx={{ fontSize: '1.5rem', fontWeight: 'bold' }}>Description</Typography>
             <Typography sx={{ marginTop: '0.6rem' }}>{realStateById?.description}</Typography>
           </Box>
+          {user?.role !== 'client' && realStateById?.additionalExpenses.length ? (
+            <Box>
+              <Typography sx={{ fontSize: '1.5rem', fontWeight: 'bold' }}>Additional expenses</Typography>
+              <Typography sx={{ marginTop: '0.6rem' }}>{realStateById?.additionalExpenses}</Typography>
+            </Box>
+          ) : (
+            <></>
+          )}
         </Card>
       </Grid>
       <ModalBase open={isModalOpen} title={modalTitle} content={modalContent} onClose={() => handleCloseModal()} />

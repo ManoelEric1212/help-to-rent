@@ -5,7 +5,8 @@ import { RealStateType } from 'src/requests/realStateRequest'
 import BathtubOutlinedIcon from '@mui/icons-material/BathtubOutlined'
 import HotelOutlinedIcon from '@mui/icons-material/HotelOutlined'
 import { useItems } from 'src/context/ItemsContext'
-import { useRouter } from 'next/router'
+
+// import { useRouter } from 'next/router'
 import LoadingOverlay from 'src/components/GlobalLoading'
 
 interface imageToPageType {
@@ -87,6 +88,9 @@ const MostedItems = () => {
       setCurrentItems(currentIt)
     }
   }, [itemsMosted]) // Este useEffect agora depende apenas de itemsMosted
+  const openNewTab = (id: string) => {
+    window.open(`/acl/real-state-by-id/?id=${id}`, '_blank')
+  }
 
   useEffect(() => {
     // Quando o currentPage mudar, também precisa atualizar os itens da página atual
@@ -94,7 +98,7 @@ const MostedItems = () => {
     setCurrentItems(currentIt)
   }, [currentPage, itemsMosted]) // Agora estamos observando tanto o currentPage quanto itemsMosted
 
-  const router = useRouter()
+  // const router = useRouter()
 
   return (
     <>
@@ -105,7 +109,8 @@ const MostedItems = () => {
               sx={{ maxWidth: 445, boxShadow: 3, borderRadius: 2, height: '100%', cursor: 'pointer' }}
               onClick={() => {
                 // setItemById(itemsMosted.find(item => item.id === property.id) ?? null)
-                setTimeout(() => router.replace(`/acl/real-state-by-id/?id=${property.id}`), 500)
+
+                setTimeout(() => openNewTab(property.id), 500)
               }}
             >
               <Box sx={{ position: 'relative' }}>
@@ -160,7 +165,7 @@ const MostedItems = () => {
                     zIndex: 1
                   }}
                 >
-                  {`€ ${property.value}`}
+                  {`€ ${property.value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}`}
                 </Box>
 
                 <CardMedia

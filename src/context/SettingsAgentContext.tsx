@@ -7,6 +7,8 @@ import UpdateAgentForm from 'src/components/FormUpdateRegister'
 type ModalContextType = {
   openDialog: (title: string, content: ReactNode) => void
   closeDialog: () => void
+  openCon: boolean
+  setOpenCon: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 const ModalContext = createContext<ModalContextType | undefined>(undefined)
@@ -19,6 +21,7 @@ export const ModalProvider: React.FC<ModalProviderProps> = ({ children }) => {
   const [isOpen, setIsOpen] = useState(false)
   const [dialogTitle, setDialogTitle] = useState<string>('')
   const [dialogContent, setDialogContent] = useState<ReactNode>(null)
+  const [openCon, setOpenCon] = useState(false)
 
   const { user, agent } = useAuth()
 
@@ -40,7 +43,7 @@ export const ModalProvider: React.FC<ModalProviderProps> = ({ children }) => {
   }
 
   return (
-    <ModalContext.Provider value={{ openDialog, closeDialog }}>
+    <ModalContext.Provider value={{ openDialog, closeDialog, openCon, setOpenCon }}>
       {children}
       <Dialog open={isOpen} onClose={closeDialog}>
         <DialogTitle>{dialogTitle}</DialogTitle>

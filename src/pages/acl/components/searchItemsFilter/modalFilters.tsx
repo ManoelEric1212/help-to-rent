@@ -116,7 +116,7 @@ const FiltersModal: React.FC<OwnerDetailsModalProps> = ({ open, handleClose }) =
 
     setItemsMosted2(data ?? [])
     handleClose()
-    router.replace('/acl/properties')
+    router.push('/acl/properties')
   }
 
   const handleCheckboxChange = (value: string) => {

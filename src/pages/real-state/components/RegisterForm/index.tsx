@@ -413,7 +413,6 @@ const RegisterRealStateComponent = () => {
 
   useEffect(() => {
     getRegionOptions()
-    console.log('sss')
     reset(defaultValues)
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -491,7 +490,7 @@ const RegisterRealStateComponent = () => {
         const data = await updateRealState({ body: formData, id: id as string })
         if (data) {
           toast.success('Real state updated!')
-          router.replace('/real-state')
+          router.push('/real-state')
           setLoading(false)
 
           return
@@ -501,7 +500,7 @@ const RegisterRealStateComponent = () => {
 
       if (data) {
         toast.success('Real state registered!')
-        router.replace('/real-state')
+        router.push('/real-state')
         setLoading(false)
       }
     } catch (error) {
@@ -792,49 +791,95 @@ const RegisterRealStateComponent = () => {
                 </FormControl>
               </Grid>
 
-              <Grid item sm={3} xs={12}>
-                <FormControl fullWidth sx={{ mb: 3 }}>
-                  <Controller
-                    name='type'
-                    control={control}
-                    rules={{ required: 'Type is required' }}
-                    render={({ field: { value, onChange, onBlur } }) => (
-                      <>
-                        <InputLabel id='type-label'>Type</InputLabel>
-                        <Select
-                          labelId='type-label'
-                          value={value || ''}
-                          onBlur={onBlur}
-                          onChange={onChange}
-                          error={Boolean(errors.type)}
-                        >
-                          <MenuItem value=''>
-                            <em>None</em>
-                          </MenuItem>
+              {watchIntentionStatus === 'COMMERCIAL' ? (
+                <Grid item sm={3} xs={12}>
+                  <FormControl fullWidth sx={{ mb: 3 }}>
+                    <Controller
+                      name='type'
+                      control={control}
+                      rules={{ required: 'Type is required' }}
+                      render={({ field: { value, onChange, onBlur } }) => (
+                        <>
+                          <InputLabel id='type-label'>Type</InputLabel>
+                          <Select
+                            labelId='type-label'
+                            value={value || ''}
+                            onBlur={onBlur}
+                            onChange={onChange}
+                            error={Boolean(errors.type)}
+                          >
+                            <MenuItem value=''>
+                              <em>None</em>
+                            </MenuItem>
 
-                          <MenuItem value='APARTMENT'>APARTMENT</MenuItem>
-                          <MenuItem value='BLOCK OF APARTMENTS'>BLOCK OF APARTMENTS</MenuItem>
-                          <MenuItem value='DETACHED VILLA'>DETACHED VILLA</MenuItem>
-                          <MenuItem value='DUPLEX APARTMENT'>DUPLEX APARTMENT</MenuItem>
-                          <MenuItem value='FARMHOUSE'>FARMHOUSE</MenuItem>
-                          <MenuItem value='HOUSE OF CHARACTER'>HOUSE OF CHARACTER</MenuItem>
-                          <MenuItem value='MAISONETTE'>MAISONETTE</MenuItem>
-                          <MenuItem value='PENTHOUSE'>PENTHOUSE</MenuItem>
-                          <MenuItem value='STUDIO'>STUDIO</MenuItem>
-                          <MenuItem value='TOWNHOUSE'>TOWNHOUSE</MenuItem>
-                          <MenuItem value='VILLA'>VILLA</MenuItem>
-                          <MenuItem value='TERRACE HOUSE'>TERRACE HOUSE</MenuItem>
+                            <MenuItem value='BARS_RESTAURANTS'>Bars & Restaurants</MenuItem>
+                            <MenuItem value='COLD_STORAGE'>Cold Storage</MenuItem>
+                            <MenuItem value='FACTORY'>Factory</MenuItem>
+                            <MenuItem value='GARAGE_STORE'>Garage / Store (Industrial)</MenuItem>
+                            <MenuItem value='HOTELS_GUESTHOUSES'>Hotels & Guesthouses</MenuItem>
+                            <MenuItem value='NIGHT_CLUB'>Nightclub</MenuItem>
+                            <MenuItem value='OFFICE_OFFICE_SPACE'>Office/Office Space</MenuItem>
+                            <MenuItem value='PLOT'>Plot(Commercial)</MenuItem>
+                            <MenuItem value='SCHOOL'>School</MenuItem>
+                            <MenuItem value='SHOP'>Shop</MenuItem>
+                            <MenuItem value='SHOWROOM'>Showroom</MenuItem>
+                            <MenuItem value='SITE'>Site(Commercial)</MenuItem>
 
-                          {/* Add more MenuItems as needed */}
-                        </Select>
-                        {errors.type && (
-                          <FormHelperText sx={{ color: 'error.main' }}>{errors.type.message}</FormHelperText>
-                        )}
-                      </>
-                    )}
-                  />
-                </FormControl>
-              </Grid>
+                            {/* Add more MenuItems as needed */}
+                          </Select>
+                          {errors.type && (
+                            <FormHelperText sx={{ color: 'error.main' }}>{errors.type.message}</FormHelperText>
+                          )}
+                        </>
+                      )}
+                    />
+                  </FormControl>
+                </Grid>
+              ) : (
+                <Grid item sm={3} xs={12}>
+                  <FormControl fullWidth sx={{ mb: 3 }}>
+                    <Controller
+                      name='type'
+                      control={control}
+                      rules={{ required: 'Type is required' }}
+                      render={({ field: { value, onChange, onBlur } }) => (
+                        <>
+                          <InputLabel id='type-label'>Type</InputLabel>
+                          <Select
+                            labelId='type-label'
+                            value={value || ''}
+                            onBlur={onBlur}
+                            onChange={onChange}
+                            error={Boolean(errors.type)}
+                          >
+                            <MenuItem value=''>
+                              <em>None</em>
+                            </MenuItem>
+
+                            <MenuItem value='APARTMENT'>APARTMENT</MenuItem>
+                            <MenuItem value='BLOCK OF APARTMENTS'>BLOCK OF APARTMENTS</MenuItem>
+                            <MenuItem value='DETACHED VILLA'>DETACHED VILLA</MenuItem>
+                            <MenuItem value='DUPLEX APARTMENT'>DUPLEX APARTMENT</MenuItem>
+                            <MenuItem value='FARMHOUSE'>FARMHOUSE</MenuItem>
+                            <MenuItem value='HOUSE OF CHARACTER'>HOUSE OF CHARACTER</MenuItem>
+                            <MenuItem value='MAISONETTE'>MAISONETTE</MenuItem>
+                            <MenuItem value='PENTHOUSE'>PENTHOUSE</MenuItem>
+                            <MenuItem value='STUDIO'>STUDIO</MenuItem>
+                            <MenuItem value='TOWNHOUSE'>TOWNHOUSE</MenuItem>
+                            <MenuItem value='VILLA'>VILLA</MenuItem>
+                            <MenuItem value='TERRACE HOUSE'>TERRACE HOUSE</MenuItem>
+
+                            {/* Add more MenuItems as needed */}
+                          </Select>
+                          {errors.type && (
+                            <FormHelperText sx={{ color: 'error.main' }}>{errors.type.message}</FormHelperText>
+                          )}
+                        </>
+                      )}
+                    />
+                  </FormControl>
+                </Grid>
+              )}
             </Grid>
 
             <Grid container spacing={6}>
