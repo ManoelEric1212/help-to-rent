@@ -73,7 +73,7 @@ const Header3 = () => {
               <img
                 src={scrolling ? '/images/logo1.png' : '/images/logo10.png'}
                 alt='Real State Icon'
-                style={{ width: scrolling ? '270px' : '70px' }}
+                style={{ width: scrolling ? '270px' : '60px' }}
                 onClick={() => router.push('/acl')}
               />
             </div>
@@ -90,7 +90,7 @@ const Header3 = () => {
             sx={{
               display: { xs: 'none', md: 'flex' },
               gap: { xs: '0.2rem', md: '3.5rem', sm: '2rem' },
-              color: router.pathname === '/acl' ? (scrolling ? '#fff' : '#fff') : '#25235D'
+              color: scrolling ? '#fff' : '#25235D'
             }}
           >
             <HoverButton text='Home' selected={router.pathname === '/acl'} handleOnClick={() => router.push('/acl')} />
@@ -130,6 +130,12 @@ const Header3 = () => {
               button
               key={item.text}
               onClick={() => {
+                if (item.path === '/acl/contact') {
+                  setOpenCon(true)
+                  setDrawerOpen(false)
+
+                  return
+                }
                 router.push(item.path)
                 setDrawerOpen(false)
               }}

@@ -173,7 +173,7 @@ const DialogEdit = ({ open, onClose, data }: DialogEditProps) => {
                   <Grid item sm={6} xs={12}>
                     <TextField
                       fullWidth
-                      label='Id Real State'
+                      label='Id Real Estate'
                       placeholder='Terraced House'
                       value={idRealState}
                       disabled
@@ -233,7 +233,7 @@ const DialogEdit = ({ open, onClose, data }: DialogEditProps) => {
                 <Grid item sm={12} xs={12}>
                   <TextField
                     fullWidth
-                    label='Id Real State'
+                    label='Id Real Estate'
                     placeholder='Terraced House'
                     value={idRealState}
                     disabled

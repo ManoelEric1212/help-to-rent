@@ -31,9 +31,6 @@ const theme = createTheme({
 })
 
 const images = [
-  '/images/malta1.JPG',
-  '/images/malta2.JPG',
-  '/images/malta3.JPG',
   '/images/malta4.JPG'
 
   // '/images/malta5.JPG',
@@ -46,16 +43,17 @@ const images = [
 const ACLPage = () => {
   // const router = useRouter()
   const matches = useMediaQuery('(min-width:600px)')
-  const [currentImage, setCurrentImage] = React.useState(0)
 
-  // const matches2 = useMediaQuery('(min-width:800px)')
-  React.useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentImage(prev => (prev + 1) % images.length)
-    }, 5000) // Muda a cada 5 segundos
+  // const [currentImage, setCurrentImage] = React.useState(0)
 
-    return () => clearInterval(interval)
-  }, [])
+  // // const matches2 = useMediaQuery('(min-width:800px)')
+  // React.useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     setCurrentImage(prev => (prev + 1) % images.length)
+  //   }, 5000) // Muda a cada 5 segundos
+
+  //   return () => clearInterval(interval)
+  // }, [])
 
   return (
     <ThemeProvider theme={theme}>
@@ -64,14 +62,13 @@ const ACLPage = () => {
         <Grid>
           <Box
             sx={{
-              backgroundImage: `url(${images[currentImage]})`,
+              backgroundImage: `url(${images[0]})`,
               backgroundSize: 'cover',
               backgroundPosition: 'center',
               height: { xs: '100vh', md: '90vh', lg: '90vh' },
               display: { xs: 'flex', sm: 'flex' },
               justifyContent: 'center',
-              alignItems: 'start',
-              opacity: 0.9
+              alignItems: 'start'
             }}
           >
             <Grid sx={{ width: '100%', marginTop: '10rem' }}>

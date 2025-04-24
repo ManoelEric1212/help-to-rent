@@ -6,6 +6,8 @@ import FormControl from '@mui/material/FormControl'
 import Typography from '@mui/material/Typography'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import DirectionsIcon from '@mui/icons-material/Directions'
+import StarIcon from '@mui/icons-material/Star'
+import StarBorderIcon from '@mui/icons-material/StarBorder'
 
 // ** Layout Import
 
@@ -15,6 +17,11 @@ import { Controller, useForm } from 'react-hook-form'
 import * as yup from 'yup'
 import {
   CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   FormControlLabel,
   FormGroup,
   FormHelperText,
@@ -34,6 +41,7 @@ import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 
 import CloseIcon from '@mui/icons-material/Close'
 import {
+  deleteRealStateById,
   getAllRealStates,
   getLatAndLng,
   getLatAndLngReq,
@@ -187,7 +195,14 @@ const RegisterRealStateComponent = () => {
   const [optionsRegions, setOptionsRegions] = useState<Region[]>([])
   const [addressSearch, setAddressSearch] = useState<string>('')
   const [loading, setLoading] = useState(false)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [allStates, setALlStates] = useState<RealStateType[]>([])
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
+  const [favoriteIndex, setFavoriteIndex] = useState<number | null>(null)
+  const [open, setOpen] = useState(false)
+
+  const handleOpenA = () => setOpen(true)
+  const handleClose = () => setOpen(false)
 
   // const [regionSearch, setRegionSearch] = useState<string>('')
 
@@ -203,7 +218,7 @@ const RegisterRealStateComponent = () => {
     // const baseUrl = `${protocol}//${hostname}${`:${5000}`}`
     const baseUrl = `${protocol}//${hostname}`
 
-    // const baseUrl = `https://atlammalta.com`
+    // const baseUrl = `https://atlamproperties.com`
 
     return `${baseUrl}/uploads/${imagePath}`
   }
@@ -232,6 +247,12 @@ const RegisterRealStateComponent = () => {
       setRealStateById(realStateById)
       reset(dataFormatted)
       if (dataFormatted.images.length) {
+        dataFormatted.images.forEach((file, index) => {
+          if (file.url.slice(0, 2) === '1-') {
+            setFavoriteIndex(index)
+          }
+        })
+
         setPreviews(dataFormatted.images.map(item => buildImageUrl(item.url)))
         const backendFiles = await convertBackendImagesToFiles(dataFormatted.images)
         setFiles(prevFiles => [...prevFiles, ...backendFiles])
@@ -247,6 +268,15 @@ const RegisterRealStateComponent = () => {
       setRegionOptions(dataOptions)
     } catch (error) {
       throw new Error('Erro get region options')
+    }
+  }
+  const deleteRegister = async () => {
+    try {
+      await deleteRealStateById(id as string)
+      toast.success('Real Estate has been deleted!')
+      router.push('/real-state')
+    } catch (error) {
+      throw new Error('Erro delete real estate options')
     }
   }
 
@@ -335,7 +365,6 @@ const RegisterRealStateComponent = () => {
   const { newPoint, setNewPointAddress } = useMapRegister()
 
   const getLatAndLng = async (data: getLatAndLng) => {
-    console.log('data', data)
     try {
       const dataLatAndLng = await getLatAndLngReq(data)
       setNewPointAddress({ lat: parseFloat(dataLatAndLng[0].lat), lng: parseFloat(dataLatAndLng[0].lon) })
@@ -422,7 +451,6 @@ const RegisterRealStateComponent = () => {
     getAllStates()
   }, [])
 
-  console.log('allStates', allStates)
   const onSubmit = async (data: FormData) => {
     setLoading(true)
     const formData = new FormData()
@@ -480,16 +508,18 @@ const RegisterRealStateComponent = () => {
     formData.append('status', data.status)
 
     // Adicionar as imagens no FormData
-    files.forEach(file => {
-      formData.append('images', file) // "images" deve ser o mesmo campo esperado no backend
+    files.forEach((file, index) => {
+      const isFavorite = index === favoriteIndex
+      const renamedFile = isFavorite ? new File([file], `1-${file.name}`, { type: file.type }) : file
+
+      formData.append('images', renamedFile)
     })
 
     try {
       if (id?.length) {
-        console.log('files', files)
         const data = await updateRealState({ body: formData, id: id as string })
         if (data) {
-          toast.success('Real state updated!')
+          toast.success('Real Estate updated!')
           router.push('/real-state')
           setLoading(false)
 
@@ -499,14 +529,14 @@ const RegisterRealStateComponent = () => {
       const data = await registerRealState(formData)
 
       if (data) {
-        toast.success('Real state registered!')
+        toast.success('Real Estate registered!')
         router.push('/real-state')
         setLoading(false)
       }
     } catch (error) {
       setLoading(false)
 
-      toast.error('Real state not registered!')
+      toast.error('Real Estate not registered!')
     }
   }
 
@@ -555,7 +585,7 @@ const RegisterRealStateComponent = () => {
   return (
     <Grid container spacing={1}>
       <Grid container spacing={6}>
-        <Grid item sm={4} xs={12}>
+        <Grid item sm={4} xs={12} sx={{ display: 'flex', gap: '1rem' }}>
           <TextField
             label='Search Address Map'
             value={addressSearch}
@@ -583,6 +613,35 @@ const RegisterRealStateComponent = () => {
             onChange={(e: ChangeEvent<HTMLInputElement>) => setAddressSearch(e.target.value)}
             fullWidth
           />
+          {user?.role === 'admin' && (
+            <Button variant='contained' color='error' onClick={handleOpenA}>
+              Delete
+            </Button>
+          )}
+
+          <Dialog open={open} onClose={handleClose}>
+            <DialogTitle>Attention</DialogTitle>
+            <DialogContent>
+              <DialogContentText>
+                You are about to delete the property registration. Are you sure about this?
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleClose} color='primary'>
+                Cancel
+              </Button>
+              <Button
+                onClick={() => {
+                  handleClose()
+                  deleteRegister()
+                }}
+                autoFocus
+                color='error'
+              >
+                Confirm
+              </Button>
+            </DialogActions>
+          </Dialog>
         </Grid>
       </Grid>
       <Box sx={{ width: '100vw', height: '70vh', marginTop: '0.3rem' }}>
@@ -601,7 +660,7 @@ const RegisterRealStateComponent = () => {
       >
         <BoxWrapper>
           <Box sx={{ mb: 4 }}>
-            <Typography variant='body2'>Add a Real State in database </Typography>
+            <Typography variant='body2'>Add a Real Estate in database </Typography>
           </Box>
           <form noValidate autoComplete='off' onSubmit={handleSubmit(onSubmit)}>
             {/* <form noValidate autoComplete='off'> */}
@@ -723,6 +782,7 @@ const RegisterRealStateComponent = () => {
                         <InputLabel id='type-label'>Area</InputLabel>
                         <Select
                           labelId='type-label'
+                          label='Area'
                           value={value || ''}
                           onBlur={onBlur}
                           onChange={onChange}
@@ -758,6 +818,7 @@ const RegisterRealStateComponent = () => {
                         <InputLabel id='region-label'>Region</InputLabel>
                         <Select
                           labelId='region-label'
+                          label='Region'
                           value={value || ''}
                           onBlur={onBlur}
                           onChange={onChange}
@@ -803,6 +864,7 @@ const RegisterRealStateComponent = () => {
                           <InputLabel id='type-label'>Type</InputLabel>
                           <Select
                             labelId='type-label'
+                            label='Type'
                             value={value || ''}
                             onBlur={onBlur}
                             onChange={onChange}
@@ -847,6 +909,7 @@ const RegisterRealStateComponent = () => {
                           <InputLabel id='type-label'>Type</InputLabel>
                           <Select
                             labelId='type-label'
+                            label='Type'
                             value={value || ''}
                             onBlur={onBlur}
                             onChange={onChange}
@@ -938,6 +1001,7 @@ const RegisterRealStateComponent = () => {
                       render={({ field: { value, onChange } }) => (
                         <DatePicker
                           label='Availability Date'
+                          inputFormat='DD/MM/YYYY'
                           value={value ? dayjs(value) : null} // Garantindo que o valor seja manipulado como dayjs
                           onChange={newValue => onChange(newValue ? newValue.toISOString() : '')} // Formatando a data antes de setar
                           renderInput={params => (
@@ -1122,6 +1186,7 @@ const RegisterRealStateComponent = () => {
                         <InputLabel id='type-label'>Show in client page</InputLabel>
                         <Select
                           labelId='type-label'
+                          label='Show in client page'
                           value={value || ''}
                           onBlur={onBlur}
                           onChange={onChange}
@@ -1844,8 +1909,42 @@ const RegisterRealStateComponent = () => {
               <Box sx={{ display: 'flex', justifyContent: 'flex-start', gap: 3, flexWrap: 'wrap' }}>
                 {previews.length ? (
                   previews.map((item, i) => (
-                    <AvatarInput key={i}>
-                      <img src={item} alt='Avatar Placeholder' />
+                    <AvatarInput
+                      key={i}
+                      onMouseEnter={() => setHoveredIndex(i)}
+                      onMouseLeave={() => setHoveredIndex(null)}
+                      style={{ position: 'relative' }}
+                    >
+                      <img
+                        src={item}
+                        alt={`Preview ${i}`}
+                        onClick={() => setFavoriteIndex(i)}
+                        style={{ cursor: 'pointer' }}
+                      />
+
+                      {/* Estrela no canto superior esquerdo */}
+                      {(hoveredIndex === i || favoriteIndex === i) && (
+                        <div
+                          onClick={() => setFavoriteIndex(i)}
+                          style={{
+                            position: 'absolute',
+                            top: 0,
+                            left: 0,
+                            padding: '5px',
+                            cursor: 'pointer',
+                            backgroundColor: 'rgba(0,0,0,0.5)',
+                            borderRadius: '0 0 10px 0'
+                          }}
+                        >
+                          {favoriteIndex === i ? (
+                            <StarIcon sx={{ color: 'gold' }} />
+                          ) : (
+                            <StarBorderIcon sx={{ color: 'white' }} />
+                          )}
+                        </div>
+                      )}
+
+                      {/* Ícone de fechar no canto superior direito */}
                       <CloseIcon
                         onClick={() => handleRemoveImage(i)}
                         sx={{
@@ -1894,12 +1993,12 @@ const RegisterRealStateComponent = () => {
                   rules={{ required: true }}
                   render={({ field: { value, onChange, onBlur } }) => (
                     <TextField
-                      label='Additional Expenses'
+                      label='Additional information'
                       value={value}
                       onBlur={onBlur}
                       onChange={onChange}
                       error={Boolean(errors.name)}
-                      placeholder='Additional Expenses'
+                      placeholder='Additional information'
                     />
                   )}
                 />

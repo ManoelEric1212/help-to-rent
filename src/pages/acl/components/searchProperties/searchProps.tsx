@@ -114,7 +114,7 @@ const SearchProperties = () => {
     const data = await fetchRealStates(filteredData)
     console.log('aa', data)
 
-    if (typeFilter.length) {
+    if (typeFilter.length && data?.length) {
       const filters = data?.filter(item => item.type === typeFilter)
       setItemsMosted2(filters ?? [])
 
@@ -169,6 +169,7 @@ const SearchProperties = () => {
               <Select
                 labelId='type-label'
                 defaultValue='FOR_RENT'
+                label='Category'
                 value={intentionStatus || ''}
                 onChange={handleArea2}
                 sx={{
@@ -199,6 +200,7 @@ const SearchProperties = () => {
                 <Select
                   labelId='type-label'
                   defaultValue='FOR_RENT'
+                  label='Sub-category'
                   value={subIntentionStatus || ''}
                   onChange={handleArea3}
                   sx={{
@@ -235,6 +237,7 @@ const SearchProperties = () => {
                   <Select
                     labelId='type-label'
                     value={typeFilter || ''}
+                    label='Type'
                     onChange={handleType}
                     sx={{
                       color: '#8B181B', // Cor do texto selecionado
@@ -274,6 +277,7 @@ const SearchProperties = () => {
                   <Select
                     labelId='type-label'
                     value={typeFilter || ''}
+                    label='Type'
                     onChange={handleType}
                     sx={{
                       color: '#8B181B', // Cor do texto selecionado
@@ -313,6 +317,7 @@ const SearchProperties = () => {
               <Select
                 labelId='type-label'
                 value={areaFilter || ''}
+                label='Area'
                 onChange={handleArea}
                 sx={{
                   color: '#8B181B', // Cor do texto selecionado
@@ -329,7 +334,7 @@ const SearchProperties = () => {
                 <MenuItem value='NORTH'>NORTH</MenuItem>
                 <MenuItem value='CENTER'>CENTER</MenuItem>
                 <MenuItem value='SOUTH'>SOUTH</MenuItem>
-                <MenuItem value='TOURIST_REGION'>TOURIST_REGION</MenuItem>
+                <MenuItem value='TOURIST_REGION'>TOURIST REGION</MenuItem>
 
                 {/* Add more MenuItems as needed */}
               </Select>
@@ -352,6 +357,14 @@ const SearchProperties = () => {
                 value={regionFilter}
                 id='region'
                 label='Location'
+                MenuProps={{
+                  PaperProps: {
+                    style: {
+                      maxHeight: 300, // altura máxima do menu
+                      width: 250 // largura do menu
+                    }
+                  }
+                }}
                 labelId='region'
                 onChange={(e: SelectChangeEvent<string>) => setRegionFilter(e.target.value)}
               >

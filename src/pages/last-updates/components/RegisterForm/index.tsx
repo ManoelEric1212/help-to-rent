@@ -199,7 +199,7 @@ const RegisterRealStateComponent = () => {
     // const baseUrl = `${protocol}//${hostname}${`:${5000}`}`
     const baseUrl = `${protocol}//${hostname}`
 
-    // const baseUrl = `https://atlammalta.com`
+    // const baseUrl = `https://atlamproperties.com`
 
     return `${baseUrl}/uploads/${imagePath}`
   }
@@ -480,7 +480,7 @@ const RegisterRealStateComponent = () => {
         console.log('files', files)
         const data = await updateRealState({ body: formData, id: id as string })
         if (data) {
-          toast.success('Real state updated!')
+          toast.success('Real Estate updated!')
           router.push('/real-state')
           setLoading(false)
 
@@ -490,14 +490,14 @@ const RegisterRealStateComponent = () => {
       const data = await registerRealState(formData)
 
       if (data) {
-        toast.success('Real state registered!')
+        toast.success('Real Estate registered!')
         router.push('/real-state')
         setLoading(false)
       }
     } catch (error) {
       setLoading(false)
 
-      toast.error('Real state not registered!')
+      toast.error('Real Estate not registered!')
     }
   }
 
@@ -592,7 +592,7 @@ const RegisterRealStateComponent = () => {
       >
         <BoxWrapper>
           <Box sx={{ mb: 4 }}>
-            <Typography variant='body2'>Add a Real State in database </Typography>
+            <Typography variant='body2'>Add a Real Estate in database </Typography>
           </Box>
           <form noValidate autoComplete='off' onSubmit={handleSubmit(onSubmit)}>
             {/* <form noValidate autoComplete='off'> */}
@@ -874,7 +874,7 @@ const RegisterRealStateComponent = () => {
               </Grid>
 
               <Grid item sm={3} xs={12}>
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale='pt-br'>
                   <FormControl fullWidth sx={{ mb: 3 }}>
                     <Controller
                       name='availabilityDate'
@@ -883,6 +883,7 @@ const RegisterRealStateComponent = () => {
                       render={({ field: { value, onChange } }) => (
                         <DatePicker
                           label='Availability Date'
+                          inputFormat='DD/MM/YYYY'
                           value={value ? dayjs(value) : null} // Garantindo que o valor seja manipulado como dayjs
                           onChange={newValue => onChange(newValue ? newValue.toISOString() : '')} // Formatando a data antes de setar
                           renderInput={params => (
@@ -1807,12 +1808,12 @@ const RegisterRealStateComponent = () => {
                   rules={{ required: true }}
                   render={({ field: { value, onChange, onBlur } }) => (
                     <TextField
-                      label='Additional Expenses'
+                      label='Additional information'
                       value={value}
                       onBlur={onBlur}
                       onChange={onChange}
                       error={Boolean(errors.name)}
-                      placeholder='Additional Expenses'
+                      placeholder='Additional information'
                     />
                   )}
                 />

@@ -11,7 +11,13 @@ import {
   Button
 } from '@mui/material'
 import { useEffect, useState } from 'react'
-import { filters, getAllRealStates, getFilteredRealStates, RealStateType } from 'src/requests/realStateRequest'
+import {
+  filters,
+  getAllRealStates,
+  getAllRealStatesClient,
+  getFilteredRealStates,
+  RealStateType
+} from 'src/requests/realStateRequest'
 import { getRegionRequest, Region } from 'src/requests/regionRequest'
 import SearchIcon from '@mui/icons-material/Search'
 import { useItems } from 'src/context/ItemsContext'
@@ -76,6 +82,15 @@ const SearchFiltersItem = () => {
       console.warn(error)
     }
   }
+
+  async function getRealStates2() {
+    try {
+      const data = await getAllRealStatesClient()
+      setItemsMosted(data)
+    } catch (error) {
+      console.warn(error)
+    }
+  }
   const handleCloseModal2 = () => {
     setIsModalOpen2(false)
   }
@@ -85,8 +100,15 @@ const SearchFiltersItem = () => {
 
   useEffect(() => {
     getRealStates()
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+  useEffect(() => {
+    getRealStates2()
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   useEffect(() => {
     getRegionOptions()
   }, [])
@@ -277,7 +299,7 @@ const SearchFiltersItem = () => {
       >
         <Grid item sm={2} md={2} xs={12}>
           <FormControl fullWidth>
-            <InputLabel id='type-label' shrink sx={{ color: '#8B181B', '&.Mui-focused': { color: '#8B181B' } }}>
+            <InputLabel id='type-label' sx={{ color: '#8B181B', '&.Mui-focused': { color: '#8B181B' } }}>
               Area
             </InputLabel>
             <Select
@@ -301,7 +323,7 @@ const SearchFiltersItem = () => {
               <MenuItem value='NORTH'>NORTH</MenuItem>
               <MenuItem value='CENTER'>CENTER</MenuItem>
               <MenuItem value='SOUTH'>SOUTH</MenuItem>
-              <MenuItem value='TOURIST_REGION'>TOURIST_REGION</MenuItem>
+              <MenuItem value='TOURIST_REGION'>TOURIST REGION</MenuItem>
 
               {/* Add more MenuItems as needed */}
             </Select>
@@ -324,6 +346,14 @@ const SearchFiltersItem = () => {
               id='region'
               label='Location'
               labelId='region'
+              MenuProps={{
+                PaperProps: {
+                  style: {
+                    maxHeight: 300, // altura máxima do menu
+                    width: 250 // largura do menu
+                  }
+                }
+              }}
               onChange={(e: SelectChangeEvent<string>) => setRegionFilter(e.target.value)}
             >
               {optionsRegions.map(region => (

@@ -60,7 +60,7 @@ const ButtonRequest = ({ id, link }: realProps) => {
           }}
         >
           <Typography variant='h5' fontWeight='bold' gutterBottom>
-            Contact us for more informations for Real State: {id}
+            Contact us for more informations for Real Estate: {id}
           </Typography>
           <Grid container spacing={2}>
             <Grid item xs={12}>

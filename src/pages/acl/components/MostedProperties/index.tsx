@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react'
 import { Grid, Card, CardMedia, CardContent, Typography, Pagination, Box } from '@mui/material'
-import { RealStateType } from 'src/requests/realStateRequest'
+import { images, RealStateType } from 'src/requests/realStateRequest'
 import BathtubOutlinedIcon from '@mui/icons-material/BathtubOutlined'
 import HotelOutlinedIcon from '@mui/icons-material/HotelOutlined'
 import { useItems } from 'src/context/ItemsContext'
@@ -30,7 +30,7 @@ const MostedItems2 = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const [currentItems, setCurrentItems] = useState<imageToPageType[]>([])
 
-  const itemsPerPage = 15 // Define o número de itens por página, ajuste conforme necessário.
+  const itemsPerPage = 12 // Define o número de itens por página, ajuste conforme necessário.
   const indexOfLastItem = currentPage * itemsPerPage
   const indexOfFirstItem = indexOfLastItem - itemsPerPage
   const { itemsMosted2, loading } = useItems()
@@ -40,9 +40,15 @@ const MostedItems2 = () => {
 
     const baseUrl = `${protocol}//${hostname}`
 
-    // const baseUrl = `https://atlammalta.com`
+    // const baseUrl = `https://atlamproperties.com`
 
     return `${baseUrl}/uploads/${imagePath}`
+  }
+
+  function verifyFavoriteImage(data: images[]) {
+    const index = data.findIndex(imagem => imagem.url.startsWith('1-'))
+
+    return index !== -1 ? index : 0
   }
 
   const formatImagesToPage = (data: RealStateType[]) => {
@@ -59,7 +65,9 @@ const MostedItems2 = () => {
           value: item.mensalRent,
           type: item.type,
           subCategogory: item.subIntentionStatus,
-          urlFirstImage: item.images?.length ? buildImageUrl(item.images[0].url) : '/images/malta2.JPG',
+          urlFirstImage: item.images?.length
+            ? buildImageUrl(item.images[verifyFavoriteImage(item.images)].url)
+            : '/images/malta2.JPG',
           status: item.status
         }
       })
@@ -193,7 +201,7 @@ const MostedItems2 = () => {
                     {property.title}
                   </Typography>
                   <Typography variant='body2' color='text.secondary'>
-                    {property.type}
+                    {property.type.replace(/_/g, ' ')}
                   </Typography>
                   <Grid sx={{ display: 'flex', justifyContent: 'space-between' }}>
                     <Box sx={{ display: 'flex', gap: '0.4rem' }}>
@@ -222,7 +230,13 @@ const MostedItems2 = () => {
         <Pagination
           count={Math.ceil(formatImagesToPage(itemsMosted2).length / itemsPerPage)}
           page={currentPage}
-          onChange={(event, value) => setCurrentPage(value)}
+          onChange={(event, value) => {
+            setCurrentPage(value)
+            window.scrollTo({
+              top: 0,
+              behavior: 'smooth' // rolagem suave
+            })
+          }}
           color='primary'
           sx={{
             display: 'flex',

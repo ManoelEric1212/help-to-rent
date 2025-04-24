@@ -206,7 +206,7 @@ const FooterComponent = () => {
               </Typography>
 
               <Typography sx={{ '&:hover': { textDecoration: 'underline', cursor: 'pointer' } }}>
-                Best Apartaments for sale in this year
+                Best Apartments for sale in this year
               </Typography>
               <Typography sx={{ '&:hover': { textDecoration: 'underline', cursor: 'pointer' } }}>
                 Search properties for rent{' '}

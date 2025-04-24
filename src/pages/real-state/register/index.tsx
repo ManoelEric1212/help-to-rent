@@ -10,7 +10,7 @@ const RegisterRealState = () => {
     <Grid container spacing={6}>
       <Grid item xs={12}>
         <Card>
-          <CardHeader title='Register a Real State'></CardHeader>
+          <CardHeader title='Register a Real Estate'></CardHeader>
           <CardContent>
             <RegisterRealStateComponent />
           </CardContent>

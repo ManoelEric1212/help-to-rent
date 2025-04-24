@@ -2,9 +2,6 @@
 const path = require('path')
 
 /** @type {import('next').NextConfig} */
-
-// Remove this if you're not using Fullcalendar features
-
 module.exports = {
   trailingSlash: true,
   reactStrictMode: false,
@@ -15,5 +12,14 @@ module.exports = {
     }
 
     return config
+  },
+  async redirects() {
+    return [
+      {
+        source: '/',
+        destination: '/acl',
+        permanent: true // ou false se quiser redirecionamento temporário
+      }
+    ]
   }
 }

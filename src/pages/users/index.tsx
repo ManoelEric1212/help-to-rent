@@ -5,8 +5,14 @@ import Grid from '@mui/material/Grid'
 import CardHeader from '@mui/material/CardHeader'
 import TableBasic, { DataGridDataUser, UserType } from './components/TableBasic'
 import {
+  Box,
   Button,
   CardContent,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   FormControl,
   InputLabel,
   MenuItem,
@@ -17,12 +23,16 @@ import {
 import { ChangeEvent, useEffect, useState } from 'react'
 import { GridColDef } from '@mui/x-data-grid'
 
+import EditIcon from '@mui/icons-material/Edit'
+import DeleteIcon from '@mui/icons-material/Delete'
+
 import Chip from 'src/components/chip'
-import { getUserRequest, User } from 'src/requests/usersRequest'
+import { deleteUser, getUserRequest, User } from 'src/requests/usersRequest'
 
 import { format } from 'date-fns'
 import DialogEdit from './components/DialogEdit'
 import { FormatUserToTable } from 'src/utils/format-users-to-table'
+import toast from 'react-hot-toast'
 
 export type DateType = Date | null | undefined
 
@@ -39,6 +49,12 @@ const Users = () => {
 
   const [modalOpen, setModalOpen] = useState<boolean>(false)
   const [modalData, setModalData] = useState<UserType | null>(null)
+  const [modalData2, setModalData2] = useState<UserType | null>(null)
+
+  const [open, setOpen] = useState(false)
+
+  const handleOpenA = () => setOpen(true)
+  const handleClose = () => setOpen(false)
 
   const columns: GridColDef[] = [
     {
@@ -54,15 +70,15 @@ const Users = () => {
       headerName: 'Number'
     },
     {
-      flex: 0.15,
+      flex: 0.1,
       minWidth: 80,
       field: 'role',
       headerName: 'Role'
     },
     {
-      flex: 0.15,
+      flex: 0.1,
       type: 'string',
-      minWidth: 130,
+      minWidth: 100,
       headerName: 'Solicitation Date',
       field: 'solicitation_date',
       valueGetter: params => format(new Date(params.value), 'dd/MM/yyyy HH:mm')
@@ -85,26 +101,37 @@ const Users = () => {
       }
     },
     {
-      flex: 0.1,
+      flex: 0.15,
       field: 'action',
-      minWidth: 80,
+      minWidth: 160,
       headerName: 'Action',
       renderCell: ({ row }: CellType) => {
         return (
-          <Button
-            variant='outlined'
-            color='primary'
-            onClick={() => {
-              setModalData(row)
-              console.log('s')
-              setTimeout(() => {
-                setModalOpen(true)
-              }, 100)
-            }}
-          >
-            {' '}
-            Edit{' '}
-          </Button>
+          <Box sx={{ display: 'flex', gap: '0.4rem' }}>
+            <Button
+              variant='outlined'
+              color='primary'
+              onClick={() => {
+                setModalData(row)
+                console.log('s')
+                setTimeout(() => {
+                  setModalOpen(true)
+                }, 100)
+              }}
+            >
+              <EditIcon />
+            </Button>
+            <Button
+              variant='outlined'
+              color='error'
+              onClick={() => {
+                setModalData2(row)
+                setTimeout(() => handleOpenA(), 500)
+              }}
+            >
+              <DeleteIcon />
+            </Button>
+          </Box>
         )
       }
     }
@@ -121,6 +148,18 @@ const Users = () => {
       setData(dataTable)
     } catch (error) {
       console.warn(error)
+    }
+  }
+
+  const deleteUserRegister = async () => {
+    console.log('modalData2', modalData2)
+    if (modalData2?.id.length === 0) return
+    try {
+      await deleteUser(modalData2?.id as string)
+      getUsers()
+      toast.success('user has been deleted!')
+    } catch (error) {
+      throw new Error('Erro delete user options')
     }
   }
 
@@ -159,7 +198,7 @@ const Users = () => {
   // ** States
 
   return (
-    <Grid container spacing={6}>
+    <Grid container spacing={6} sx={{ padding: '1rem' }}>
       <Grid item xs={12}>
         <Card>
           <CardHeader title='Search Filters' sx={{ pb: 4, '& .MuiCardHeader-title': { letterSpacing: '.15px' } }} />
@@ -221,6 +260,28 @@ const Users = () => {
         <TableBasic columns={data.columns} rows={data.rows} />
       </Grid>
       <DialogEdit open={modalOpen} onClose={handleCloseModal} data={modalData} />
+
+      <Dialog open={open} onClose={handleClose}>
+        <DialogTitle>Attention</DialogTitle>
+        <DialogContent>
+          <DialogContentText>You are about to delete the user registration. Are you sure about this?</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color='primary'>
+            Cancel
+          </Button>
+          <Button
+            onClick={() => {
+              deleteUserRegister()
+              handleClose()
+            }}
+            autoFocus
+            color='error'
+          >
+            Confirm
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Grid>
   )
 }

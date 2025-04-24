@@ -24,9 +24,10 @@ import GarageIcon from '@mui/icons-material/Garage'
 import PetsIcon from '@mui/icons-material/Pets'
 import ModalBase from 'src/components/Modal'
 import RegisterRealStateComponent from '../components/RegisterForm'
-import { shareOnWhatsApp } from 'src/@core/components/WhatssAppComponent'
+
 import OwnerDetailsModal from './OwnerModal'
 import { useAuth } from 'src/hooks/useAuth'
+import ShareDetailsModal from './ShareWithClient'
 
 export interface iconsAdditional {
   label: string
@@ -44,6 +45,7 @@ const RegisterRealState = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isModalOpen2, setIsModalOpen2] = useState(false)
+  const [isModalOpen3, setIsModalOpen3] = useState(false)
 
   const [modalTitle, setModalTitle] = useState('')
 
@@ -65,6 +67,9 @@ const RegisterRealState = () => {
   const handleCloseModal2 = () => {
     setIsModalOpen2(false)
   }
+  const handleCloseModal3 = () => {
+    setIsModalOpen3(false)
+  }
 
   const { id } = router.query
 
@@ -75,7 +80,7 @@ const RegisterRealState = () => {
     // const baseUrl = `${protocol}//${hostname}${`:${5000}`}`
     const baseUrl = `${protocol}//${hostname}`
 
-    // const baseUrl = `https://atlammalta.com`
+    // const baseUrl = `https://atlamproperties.com`
 
     return `${baseUrl}/uploads/${imagePath}`
   }
@@ -174,7 +179,11 @@ const RegisterRealState = () => {
               }}
             >
               <HomeIcon />
-              <Typography>{`${realStateById?.roomsNumber} - Bedroom ${realStateById?.type} for ${realStateById?.intentionStatus} in ${realStateById?.region} - € ${realStateById?.mensalRent}`}</Typography>
+              <Typography>{`${realStateById?.roomsNumber} - Bedroom ${
+                realStateById?.type
+              } for ${realStateById?.intentionStatus.replace(/_/g, ' ')} in ${realStateById?.region} - € ${
+                realStateById?.mensalRent
+              }`}</Typography>
             </Box>
 
             <Grid
@@ -271,7 +280,7 @@ const RegisterRealState = () => {
               <Button
                 variant='contained'
                 startIcon={<InfoIcon />}
-                onClick={() => handleOpenModal('Edit Real state', <RegisterRealStateComponent />)}
+                onClick={() => handleOpenModal('Edit Real Estate', <RegisterRealStateComponent />)}
               >
                 Update More info
               </Button>
@@ -289,18 +298,7 @@ const RegisterRealState = () => {
                 variant='contained'
                 startIcon={<ShareIcon />}
                 onClick={() => {
-                  console.log('teste')
-                  shareOnWhatsApp(
-                    ` Check out the following property available on the AtlamMalta website, for more details access the following link: \n https://atlammalta.com/acl/real-state-by-id/?id=${realStateById?.id}`
-                  )
-
-                  // shareContent(
-                  //   'Details for about Real State in Malta',
-                  //   `
-                  //   Check out the following property available on the AtlamMalta website, for more details access the following link: \n
-
-                  //   https://atlammalta.com/acl/?id=${realStateById?.id}`
-                  // )
+                  setIsModalOpen3(true)
                 }}
               >
                 Share with Client
@@ -323,7 +321,7 @@ const RegisterRealState = () => {
           </Box>
           {user?.role !== 'client' && realStateById?.additionalExpenses.length ? (
             <Box>
-              <Typography sx={{ fontSize: '1.5rem', fontWeight: 'bold' }}>Additional expenses</Typography>
+              <Typography sx={{ fontSize: '1.5rem', fontWeight: 'bold' }}>Additional information</Typography>
               <Typography sx={{ marginTop: '0.6rem' }}>{realStateById?.additionalExpenses}</Typography>
             </Box>
           ) : (
@@ -333,6 +331,7 @@ const RegisterRealState = () => {
       </Grid>
       <ModalBase open={isModalOpen} title={modalTitle} content={modalContent} onClose={() => handleCloseModal()} />
       <OwnerDetailsModal handleClose={handleCloseModal2} open={isModalOpen2} data={realStateById} />
+      <ShareDetailsModal handleClose={handleCloseModal3} open={isModalOpen3} data={realStateById} />
     </>
   )
 }

@@ -1,4 +1,4 @@
-import { GET_USER, LOGIN_USER, POST_USER, UPDATE_USER_BY_AGENT } from 'src/constants/urls'
+import { DELETE_USER, GET_USER, LOGIN_USER, POST_USER, UPDATE_USER_BY_AGENT } from 'src/constants/urls'
 import { api } from 'src/service/api'
 
 export interface User {
@@ -66,5 +66,15 @@ export async function updateUserByAgent(body: UpdateUserByAgentProps) {
     return data
   } catch (error) {
     throw new Error('Error - updateUserByAgent')
+  }
+}
+
+export async function deleteUser(id: string) {
+  try {
+    const { data } = await api.delete<User>(DELETE_USER(id))
+
+    return data
+  } catch (error) {
+    throw new Error('Error - DELETERealStateById')
   }
 }

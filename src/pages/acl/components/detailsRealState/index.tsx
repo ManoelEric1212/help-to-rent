@@ -46,7 +46,7 @@ const DetailsRealStateComponent = () => {
     // const baseUrl = `${protocol}//${hostname}${`:${5000}`}`
     const baseUrl = `${protocol}//${hostname}`
 
-    // const baseUrl = `https://atlammalta.com`
+    // const baseUrl = `https://atlamproperties.com`
 
     return `${baseUrl}/uploads/${imagePath}`
   }
@@ -328,7 +328,7 @@ const DetailsRealStateComponent = () => {
               {realStateById ? (
                 <ButtonRequest
                   id={String(realStateById?.id_number)}
-                  link={`https://atlammalta.com/acl/real-state-by-id/?id=${realStateById.id}`}
+                  link={`https://atlamproperties.com/acl/real-state-by-id/?id=${realStateById.id}`}
                 />
               ) : (
                 <></>

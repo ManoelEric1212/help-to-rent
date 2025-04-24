@@ -23,7 +23,9 @@ const TableBasic = ({ columns, rows }: DataGridDataUser) => {
   return (
     <Card>
       <CardHeader title='Users' />
-      <Box sx={{ height: 500 }}>{rows?.length && columns?.length && <DataGrid columns={columns} rows={rows} />}</Box>
+      <Box sx={{ height: 500, padding: '1rem' }}>
+        {rows?.length && columns?.length && <DataGrid columns={columns} rows={rows} />}
+      </Box>
     </Card>
   )
 }

@@ -3,6 +3,7 @@ import { Box, TextField, Button, Typography } from '@mui/material'
 import { Person, Email, Phone, LinkedIn, Send } from '@mui/icons-material'
 import toast from 'react-hot-toast'
 import { sendEmailCareers } from 'src/requests/emailRequest'
+import { CloudUpload } from '@mui/icons-material'
 
 interface FormData {
   name: string
@@ -120,11 +121,25 @@ const JobApplicationForm: React.FC = () => {
       {/* Campo de upload do currículo */}
       <Typography>Send a resume file:</Typography>
       <input
-        type='file'
+        accept='.pdf,.doc,.docx,.txt'
+        id='resume-upload'
         name='resume'
+        type='file'
+        style={{ display: 'none' }}
         onChange={handleChange}
-        accept='.pdf,.doc,.docx,.txt' // Tipos de arquivo aceitos
       />
+
+      <label htmlFor='resume-upload'>
+        <Button
+          variant='outlined'
+          component='span'
+          fullWidth
+          startIcon={<CloudUpload />}
+          sx={{ justifyContent: 'flex-start' }}
+        >
+          {formData.resume ? `📎 ${formData.resume.name}` : 'Choose File'}
+        </Button>
+      </label>
 
       <Button type='submit' variant='contained' startIcon={<Send />} sx={{ mt: 2, background: '#8B181B' }}>
         Submit

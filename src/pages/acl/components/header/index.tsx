@@ -133,6 +133,12 @@ const Header = () => {
               button
               key={item.text}
               onClick={() => {
+                if (item.path === '/acl/contact') {
+                  setOpenCon(true)
+                  setDrawerOpen(false)
+
+                  return
+                }
                 router.push(item.path)
                 setDrawerOpen(false)
               }}

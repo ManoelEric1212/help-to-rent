@@ -5,16 +5,12 @@ import Link from 'next/link'
 import IconButton from '@mui/material/IconButton'
 import Box, { BoxProps } from '@mui/material/Box'
 import { styled, useTheme } from '@mui/material/styles'
-import Typography, { TypographyProps } from '@mui/material/Typography'
 
 // ** Type Import
 import { LayoutProps } from 'src/@core/layouts/types'
 
 // ** Custom Icon Import
 import Icon from 'src/@core/components/icon'
-
-// ** Configs
-import themeConfig from 'src/configs/themeConfig'
 
 interface Props {
   navHover: boolean
@@ -38,12 +34,6 @@ const MenuHeaderWrapper = styled(Box)<BoxProps>(({ theme }) => ({
   transition: 'padding .25s ease-in-out',
   minHeight: theme.mixins.toolbar.minHeight
 }))
-
-const HeaderTitle = styled(Typography)<TypographyProps>({
-  fontWeight: 700,
-  lineHeight: 1.2,
-  transition: 'opacity .25s ease-in-out, margin .25s ease-in-out'
-})
 
 const LinkStyled = styled(Link)({
   display: 'flex',
@@ -69,7 +59,6 @@ const VerticalNavHeader = (props: Props) => {
   // ** Hooks & Vars
   const theme = useTheme()
   const { mode, direction, navCollapsed } = settings
-  const menuCollapsedStyles = navCollapsed && !navHover ? { opacity: 0 } : { opacity: 1 }
 
   const svgFillSecondary = () => {
     if (mode === 'semi-dark') {
@@ -127,17 +116,24 @@ const VerticalNavHeader = (props: Props) => {
       {userNavMenuBranding ? (
         userNavMenuBranding(props)
       ) : (
-        <LinkStyled href='/'>
-          <img
-            src='/images/favicon.png'
-            alt='Real State Icon'
-            style={{
-              width: '40px'
-            }}
-          />
-          <HeaderTitle variant='h6' sx={{ ...menuCollapsedStyles, ...(navCollapsed && !navHover ? {} : { ml: 2 }) }}>
-            {themeConfig.templateName}
-          </HeaderTitle>
+        <LinkStyled href='/home'>
+          {navCollapsed && !navHover ? (
+            <img
+              src='/images/favicon.png'
+              alt='Real State Icon'
+              style={{
+                width: '40px'
+              }}
+            />
+          ) : (
+            <img
+              src='/images/logo2.png'
+              alt='Real State Icon'
+              style={{
+                width: '170px'
+              }}
+            />
+          )}
         </LinkStyled>
       )}
 

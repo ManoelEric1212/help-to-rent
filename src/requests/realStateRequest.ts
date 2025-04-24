@@ -1,5 +1,12 @@
 import axios from 'axios'
-import { GET_REAL_STATE, GET_REAL_STATE_BY_ID, POST_REAL_STATE, UDPATE_REAL_STATE } from 'src/constants/urls'
+import {
+  DELETE_REAL_STATE_BY_ID,
+  GET_REAL_STATE,
+  GET_REAL_STATE_BY_ID,
+  GET_REAL_STATE_FLAG,
+  POST_REAL_STATE,
+  UDPATE_REAL_STATE
+} from 'src/constants/urls'
 import { api } from 'src/service/api'
 
 export interface CreateRealStateDTO {
@@ -153,6 +160,16 @@ export async function getAllRealStates() {
   }
 }
 
+export async function getAllRealStatesClient() {
+  try {
+    const { data } = await api.get<RealStateType[]>(GET_REAL_STATE_FLAG)
+
+    return data
+  } catch (error) {
+    throw new Error('Error - getAllRealStatesClient')
+  }
+}
+
 export async function getRealStateById(id: string) {
   try {
     const { data } = await api.get<RealStateType>(GET_REAL_STATE_BY_ID(id))
@@ -160,6 +177,16 @@ export async function getRealStateById(id: string) {
     return data
   } catch (error) {
     throw new Error('Error - getRealStateById')
+  }
+}
+
+export async function deleteRealStateById(id: string) {
+  try {
+    const { data } = await api.delete<RealStateType>(DELETE_REAL_STATE_BY_ID(id))
+
+    return data
+  } catch (error) {
+    throw new Error('Error - DELETERealStateById')
   }
 }
 

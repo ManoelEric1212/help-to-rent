@@ -28,18 +28,30 @@ const TableBasic = ({ columns, rows }: DataGridDataRealState) => {
 
   return (
     <Card>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', padding: 4 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', padding: 2 }}>
         <Typography sx={{ display: 'flex', alignItems: 'center', fontWeight: 500, letterSpacing: 1.6 }}>
           {' '}
-          Real States
+          Real Estates
         </Typography>
         <Button color='primary' variant='contained' onClick={() => router.push(`${router.pathname}/register`)}>
           Register
         </Button>
       </Box>
 
-      <Box sx={{ height: 500 }}>
-        {rows?.length && columns?.length && <DataGrid columns={columns} rows={rows} rowHeight={160} />}
+      <Box sx={{ height: 700 }}>
+        {rows?.length && columns?.length && (
+          <DataGrid
+            columns={columns}
+            rows={rows}
+            rowHeight={160}
+            sx={{
+              '& .MuiDataGrid-cell': {
+                alignItems: 'center',
+                py: 2 // padding vertical (top + bottom)
+              }
+            }}
+          />
+        )}
       </Box>
     </Card>
   )

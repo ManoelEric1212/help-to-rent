@@ -1,5 +1,11 @@
 import { RealStateTypeTable } from 'src/pages/real-state/components/TableBasic'
-import { RealStateType } from 'src/requests/realStateRequest'
+import { images, RealStateType } from 'src/requests/realStateRequest'
+
+function verifyFavoriteImage(data: images[]) {
+  const index = data.findIndex(imagem => imagem.url.startsWith('1-'))
+
+  return index !== -1 ? index : 0
+}
 
 export function FormatRealStateToTable(data: RealStateType[]) {
   const dataReturnFormat: RealStateTypeTable[] = data.map(item => {
@@ -13,7 +19,8 @@ export function FormatRealStateToTable(data: RealStateType[]) {
       price: item.mensalRent,
       region: item.region,
       type: item.type,
-      srcImg: item.images?.length ? item.images[0].url : ''
+      listedBy: item.userUpdated,
+      srcImg: item.images?.length ? item.images[verifyFavoriteImage(item.images)].url : ''
     }
   })
 
