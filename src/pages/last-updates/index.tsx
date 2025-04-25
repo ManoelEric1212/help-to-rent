@@ -1,7 +1,7 @@
 /* eslint-disable lines-around-comment */
 // ** MUI Imports
 import Grid from '@mui/material/Grid'
-import TableBasic, { DataGridDataRealState, RealStateTypeTable } from './components/TableBasic'
+import { DataGridDataRealState, RealStateTypeTable } from './components/TableBasic'
 import {
   Accordion,
   AccordionDetails,
@@ -23,12 +23,18 @@ import { GridColDef } from '@mui/x-data-grid'
 import { format } from 'date-fns'
 import { getAllRealStates, RealStateType } from 'src/requests/realStateRequest'
 import { useRouter } from 'next/router'
-import { FormatRealStateToTable } from 'src/utils/format-real-states-to-table'
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { getRegionRequest, Region } from 'src/requests/regionRequest'
 import LoadingOverlay from 'src/components/GlobalLoading'
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward'
+import HomeIcon from '@mui/icons-material/Home'
+import EuroSymbolIcon from '@mui/icons-material/EuroSymbol'
+
+import LocalAtmIcon from '@mui/icons-material/LocalAtm'
+import LocationOnIcon from '@mui/icons-material/LocationOn'
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth'
+import { FormatRealStateToTableLast } from 'src/utils/format-real-states-to-table-last'
 
 export type DateType = Date | null | undefined
 
@@ -57,7 +63,11 @@ const RealState = () => {
   const [ownerNumberFilter, setOwnerNumberFilter] = useState<string>('')
   const [ownerNameFilter, setOwnerNameFilter] = useState<string>('')
   const [descriptionKeywordFilter, setDescriptionKeywordFilter] = useState<string>('')
-  const [propertyTypes, setPropertyTypes] = useState<string[]>([])
+  const [listed, setListed] = useState<dados[]>([])
+  const [intentionStatus, setIntentionStatus] = useState<string>('')
+
+  const [listeds, setListeds] = useState<string[]>([])
+
   const [typeFilter, setTypeFilter] = useState<string>('')
   const [loading, setLoading] = useState(false)
 
@@ -185,6 +195,10 @@ const RealState = () => {
     }
   }
 
+  const handleArea2 = (e: SelectChangeEvent<string>): void => {
+    setIntentionStatus(e.target.value)
+  }
+
   async function getRealStates() {
     try {
       setLoading(true)
@@ -195,7 +209,7 @@ const RealState = () => {
       setRealStates(orderedData)
       const dataTable: DataGridDataRealState = {
         columns: columns,
-        rows: FormatRealStateToTable(orderedData)
+        rows: FormatRealStateToTableLast(orderedData)
       }
       setData(dataTable)
       setLoading(false)
@@ -208,8 +222,8 @@ const RealState = () => {
 
   useEffect(() => {
     if (realStates.length) {
-      const uniquePropertyTypes = Array.from(new Set(realStates.map(item => item.type)))
-      setPropertyTypes(uniquePropertyTypes)
+      const uniqueListed = Array.from(new Set(realStates.map(item => item.userUpdated)))
+      setListeds(uniqueListed)
     }
   }, [realStates])
 
@@ -275,11 +289,18 @@ const RealState = () => {
 
     const data = await getAllRealStates()
     const orderedData = data.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
-    console.log('filter reg', regionFilter)
+
     const filtered = orderedData.filter(realState => {
       const matchesRegion = regionFilter.length === 0 || regionFilter.map(r => r.value).includes(realState.region)
+      const matchesType = typeFilter ? realState.type === typeFilter : true
 
-      const matchesAvailability = availabilityFilter ? new Date(realState.availabilityDate) <= availabilityFilter : true
+      const matchesAvailability = availabilityFilter
+        ? new Date(realState.availabilityDate) <= new Date(availabilityFilter)
+        : true
+
+      const matchesListed = listed.length === 0 || listed.map(r => r.value).includes(realState.userUpdated)
+
+      const matchesintention = intentionStatus ? realState.intentionStatus === intentionStatus : true
 
       const matchesBedrooms = bedroomsFilter
         ? (() => {
@@ -291,7 +312,9 @@ const RealState = () => {
 
       const matchesIdProperty = idPropertyFilter ? realState.id_number.toString() === idPropertyFilter : true
 
-      const matchesUpdatedSince = updatedSinceFilter ? new Date(realState.updated_at) <= updatedSinceFilter : true
+      const matchesUpdatedSince = updatedSinceFilter
+        ? new Date(realState.updated_at) <= new Date(updatedSinceFilter)
+        : true
 
       const matchesOwnerNumber = ownerNumberFilter ? realState.ownerNumber.includes(ownerNumberFilter) : true
 
@@ -307,23 +330,25 @@ const RealState = () => {
         areaFilter && regionFilter.length === 0
           ? realState.area_region.toLowerCase().includes(areaFilter.toLowerCase())
           : true
-      setAccordionExpanded(false)
-      setLoading(false)
 
       const matchesPrice =
         minPrice !== 0 || maxPrice !== 0 ? realState.mensalRent >= minPrice && realState.mensalRent <= maxPrice : true
 
+      setLoading(false)
+      setAccordionExpanded(false)
+
       return (
-        // matchesName &&
-        // matchesType &&
         matchesArea &&
         matchesRegion &&
+        matchesListed &&
         matchesAvailability &&
+        matchesintention &&
         matchesBedrooms &&
         matchesIdProperty &&
         matchesUpdatedSince &&
         matchesOwnerNumber &&
         matchesOwnerName &&
+        matchesType &&
         matchesDescription(realState, descriptionKeywordFilter) &&
         matchesPrice
       )
@@ -331,7 +356,7 @@ const RealState = () => {
 
     const dataTableFiltered: DataGridDataRealState = {
       columns: columns,
-      rows: FormatRealStateToTable(filtered)
+      rows: FormatRealStateToTableLast(filtered)
     }
     setData(dataTableFiltered)
   }
@@ -351,12 +376,12 @@ const RealState = () => {
             <Typography>Search Filters</Typography>
           </AccordionSummary>
           <AccordionDetails>
-            <Grid sx={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <Grid sx={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
               <Grid container spacing={6}>
-                <Grid item sm={4} xs={12}>
+                <Grid item sm={2} xs={12}>
                   <FormControl fullWidth>
                     <InputLabel id='type-label'>Area</InputLabel>
-                    <Select labelId='type-label' value={areaFilter || ''} onChange={handleArea}>
+                    <Select label='Area' labelId='type-label' value={areaFilter || ''} onChange={handleArea}>
                       <MenuItem value=''>
                         <em>None</em>
                       </MenuItem>
@@ -364,7 +389,7 @@ const RealState = () => {
                       <MenuItem value='NORTH'>NORTH</MenuItem>
                       <MenuItem value='CENTER'>CENTER</MenuItem>
                       <MenuItem value='SOUTH'>SOUTH</MenuItem>
-                      <MenuItem value='TOURIST_REGION'>TOURIST_REGION</MenuItem>
+                      <MenuItem value='TOURIST_REGION'>TOURIST REGION</MenuItem>
 
                       {/* Add more MenuItems as needed */}
                     </Select>
@@ -387,7 +412,108 @@ const RealState = () => {
                   />
                 </Grid>
 
-                <Grid item sm={4} xs={12}>
+                <Grid item sm={2} md={2} xs={12}>
+                  <FormControl fullWidth>
+                    <InputLabel id='type-label'>Category</InputLabel>
+                    <Select
+                      labelId='type-label'
+                      defaultValue='FOR_RENT'
+                      label='Category'
+                      value={intentionStatus || ''}
+                      onChange={handleArea2}
+                    >
+                      <MenuItem value=''>
+                        <em>None</em>
+                      </MenuItem>
+
+                      <MenuItem value='FOR_RENT'>FOR RENT</MenuItem>
+                      <MenuItem value='FOR_SALE'>FOR SALE</MenuItem>
+                      <MenuItem value='COMMERCIAL'>COMMERCIAL</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Grid>
+
+                {intentionStatus === 'COMMERCIAL' ? (
+                  <>
+                    <Grid item sm={2} md={2} xs={12}>
+                      <FormControl fullWidth>
+                        <InputLabel id='type-label'>Type</InputLabel>
+                        <Select
+                          labelId='type-label'
+                          value={typeFilter || ''}
+                          label='Type'
+                          MenuProps={{
+                            PaperProps: {
+                              style: {
+                                maxHeight: 300, // altura máxima do menu
+                                width: 250 // largura do menu
+                              }
+                            }
+                          }}
+                          onChange={(e: SelectChangeEvent<string>) => setTypeFilter(e.target.value)}
+                        >
+                          <MenuItem value=''>
+                            <em>None</em>
+                          </MenuItem>
+
+                          <MenuItem value='BARS_RESTAURANTS'>Bars & Restaurants</MenuItem>
+                          <MenuItem value='COLD_STORAGE'>Cold Storage</MenuItem>
+                          <MenuItem value='FACTORY'>Factory</MenuItem>
+                          <MenuItem value='GARAGE_STORE'>Garage / Store (Industrial)</MenuItem>
+                          <MenuItem value='HOTELS_GUESTHOUSES'>Hotels & Guesthouses</MenuItem>
+                          <MenuItem value='NIGHT_CLUB'>Nightclub</MenuItem>
+                          <MenuItem value='OFFICE_OFFICE_SPACE'>Office/Office Space</MenuItem>
+                          <MenuItem value='PLOT'>Plot(Commercial)</MenuItem>
+                          <MenuItem value='SCHOOL'>School</MenuItem>
+                          <MenuItem value='SHOP'>Shop</MenuItem>
+                          <MenuItem value='SHOWROOM'>Showroom</MenuItem>
+                          <MenuItem value='SITE'>Site(Commercial)</MenuItem>
+                        </Select>
+                      </FormControl>
+                    </Grid>
+                  </>
+                ) : (
+                  <>
+                    <Grid item sm={2} md={2} xs={12}>
+                      <FormControl fullWidth>
+                        <InputLabel id='type-label'>Type</InputLabel>
+                        <Select
+                          labelId='type-label'
+                          value={typeFilter || ''}
+                          MenuProps={{
+                            PaperProps: {
+                              style: {
+                                maxHeight: 300, // altura máxima do menu
+                                width: 250 // largura do menu
+                              }
+                            }
+                          }}
+                          label='Type'
+                          onChange={(e: SelectChangeEvent<string>) => setTypeFilter(e.target.value)}
+                        >
+                          <MenuItem value=''>
+                            <em>None</em>
+                          </MenuItem>
+
+                          <MenuItem value='APARTMENT'>APARTMENT</MenuItem>
+                          <MenuItem value='BLOCK OF APARTMENTS'>BLOCK OF APARTMENTS</MenuItem>
+                          <MenuItem value='DETACHED VILLA'>DETACHED VILLA</MenuItem>
+                          <MenuItem value='DUPLEX APARTMENT'>DUPLEX APARTMENT</MenuItem>
+                          <MenuItem value='FARMHOUSE'>FARMHOUSE</MenuItem>
+                          <MenuItem value='HOUSE OF CHARACTER'>HOUSE OF CHARACTER</MenuItem>
+                          <MenuItem value='MAISONETTE'>MAISONETTE</MenuItem>
+                          <MenuItem value='PENTHOUSE'>PENTHOUSE</MenuItem>
+                          <MenuItem value='STUDIO'>STUDIO</MenuItem>
+                          <MenuItem value='TOWNHOUSE'>TOWNHOUSE</MenuItem>
+                          <MenuItem value='VILLA'>VILLA</MenuItem>
+                          <MenuItem value='TERRACE HOUSE'>TERRACE HOUSE</MenuItem>
+                        </Select>
+                      </FormControl>
+                    </Grid>
+                  </>
+                )}
+
+                <Grid item sm={2} xs={12}>
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DatePicker
                       label='Availability'
@@ -419,22 +545,45 @@ const RealState = () => {
                 </Grid>
 
                 <Grid item sm={4} xs={12}>
-                  <FormControl fullWidth>
-                    <InputLabel id='property-type'>Property Type</InputLabel>
+                  {/* <FormControl fullWidth>
+                    <InputLabel id='property-type2'>Listed By</InputLabel>
                     <Select
-                      value={typeFilter}
-                      id='property-type'
-                      label='Property Type'
-                      labelId='property-type'
-                      onChange={(e: SelectChangeEvent<string>) => setTypeFilter(e.target.value)}
+                      value={listed}
+                      id='property-type2'
+                      label='Listed By'
+                      labelId='property-type2'
+                      MenuProps={{
+                        PaperProps: {
+                          style: {
+                            maxHeight: 300, // altura máxima do menu
+                            width: 250 // largura do menu
+                          }
+                        }
+                      }}
+                      onChange={(e: SelectChangeEvent<string>) => setListed(e.target.value)}
                     >
-                      {propertyTypes.map(type => (
+                      {listeds.map(type => (
                         <MenuItem key={type} value={type}>
-                          {type}
+                          {type.replace(/_/g, ' ')}
                         </MenuItem>
                       ))}
                     </Select>
-                  </FormControl>
+                  </FormControl> */}
+
+                  <Autocomplete
+                    disablePortal
+                    multiple
+                    id='combo-box-demo'
+                    options={listeds.map(item => {
+                      return {
+                        value: item,
+                        label: item
+                      }
+                    })}
+                    value={listed}
+                    onChange={(event, newValue) => setListed(newValue)}
+                    renderInput={params => <TextField {...params} label='Listed By' />}
+                  />
                 </Grid>
 
                 <Grid item sm={4} xs={12}>
@@ -487,6 +636,7 @@ const RealState = () => {
                     fullWidth
                   />
                 </Grid>
+
                 <Grid item sm={2} md={2} xs={6}>
                   <TextField
                     label='Min Price(€)'
@@ -528,11 +678,127 @@ const RealState = () => {
         </Accordion>
       </Grid>
       <Grid item xs={12}>
-        {data.rows.length ? (
+        {/* {data.rows.length ? (
           <TableBasic columns={data.columns} rows={data.rows} />
         ) : (
           <Typography>Data not exists, please research your filters</Typography>
-        )}
+        )} */}
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+          {data.rows.length ? (
+            data.rows.map((item, i) => (
+              <Box
+                key={i}
+                sx={{
+                  display: 'flex',
+                  flexWrap: 'wrap',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  gap: '1rem',
+                  border: '1px solid #ccc',
+                  borderRadius: '1rem',
+                  boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                  backgroundColor: '#fff',
+                  width: '100%'
+                }}
+              >
+                {/* Imagem fixa */}
+                <Box
+                  onClick={() => {
+                    window.open(`/real-state/real-state-by-id/?id=${item.id}`, '_blank')
+                  }}
+                  sx={{
+                    width: '80px',
+                    height: '80px',
+                    cursor: 'pointer',
+                    border: '1px solid #000',
+                    borderRadius: '1rem',
+                    overflow: 'hidden',
+                    flexShrink: 0
+                  }}
+                >
+                  <img
+                    src={
+                      item.srcImg?.length !== 0
+                        ? `https://atlamproperties.com/uploads/${item.srcImg}`
+                        : '/images/logo100.png'
+                    }
+                    onError={e => {
+                      e.currentTarget.onerror = null
+                      e.currentTarget.src = '/images/logo100.png'
+                    }}
+                    alt='Real State Icon'
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover'
+                    }}
+                  />
+                </Box>
+
+                {/* Conteúdo responsivo */}
+                <Box
+                  sx={{
+                    display: 'grid',
+                    gridTemplateColumns: {
+                      xs: '1fr',
+                      sm: 'repeat(auto-fit, minmax(150px, 1fr))'
+                    },
+                    flex: 1,
+                    gap: '1rem',
+                    width: '100%'
+                  }}
+                >
+                  {/* Cada item agora expande */}
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <HomeIcon fontSize='small' />
+                    <Typography variant='body2'>{item.name}</Typography>
+                  </Box>
+
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <LocalAtmIcon fontSize='small' />
+                    <EuroSymbolIcon fontSize='small' />
+                    <Typography variant='body2'>{item.price}</Typography>
+                  </Box>
+
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <Typography variant='body2' sx={{ fontWeight: 'bold' }}>
+                      Type -
+                    </Typography>
+                    <Typography variant='body2'>{item.type}</Typography>
+                  </Box>
+
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <LocationOnIcon fontSize='small' />
+                    <Typography variant='body2'>{item.region}</Typography>
+                  </Box>
+
+                  {/* Datas com legenda */}
+                  <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                    <Typography variant='caption' sx={{ opacity: 0.6 }}>
+                      Available From
+                    </Typography>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                      <CalendarMonthIcon fontSize='small' />
+                      <Typography variant='body2'>{format(new Date(item.avaliable), 'dd/MM/yyyy')}</Typography>
+                    </Box>
+                  </Box>
+
+                  <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                    <Typography variant='caption' sx={{ opacity: 0.6 }}>
+                      Last Updated
+                    </Typography>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                      <CalendarMonthIcon fontSize='small' />
+                      <Typography variant='body2'>{format(new Date(item.lastUpdated), 'dd/MM/yyyy')}</Typography>
+                    </Box>
+                  </Box>
+                </Box>
+              </Box>
+            ))
+          ) : (
+            <></>
+          )}
+        </Box>
       </Grid>
       <LoadingOverlay loading={loading} message='Loading informations' />
     </Grid>

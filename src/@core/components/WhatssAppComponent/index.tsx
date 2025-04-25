@@ -48,6 +48,17 @@ export const shareOnInstagramDirect = (text: string) => {
     })
 }
 
+export const shareCopy = (text: string) => {
+  navigator.clipboard
+    .writeText(text)
+    .then(() => {
+      alert('Text copied!')
+    })
+    .catch(() => {
+      alert('Copy message error.')
+    })
+}
+
 export const shareToWhatsAppNumber = (phoneNumber: string, text: string) => {
   const formattedNumber = phoneNumber.replace(/\D/g, '') // Remove caracteres não numéricos
   const encodedMessage = encodeURIComponent(text) // Codifica caracteres especiais

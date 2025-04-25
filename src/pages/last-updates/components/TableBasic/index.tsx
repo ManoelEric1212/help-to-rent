@@ -15,6 +15,9 @@ export interface RealStateTypeTable {
   address: string
   area: number
   inclusion_date: string
+  price: number
+  lastUpdated: string
+  avaliable: string
   srcImg?: string
 }
 

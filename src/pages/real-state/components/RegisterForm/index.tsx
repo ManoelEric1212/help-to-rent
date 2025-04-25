@@ -613,7 +613,7 @@ const RegisterRealStateComponent = () => {
             onChange={(e: ChangeEvent<HTMLInputElement>) => setAddressSearch(e.target.value)}
             fullWidth
           />
-          {user?.role === 'admin' && (
+          {user?.role === 'admin' && id?.length && (
             <Button variant='contained' color='error' onClick={handleOpenA}>
               Delete
             </Button>

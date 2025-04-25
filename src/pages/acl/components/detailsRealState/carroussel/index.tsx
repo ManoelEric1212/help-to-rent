@@ -50,6 +50,7 @@ const CarouselComponent: React.FC<CarouselProps> = ({ images }) => {
           maxWidth: 600,
           height: 'auto',
           display: 'flex',
+          background: '#cecece',
           alignItems: 'center',
           justifyContent: 'center',
           margin: 'auto',

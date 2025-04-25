@@ -291,7 +291,6 @@ const RealState = () => {
 
     const data = await getAllRealStates()
     const orderedData = data.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
-    console.log('filterrrss', typeFilter)
 
     const filtered = orderedData.filter(realState => {
       const matchesRegion = regionFilter.length === 0 || regionFilter.map(r => r.value).includes(realState.region)
@@ -356,7 +355,6 @@ const RealState = () => {
         matchesPrice
       )
     })
-    console.log('filtered', filtered)
 
     const dataTableFiltered: DataGridDataRealState = {
       columns: columns,

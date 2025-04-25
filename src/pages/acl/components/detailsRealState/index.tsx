@@ -51,6 +51,12 @@ const DetailsRealStateComponent = () => {
     return `${baseUrl}/uploads/${imagePath}`
   }
 
+  function formatLabel(label: string) {
+    return label
+      .toLowerCase() // transforma tudo em minúsculas
+      .replace(/(?:^|_)([a-z])/g, (match, p1, offset) => (offset === 0 ? p1.toUpperCase() : ' ' + p1.toUpperCase()))
+  }
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const getRealStateByIdReq = async (idToData: string) => {
     try {
@@ -211,7 +217,20 @@ const DetailsRealStateComponent = () => {
               }}
             >
               <HomeIcon />
-              <Typography>{`${realStateById?.roomsNumber} - Bedroom ${realStateById?.type} for ${realStateById?.intentionStatus} in ${realStateById?.region} - € ${realStateById?.mensalRent}`}</Typography>
+
+              {realStateById?.intentionStatus === 'FOR_RENT' ? (
+                <Typography>
+                  {`${realStateById?.roomsNumber} - Bedroom ${formatLabel(realStateById?.type ?? '')} ${formatLabel(
+                    realStateById?.intentionStatus ?? ''
+                  )} in ${realStateById?.region} - € ${realStateById?.mensalRent}`}
+                </Typography>
+              ) : (
+                <Typography>
+                  {`${realStateById?.roomsNumber} - Bedroom ${formatLabel(realStateById?.type ?? '')} ${formatLabel(
+                    realStateById?.intentionStatus ?? ''
+                  )} in ${realStateById?.region} - € ${realStateById?.mensalRent}`}
+                </Typography>
+              )}
             </Box>
 
             <Grid

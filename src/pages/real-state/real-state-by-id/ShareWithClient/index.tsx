@@ -5,10 +5,12 @@ import { RealStateType } from 'src/requests/realStateRequest'
 import FacebookIcon from '@mui/icons-material/Facebook'
 import InstagramIcon from '@mui/icons-material/Instagram'
 import {
+  shareCopy,
   shareOnFacebookMessenger,
   shareOnInstagramDirect,
   shareOnWhatsApp
 } from 'src/@core/components/WhatssAppComponent'
+import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 
 interface ShareDetailsModalProps {
   open: boolean
@@ -36,6 +38,11 @@ const ShareDetailsModal: React.FC<ShareDetailsModalProps> = ({ open, handleClose
       ` Check out the following property available on the AtlamProperties website, for more details access the following link: \n https://atlamproperties.com/acl/real-state-by-id/?id=${data?.id}`
     )
   }
+  const handleCopy = () => {
+    shareCopy(
+      ` Check out the following property available on the AtlamProperties website, for more details access the following link: \n https://atlamproperties.com/acl/real-state-by-id/?id=${data?.id}`
+    )
+  }
 
   return (
     <Modal open={open} onClose={handleClose}>
@@ -57,6 +64,16 @@ const ShareDetailsModal: React.FC<ShareDetailsModalProps> = ({ open, handleClose
             <Typography variant='h6' gutterBottom>
               Share with client
             </Typography>
+
+            <Button
+              variant='contained'
+              color='secondary'
+              startIcon={<ContentCopyIcon />}
+              sx={{ mt: 2, width: '100%' }}
+              onClick={handleCopy}
+            >
+              Copy to clipboard
+            </Button>
 
             <Button
               variant='contained'
