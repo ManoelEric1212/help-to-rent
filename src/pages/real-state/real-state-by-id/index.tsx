@@ -28,6 +28,7 @@ import RegisterRealStateComponent from '../components/RegisterForm'
 import OwnerDetailsModal from './OwnerModal'
 import { useAuth } from 'src/hooks/useAuth'
 import ShareDetailsModal from './ShareWithClient'
+import { formatLabel } from 'src/pages/acl/components/MostedProperties'
 
 export interface iconsAdditional {
   label: string
@@ -179,11 +180,18 @@ const RegisterRealState = () => {
               }}
             >
               <HomeIcon />
-              <Typography>{`${realStateById?.roomsNumber} - Bedroom ${
-                realStateById?.type
-              } for ${realStateById?.intentionStatus.replace(/_/g, ' ')} in ${realStateById?.region} - € ${
-                realStateById?.mensalRent
-              }`}</Typography>
+              {realStateById?.intentionStatus === 'COMMERCIAL' ? (
+                <Typography>{`${formatLabel(realStateById?.type)} for ${realStateById?.intentionStatus.replace(
+                  /_/g,
+                  ' '
+                )} in ${realStateById?.region} - € ${realStateById?.mensalRent}`}</Typography>
+              ) : (
+                <Typography>{`${realStateById?.roomsNumber} - Bedroom ${formatLabel(
+                  realStateById?.type ?? ''
+                )} for ${realStateById?.intentionStatus.replace(/_/g, ' ')} in ${realStateById?.region} - € ${
+                  realStateById?.mensalRent
+                }`}</Typography>
+              )}
             </Box>
 
             <Grid

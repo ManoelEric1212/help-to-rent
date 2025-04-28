@@ -52,9 +52,14 @@ const DetailsRealStateComponent = () => {
   }
 
   function formatLabel(label: string) {
-    return label
-      .toLowerCase() // transforma tudo em minúsculas
+    const formatted = label
+      .toLowerCase()
       .replace(/(?:^|_)([a-z])/g, (match, p1, offset) => (offset === 0 ? p1.toUpperCase() : ' ' + p1.toUpperCase()))
+
+    const words = formatted.split(' ')
+    const uniqueWords = words.filter((word, index) => words.indexOf(word) === index)
+
+    return uniqueWords.join(' ')
   }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -210,7 +215,7 @@ const DetailsRealStateComponent = () => {
               sx={{
                 display: 'flex',
                 gap: '1rem',
-                padding: '1rem',
+                padding: '0.3rem',
                 alignItems: 'center',
                 flexDirection: { xs: 'column', sm: 'row' }, // Ajusta o layout interno
                 textAlign: { xs: 'center', sm: 'left' } // Centraliza em telas menores
@@ -218,12 +223,10 @@ const DetailsRealStateComponent = () => {
             >
               <HomeIcon />
 
-              {realStateById?.intentionStatus === 'FOR_RENT' ? (
-                <Typography>
-                  {`${realStateById?.roomsNumber} - Bedroom ${formatLabel(realStateById?.type ?? '')} ${formatLabel(
-                    realStateById?.intentionStatus ?? ''
-                  )} in ${realStateById?.region} - € ${realStateById?.mensalRent}`}
-                </Typography>
+              {realStateById?.intentionStatus === 'COMMERCIAL' ? (
+                <Typography>{`${formatLabel(realStateById?.type ?? '')} for ${formatLabel(
+                  realStateById?.intentionStatus ?? ''
+                )} in ${realStateById?.region} - € ${realStateById?.mensalRent}`}</Typography>
               ) : (
                 <Typography>
                   {`${realStateById?.roomsNumber} - Bedroom ${formatLabel(realStateById?.type ?? '')} ${formatLabel(
@@ -270,7 +273,7 @@ const DetailsRealStateComponent = () => {
               </Grid> */}
             </Grid>
 
-            <Box sx={{ padding: '2.5rem' }}>{previews.length && <CarouselComponent images={previews} />}</Box>
+            <Box sx={{ padding: '0.5rem' }}>{previews.length && <CarouselComponent images={previews} />}</Box>
             <Box sx={{ padding: '1rem' }}>
               <Box sx={{ padding: '1rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
                 <Typography sx={{ fontSize: '1.5rem', fontWeight: 'bold' }}>ID:</Typography>

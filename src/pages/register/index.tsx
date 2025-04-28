@@ -210,7 +210,7 @@ const Register = () => {
               )}
             </Box>
             <Box sx={{ mb: 6 }}>
-              <TypographyStyled variant='h5'>Be part of atlammalta</TypographyStyled>
+              <TypographyStyled variant='h5'>Be part of atlamproperties</TypographyStyled>
               <Typography variant='body2'>Register and start navigating the real estate world </Typography>
             </Box>
             <form noValidate autoComplete='off' onSubmit={handleSubmit(onSubmit)}>

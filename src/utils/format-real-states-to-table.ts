@@ -1,3 +1,4 @@
+import { formatLabel } from 'src/pages/acl/components/MostedProperties'
 import { RealStateTypeTable } from 'src/pages/real-state/components/TableBasic'
 import { images, RealStateType } from 'src/requests/realStateRequest'
 
@@ -18,7 +19,8 @@ export function FormatRealStateToTable(data: RealStateType[]) {
       inclusion_date: item.updated_at,
       price: item.mensalRent,
       region: item.region,
-      type: item.type,
+      type: formatLabel(item.type),
+      available_date: item.availabilityDate,
       listedBy: item.userUpdated,
       srcImg: item.images?.length ? item.images[verifyFavoriteImage(item.images)].url : ''
     }

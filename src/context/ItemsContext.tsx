@@ -1,6 +1,17 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react'
 import { RealStateType } from 'src/requests/realStateRequest'
 
+export interface filtersT {
+  intentionStatus?: string
+  subIntentionStatus?: string
+  region?: string
+  area_region?: string
+  maxPrice?: number
+  minPrice?: number
+  roomsNumber?: number
+  type?: string
+}
+
 type ItemsContextType = {
   itemsMosted: RealStateType[]
   setItemsMosted: React.Dispatch<React.SetStateAction<RealStateType[]>>
@@ -10,6 +21,8 @@ type ItemsContextType = {
   setItemById: React.Dispatch<React.SetStateAction<RealStateType | null>>
   loading: boolean
   setLoading: React.Dispatch<React.SetStateAction<boolean>>
+  filters: filtersT | null
+  setFilters: React.Dispatch<React.SetStateAction<filtersT | null>>
 }
 
 const ItemsContext = createContext<ItemsContextType | undefined>(undefined)
@@ -23,10 +36,22 @@ export const ItemsProvider: React.FC<MapRegisterProps> = ({ children }) => {
   const [itemsMosted2, setItemsMosted2] = useState<RealStateType[]>([])
   const [itemById, setItemById] = useState<RealStateType | null>(null)
   const [loading, setLoading] = useState<boolean>(false)
+  const [filters, setFilters] = useState<filtersT | null>(null)
 
   return (
     <ItemsContext.Provider
-      value={{ itemsMosted, setItemsMosted, itemById, setItemById, itemsMosted2, setItemsMosted2, loading, setLoading }}
+      value={{
+        itemsMosted,
+        setItemsMosted,
+        itemById,
+        setItemById,
+        itemsMosted2,
+        setItemsMosted2,
+        loading,
+        setLoading,
+        filters,
+        setFilters
+      }}
     >
       {children}
     </ItemsContext.Provider>

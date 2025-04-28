@@ -19,6 +19,8 @@ import {
   Typography
 } from '@mui/material'
 import { ChangeEvent, useEffect, useState } from 'react'
+import EditIcon from '@mui/icons-material/Edit'
+
 import { GridColDef } from '@mui/x-data-grid'
 
 import { format } from 'date-fns'
@@ -75,7 +77,7 @@ const RealState = () => {
     {
       flex: 0.1,
       field: 'id',
-      minWidth: 180,
+      minWidth: 160,
       headerName: 'Real Estate',
       renderCell: ({ row }: CellType) => {
         return (
@@ -118,57 +120,54 @@ const RealState = () => {
     {
       flex: 0.1,
       field: 'name',
-      minWidth: 230,
+      minWidth: 140,
       headerName: 'Name'
     },
     {
-      flex: 0.1,
-      minWidth: 40,
+      flex: 0.11,
+      minWidth: 60,
       field: 'type',
       headerName: 'Type'
     },
     {
-      flex: 0.08,
-      minWidth: 40,
+      flex: 0.09,
+      minWidth: 90,
       field: 'region',
       headerName: 'Region'
     },
+
     {
-      flex: 0.1,
-      minWidth: 80,
-      field: 'address',
-      headerName: 'Address'
-    },
-    {
-      flex: 0.05,
-      minWidth: 40,
+      flex: 0.03,
+      minWidth: 50,
       field: 'id_number',
       headerName: 'ID'
     },
     {
-      flex: 0.1,
-      minWidth: 40,
+      flex: 0.09,
+      minWidth: 60,
       field: 'price',
       headerName: 'Monthly'
     },
-    {
-      flex: 0.1,
-      minWidth: 40,
-      field: 'listedBy',
-      headerName: 'Listed By'
-    },
+
     {
       flex: 0.08,
       type: 'inclusion_date',
-      minWidth: 100,
-      headerName: 'Inclusion Date',
+      minWidth: 130,
+      headerName: 'Last update',
       field: 'inclusion_date',
-      valueGetter: params => format(new Date(params.value), 'dd/MM/yyyy HH:mm')
+      valueGetter: params => format(new Date(params.value), 'dd/MM/yyyy')
+    },
+    {
+      flex: 0.08,
+      minWidth: 130,
+      field: 'available_date',
+      headerName: 'Availability',
+      valueGetter: params => format(new Date(params.value), 'dd/MM/yyyy')
     },
     {
       flex: 0.1,
       field: 'action',
-      minWidth: 30,
+      minWidth: 70,
       headerName: 'Action',
       renderCell: ({ row }: CellType) => {
         return (
@@ -180,8 +179,7 @@ const RealState = () => {
               console.log('EDIT PAGE', row)
             }}
           >
-            {' '}
-            Edit{' '}
+            <EditIcon />
           </Button>
         )
       }
@@ -236,10 +234,22 @@ const RealState = () => {
 
     setOptionsRegions(dataOptions ?? [])
     setAreaFilter(e.target.value)
+    setTimeout(() => {
+      const activeElement = document.activeElement as HTMLElement
+      if (activeElement) {
+        activeElement.blur()
+      }
+    }, 0)
   }
 
   const handleArea2 = (e: SelectChangeEvent<string>): void => {
     setIntentionStatus(e.target.value)
+    setTimeout(() => {
+      const activeElement = document.activeElement as HTMLElement
+      if (activeElement) {
+        activeElement.blur()
+      }
+    }, 0)
   }
 
   const matchesDescription = (realState: RealStateType, descriptionKeywordFilter: string): boolean => {
@@ -285,6 +295,7 @@ const RealState = () => {
   }
 
   // const handleStatus = (e: SelectChangeEvent) => setStatusFilter(e.target.value)
+  const [isReadyToFilter, setIsReadyToFilter] = useState(false)
 
   const handleFiltersValues = async (): Promise<void> => {
     setLoading(true)
@@ -366,6 +377,30 @@ const RealState = () => {
     getRealStates()
     setAccordionExpanded(false)
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  useEffect(() => {
+    if (isReadyToFilter === true) {
+      handleFiltersValues()
+      setIsReadyToFilter(false)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isReadyToFilter])
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Enter') {
+        event.preventDefault()
+        setIsReadyToFilter(true)
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+
+    // Limpar o event listener quando o componente desmontar
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+    }
   }, [])
   // ** States
 
@@ -451,7 +486,15 @@ const RealState = () => {
                               }
                             }
                           }}
-                          onChange={(e: SelectChangeEvent<string>) => setTypeFilter(e.target.value)}
+                          onChange={(e: SelectChangeEvent<string>) => {
+                            setTypeFilter(e.target.value)
+                            setTimeout(() => {
+                              const activeElement = document.activeElement as HTMLElement
+                              if (activeElement) {
+                                activeElement.blur()
+                              }
+                            }, 0)
+                          }}
                         >
                           <MenuItem value=''>
                             <em>None</em>
@@ -490,7 +533,15 @@ const RealState = () => {
                             }
                           }}
                           label='Type'
-                          onChange={(e: SelectChangeEvent<string>) => setTypeFilter(e.target.value)}
+                          onChange={(e: SelectChangeEvent<string>) => {
+                            setTypeFilter(e.target.value)
+                            setTimeout(() => {
+                              const activeElement = document.activeElement as HTMLElement
+                              if (activeElement) {
+                                activeElement.blur()
+                              }
+                            }, 0)
+                          }}
                         >
                           <MenuItem value=''>
                             <em>None</em>
@@ -535,7 +586,15 @@ const RealState = () => {
                       id='bedrooms'
                       label='Nº of Bedrooms'
                       labelId='bedrooms'
-                      onChange={(e: SelectChangeEvent<string>) => setBedroomsFilter(e.target.value)}
+                      onChange={(e: SelectChangeEvent<string>) => {
+                        setBedroomsFilter(e.target.value)
+                        setTimeout(() => {
+                          const activeElement = document.activeElement as HTMLElement
+                          if (activeElement) {
+                            activeElement.blur()
+                          }
+                        }, 0)
+                      }}
                     >
                       <MenuItem value='1-2'>1-2</MenuItem>
                       <MenuItem value='3-4'>3-4</MenuItem>

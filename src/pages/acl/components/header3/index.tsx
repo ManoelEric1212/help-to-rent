@@ -71,9 +71,9 @@ const Header3 = () => {
           ) : (
             <div style={{ cursor: 'pointer' }}>
               <img
-                src={scrolling ? '/images/logo1.png' : '/images/logo10.png'}
+                src={scrolling ? '/images/logo1.png' : '/images/logo2.png'}
                 alt='Real State Icon'
-                style={{ width: scrolling ? '270px' : '60px' }}
+                style={{ width: scrolling ? '270px' : '270px' }}
                 onClick={() => router.push('/acl')}
               />
             </div>

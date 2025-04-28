@@ -8,6 +8,7 @@ import { useItems } from 'src/context/ItemsContext'
 
 // import { useRouter } from 'next/router'
 import LoadingOverlay from 'src/components/GlobalLoading'
+import { formatLabel } from '../MostedProperties'
 
 interface imageToPageType {
   id: string
@@ -194,10 +195,26 @@ const MostedItems = () => {
                   {property.title}
                 </Typography>
                 <Typography variant='body2' color='text.secondary'>
-                  {property.type.replace(/_/g, ' ')}
+                  {formatLabel(property.type)}
                 </Typography>
                 <Grid sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <Box sx={{ display: 'flex', gap: '0.4rem' }}>
+                  {property.bathNumber !== 0 ? (
+                    <Box sx={{ display: 'flex', gap: '0.4rem' }}>
+                      <BathtubOutlinedIcon />
+                      <Typography>{`${property.bathNumber} - Baths`}</Typography>
+                    </Box>
+                  ) : (
+                    <></>
+                  )}
+                  {property.roomsNumber !== 0 ? (
+                    <Box sx={{ display: 'flex', gap: '0.4rem' }}>
+                      <HotelOutlinedIcon />
+                      <Typography>{`${property.roomsNumber} - Beds`}</Typography>
+                    </Box>
+                  ) : (
+                    <></>
+                  )}
+                  {/* <Box sx={{ display: 'flex', gap: '0.4rem' }}>
                     <BathtubOutlinedIcon />
                     <Typography>{`${property.bathNumber} - Baths`}</Typography>
                   </Box>
@@ -205,7 +222,7 @@ const MostedItems = () => {
                   <Box sx={{ display: 'flex', gap: '0.4rem' }}>
                     <HotelOutlinedIcon />
                     <Typography>{`${property.roomsNumber} - Beds`}</Typography>
-                  </Box>
+                  </Box> */}
                 </Grid>
               </CardContent>
             </Card>

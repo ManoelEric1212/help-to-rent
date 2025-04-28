@@ -30,7 +30,7 @@ const CarouselComponent: React.FC<CarouselProps> = ({ images }) => {
     if (!isFullscreen) return
 
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowRight') handleNext()
+      if (e.key === 'ArrowRight' || e.key === 'Enter') handleNext()
       if (e.key === 'ArrowLeft') handlePrev()
       if (e.key === 'Escape') setIsFullscreen(false)
     }
@@ -65,7 +65,7 @@ const CarouselComponent: React.FC<CarouselProps> = ({ images }) => {
             src={images[currentIndex]}
             alt={`Slide ${currentIndex + 1}`}
             style={{
-              width: '100%',
+              width: '87%',
               height: '100%',
               maxHeight: 400,
               objectFit: 'contain'

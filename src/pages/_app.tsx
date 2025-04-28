@@ -104,7 +104,7 @@ const App = (props: ExtendedAppProps) => {
       <Head>
         <title>{`${themeConfig.templateName} `}</title>
         <meta name='description' content={`${themeConfig.templateName} – Find your ideal place in  Malta`} />
-        <meta name='keywords' content='Atlammalta, MaltaRent, MaltaSale, atlammalta' />
+        <meta name='keywords' content='Atlamproperties, MaltaRent, MaltaSale, atlamproperties' />
         <meta name='viewport' content='initial-scale=1, width=device-width' />
 
         {/* Open Graph / Facebook / Instagram / LinkedIn */}

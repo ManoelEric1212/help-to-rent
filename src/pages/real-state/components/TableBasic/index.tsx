@@ -15,6 +15,7 @@ export interface RealStateTypeTable {
   address: string
   area: number
   inclusion_date: string
+  available_date: string
   srcImg?: string
 }
 
@@ -43,7 +44,7 @@ const TableBasic = ({ columns, rows }: DataGridDataRealState) => {
           <DataGrid
             columns={columns}
             rows={rows}
-            rowHeight={160}
+            rowHeight={110}
             sx={{
               '& .MuiDataGrid-cell': {
                 alignItems: 'center',

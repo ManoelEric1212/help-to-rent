@@ -36,7 +36,7 @@ const ImageCarousel: React.FC<CarouselProps> = ({ images }) => {
       if (!isFullscreen) return
       if (e.key === 'Escape') {
         setIsFullscreen(false)
-      } else if (e.key === 'ArrowRight') {
+      } else if (e.key === 'ArrowRight' || e.key === 'Enter') {
         sliderRef.current?.slickNext()
       } else if (e.key === 'ArrowLeft') {
         sliderRef.current?.slickPrev()
@@ -56,26 +56,40 @@ const ImageCarousel: React.FC<CarouselProps> = ({ images }) => {
           <Box
             onClick={() => setIsFullscreen(true)}
             sx={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              background: '#cecece',
-              mb: 2,
+              position: 'relative',
               width: '100%',
-              height: 300,
+              maxWidth: 600,
+              height: 'auto',
+              display: 'flex',
+              background: '#cecece',
+              alignItems: 'center',
+              justifyContent: 'center',
+              margin: 'auto',
               overflow: 'hidden',
               borderRadius: 2,
-              boxShadow: 3,
-              cursor: 'zoom-in'
+              cursor: 'pointer'
+
+              // display: 'flex',
+              // justifyContent: 'center',
+              // alignItems: 'center',
+              // background: '#cecece',
+              // mb: 2,
+              // width: '100%',
+              // height: 300,
+              // overflow: 'hidden',
+              // borderRadius: 2,
+              // boxShadow: 3,
+              // cursor: 'zoom-in'
             }}
           >
             <img
               src={images[selectedImage]}
               alt={`Selected ${selectedImage}`}
               style={{
-                maxWidth: '100%',
-                maxHeight: '100%',
-                objectFit: 'cover'
+                maxWidth: '90%',
+                height: '100%',
+                maxHeight: 400,
+                objectFit: 'contain'
               }}
             />
           </Box>

@@ -197,6 +197,15 @@ const RealState = () => {
 
   const handleArea2 = (e: SelectChangeEvent<string>): void => {
     setIntentionStatus(e.target.value)
+    setTimeout(() => {
+      const activeElement = document.activeElement as HTMLElement
+      if (activeElement) {
+        activeElement.blur()
+      }
+    }, 0)
+  }
+  function pegarPrimeiraPalavra(texto: string) {
+    return texto.split(/[\s_]/)[0]
   }
 
   async function getRealStates() {
@@ -238,6 +247,12 @@ const RealState = () => {
     }
     setOptionsRegions(dataOptions ?? [])
     setAreaFilter(e.target.value)
+    setTimeout(() => {
+      const activeElement = document.activeElement as HTMLElement
+      if (activeElement) {
+        activeElement.blur()
+      }
+    }, 0)
   }
 
   const matchesDescription = (realState: RealStateType, descriptionKeywordFilter: string): boolean => {
@@ -360,11 +375,36 @@ const RealState = () => {
     }
     setData(dataTableFiltered)
   }
+  const [isReadyToFilter, setIsReadyToFilter] = useState(false)
+
+  useEffect(() => {
+    if (isReadyToFilter === true) {
+      handleFiltersValues()
+      setIsReadyToFilter(false)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isReadyToFilter])
   useEffect(() => {
     getRealStates()
     setAccordionExpanded(false)
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Enter') {
+        event.preventDefault()
+        setIsReadyToFilter(true)
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+
+    // Limpar o event listener quando o componente desmontar
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+    }
   }, [])
   // ** States
 
@@ -450,7 +490,15 @@ const RealState = () => {
                               }
                             }
                           }}
-                          onChange={(e: SelectChangeEvent<string>) => setTypeFilter(e.target.value)}
+                          onChange={(e: SelectChangeEvent<string>) => {
+                            setTypeFilter(e.target.value)
+                            setTimeout(() => {
+                              const activeElement = document.activeElement as HTMLElement
+                              if (activeElement) {
+                                activeElement.blur()
+                              }
+                            }, 0)
+                          }}
                         >
                           <MenuItem value=''>
                             <em>None</em>
@@ -489,7 +537,15 @@ const RealState = () => {
                             }
                           }}
                           label='Type'
-                          onChange={(e: SelectChangeEvent<string>) => setTypeFilter(e.target.value)}
+                          onChange={(e: SelectChangeEvent<string>) => {
+                            setTypeFilter(e.target.value)
+                            setTimeout(() => {
+                              const activeElement = document.activeElement as HTMLElement
+                              if (activeElement) {
+                                activeElement.blur()
+                              }
+                            }, 0)
+                          }}
                         >
                           <MenuItem value=''>
                             <em>None</em>
@@ -534,7 +590,15 @@ const RealState = () => {
                       id='bedrooms'
                       label='Nº of Bedrooms'
                       labelId='bedrooms'
-                      onChange={(e: SelectChangeEvent<string>) => setBedroomsFilter(e.target.value)}
+                      onChange={(e: SelectChangeEvent<string>) => {
+                        setBedroomsFilter(e.target.value)
+                        setTimeout(() => {
+                          const activeElement = document.activeElement as HTMLElement
+                          if (activeElement) {
+                            activeElement.blur()
+                          }
+                        }, 0)
+                      }}
                     >
                       <MenuItem value='1-2'>1-2</MenuItem>
                       <MenuItem value='3-4'>3-4</MenuItem>
@@ -693,7 +757,7 @@ const RealState = () => {
                   flexWrap: 'wrap',
                   justifyContent: 'space-between',
                   alignItems: 'center',
-                  gap: '1rem',
+                  gap: '0.7rem',
                   border: '1px solid #ccc',
                   borderRadius: '1rem',
                   boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
@@ -744,7 +808,7 @@ const RealState = () => {
                       sm: 'repeat(auto-fit, minmax(150px, 1fr))'
                     },
                     flex: 1,
-                    gap: '1rem',
+                    gap: '0.5rem',
                     width: '100%'
                   }}
                 >
@@ -764,7 +828,7 @@ const RealState = () => {
                     <Typography variant='body2' sx={{ fontWeight: 'bold' }}>
                       Type -
                     </Typography>
-                    <Typography variant='body2'>{item.type}</Typography>
+                    <Typography variant='body2'>{pegarPrimeiraPalavra(item.type)}</Typography>
                   </Box>
 
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -796,7 +860,7 @@ const RealState = () => {
               </Box>
             ))
           ) : (
-            <></>
+            <Typography>Data not exists, please research your filters</Typography>
           )}
         </Box>
       </Grid>

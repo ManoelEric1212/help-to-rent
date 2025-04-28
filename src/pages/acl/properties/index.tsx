@@ -8,8 +8,6 @@ import FooterComponent from '../components/footer'
 import ContactUsComponent from '../components/contactUs'
 import MostedItems2 from '../components/MostedProperties'
 import Header2 from '../components/header2'
-import { getAllRealStates } from 'src/requests/realStateRequest'
-import { useItems } from 'src/context/ItemsContext'
 
 const theme = createTheme({
   breakpoints: {
@@ -24,22 +22,6 @@ const theme = createTheme({
 })
 
 const Properties = () => {
-  const { setItemsMosted2 } = useItems()
-
-  async function getRealStates() {
-    try {
-      const data = await getAllRealStates()
-      setItemsMosted2(data)
-    } catch (error) {
-      console.warn(error)
-    }
-  }
-  React.useEffect(() => {
-    getRealStates()
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
   return (
     <ThemeProvider theme={theme}>
       <>

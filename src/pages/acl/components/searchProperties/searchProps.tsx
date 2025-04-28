@@ -32,6 +32,7 @@ const SearchProperties = () => {
   const [areaFilter, setAreaFilter] = React.useState<string>('')
   const [isModalOpen2, setIsModalOpen2] = React.useState(false)
   const [bedroomsFilter, setBedroomsFilter] = React.useState<number>(0)
+  const [isReadyToFilter, setIsReadyToFilter] = React.useState(false)
 
   const [subIntentionStatus, setSubIntentionStatus] = React.useState<string>('')
 
@@ -47,16 +48,40 @@ const SearchProperties = () => {
   const handleArea2 = (e: SelectChangeEvent<string>): void => {
     if (e.target.value === '') {
       setSubIntentionStatus('')
+      setTimeout(() => {
+        const activeElement = document.activeElement as HTMLElement
+        if (activeElement) {
+          activeElement.blur()
+        }
+      }, 0)
     }
     setIntentionStatus(e.target.value)
+    setTimeout(() => {
+      const activeElement = document.activeElement as HTMLElement
+      if (activeElement) {
+        activeElement.blur()
+      }
+    }, 0)
   }
 
   const handleArea3 = (e: SelectChangeEvent<string>): void => {
     setSubIntentionStatus(e.target.value)
+    setTimeout(() => {
+      const activeElement = document.activeElement as HTMLElement
+      if (activeElement) {
+        activeElement.blur()
+      }
+    }, 0)
   }
 
   const handleType = (e: SelectChangeEvent<string>): void => {
     setTypeFilter(e.target.value)
+    setTimeout(() => {
+      const activeElement = document.activeElement as HTMLElement
+      if (activeElement) {
+        activeElement.blur()
+      }
+    }, 0)
   }
   const [minPrice, setMinPrice] = React.useState<number>(0)
   const [maxPrice, setMaxPrice] = React.useState<number>(0)
@@ -101,7 +126,6 @@ const SearchProperties = () => {
       area_region: areaFilter,
       type: typeFilter
     }
-    console.log('filters', filters)
 
     // Remove campos vazios (null, undefined ou strings vazias)
     const filteredData = Object.fromEntries(
@@ -147,6 +171,30 @@ const SearchProperties = () => {
   React.useEffect(() => {
     getRegionOptions()
   }, [])
+
+  React.useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Enter') {
+        event.preventDefault()
+        setIsReadyToFilter(true)
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+
+    // Limpar o event listener quando o componente desmontar
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [])
+
+  React.useEffect(() => {
+    if (isReadyToFilter === true) {
+      handleFiltersValues()
+      setIsReadyToFilter(false)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isReadyToFilter])
 
   return (
     <ThemeProvider theme={theme}>
@@ -366,7 +414,15 @@ const SearchProperties = () => {
                   }
                 }}
                 labelId='region'
-                onChange={(e: SelectChangeEvent<string>) => setRegionFilter(e.target.value)}
+                onChange={(e: SelectChangeEvent<string>) => {
+                  setRegionFilter(e.target.value)
+                  setTimeout(() => {
+                    const activeElement = document.activeElement as HTMLElement
+                    if (activeElement) {
+                      activeElement.blur()
+                    }
+                  }, 0)
+                }}
               >
                 {optionsRegions.map(region => (
                   <MenuItem key={region.id} value={region.region_name}>
@@ -394,7 +450,15 @@ const SearchProperties = () => {
                 id='bedrooms'
                 label='Nº of Bedrooms'
                 labelId='bedrooms'
-                onChange={(e: SelectChangeEvent<string>) => setBedroomsFilter(Number(e.target.value))}
+                onChange={(e: SelectChangeEvent<string>) => {
+                  setBedroomsFilter(Number(e.target.value))
+                  setTimeout(() => {
+                    const activeElement = document.activeElement as HTMLElement
+                    if (activeElement) {
+                      activeElement.blur()
+                    }
+                  }, 0)
+                }}
               >
                 <MenuItem value='2'>1-2</MenuItem>
                 <MenuItem value='3'>3-4</MenuItem>

@@ -11,11 +11,11 @@ import { useMediaQuery } from '@mui/material'
 import FooterComponent from './components/footer'
 import ContactUsComponent from './components/contactUs'
 
-import { Montserrat } from 'next/font/google'
+import { Baloo_2 } from 'next/font/google'
 
-const montserrat = Montserrat({
+const baloo = Baloo_2({
   subsets: ['latin'],
-  weight: ['400', '700'] // Escolha os pesos que desejar
+  weight: ['400', '700']
 })
 
 const theme = createTheme({
@@ -65,28 +65,41 @@ const ACLPage = () => {
               backgroundImage: `url(${images[0]})`,
               backgroundSize: 'cover',
               backgroundPosition: 'center',
-              height: { xs: '100vh', md: '90vh', lg: '90vh' },
+              height: { xs: '108vh', md: '90vh', lg: '90vh' },
               display: { xs: 'flex', sm: 'flex' },
               justifyContent: 'center',
-              alignItems: 'start'
+              alignItems: 'start',
+              position: { xs: 'none', md: 'relative', lg: 'relative' }
             }}
           >
-            <Grid sx={{ width: '100%', marginTop: '10rem' }}>
+            <Grid sx={{ width: '100%', marginTop: '10.5rem' }}>
               {matches && (
                 <Typography
-                  className={montserrat.className}
+                  className={baloo.className}
                   sx={{
                     fontSize: { xs: '1.5rem', md: '2rem', lg: '3rem' },
-                    fontWeight: 'bold',
+
                     textAlign: 'center',
-                    color: '#25235D'
+                    color: '#25235D',
+                    fontFamily: `${baloo.style.fontFamily}, sans-serif`
                   }}
                 >
                   Find your ideal place in Malta
                 </Typography>
               )}
 
-              <Grid sx={{ display: 'flex', justifyContent: 'center' }}>
+              <Grid
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'center',
+
+                  marginTop: { xs: '1rem', md: '17rem', lg: '17rem' },
+                  position: { xs: 'absolute', md: 'absolute', lg: 'absolute' },
+                  bottom: { xs: '-38px', md: '30px', lg: '30px' },
+                  left: 0,
+                  right: 0
+                }}
+              >
                 <Grid sx={{ width: '69vw' }}>
                   <SearchFiltersItem />
                 </Grid>

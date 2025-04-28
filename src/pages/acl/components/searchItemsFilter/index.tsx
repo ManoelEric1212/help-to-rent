@@ -45,7 +45,7 @@ const SearchFiltersItem = () => {
   const [subIntentionStatus, setSubIntentionStatus] = useState<string>('')
 
   // const [realStatesFilter, setRealStatesFilter] = useState<RealStateType[]>([])
-  const { setItemsMosted, setLoading, setItemsMosted2 } = useItems()
+  const { setItemsMosted, setLoading, setItemsMosted2, setFilters } = useItems()
 
   const [minPrice, setMinPrice] = useState<number>(0)
   const [maxPrice, setMaxPrice] = useState<number>(0)
@@ -74,7 +74,7 @@ const SearchFiltersItem = () => {
   async function getRealStates() {
     try {
       const data = await getAllRealStates()
-      setItemsMosted2(data)
+
       const dataFiltered = data.filter(item => item.flagClient === 'TRUE')
       setRealStates(dataFiltered)
       setItemsMosted(dataFiltered)
@@ -130,29 +130,6 @@ const SearchFiltersItem = () => {
     }
   }
 
-  async function fetchRealStates(data: filters) {
-    setLoading(true)
-    try {
-      const realStates = await getFilteredRealStates({
-        region: data.region,
-        area_region: data.area_region,
-        intentionStatus: data.intentionStatus,
-        subIntentionStatus: data.subIntentionStatus,
-        minPrice: data.minPrice,
-        maxPrice: data.maxPrice,
-        type: data.type,
-        roomsNumber: data.roomsNumber
-      })
-      setLoading(false)
-
-      return realStates
-    } catch (error) {
-      setLoading(false)
-
-      console.error(error)
-    }
-  }
-
   const handleFiltersValues = async (): Promise<void> => {
     const filters = {
       intentionStatus,
@@ -171,12 +148,14 @@ const SearchFiltersItem = () => {
         ([_, value]) => value !== undefined && value !== null && value !== '' && value !== 0
       )
     )
+    setFilters(filteredData)
+    console.log('filteredData', filteredData)
 
-    const data = await fetchRealStates(filteredData)
+    // const data = await fetchRealStates(filteredData)
 
-    console.log('data222', data)
+    // console.log('data222', data)
 
-    setItemsMosted2(data ?? [])
+    // setItemsMosted2(data ?? [])
     router.replace('/acl/properties')
   }
 
