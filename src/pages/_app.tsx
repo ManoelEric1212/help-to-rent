@@ -106,6 +106,7 @@ const App = (props: ExtendedAppProps) => {
         <meta name='description' content={`${themeConfig.templateName} – Find your ideal place in  Malta`} />
         <meta name='keywords' content='Atlamproperties, MaltaRent, MaltaSale, atlamproperties' />
         <meta name='viewport' content='initial-scale=1, width=device-width' />
+        <link rel='shortcut icon' href='/images/favicon.png' />
 
         {/* Open Graph / Facebook / Instagram / LinkedIn */}
         <meta property='og:type' content='website' />

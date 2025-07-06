@@ -186,11 +186,12 @@ const RegisterRealState = () => {
                   ' '
                 )} in ${realStateById?.region} - € ${realStateById?.mensalRent}`}</Typography>
               ) : (
-                <Typography>{`${realStateById?.roomsNumber} - Bedroom ${formatLabel(
-                  realStateById?.type ?? ''
-                )} for ${realStateById?.intentionStatus.replace(/_/g, ' ')} in ${realStateById?.region} - € ${
-                  realStateById?.mensalRent
-                }`}</Typography>
+                <Typography>{`${realStateById?.roomsNumber} - ${
+                  realStateById?.roomsNumber && realStateById.roomsNumber > 1 ? 'Bedrooms' : 'Bedroom'
+                } ${formatLabel(realStateById?.type ?? '')} for ${realStateById?.intentionStatus.replace(
+                  /_/g,
+                  ' '
+                )} in ${realStateById?.region} - € ${realStateById?.mensalRent}`}</Typography>
               )}
             </Box>
 

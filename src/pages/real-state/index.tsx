@@ -1,7 +1,7 @@
 /* eslint-disable lines-around-comment */
 // ** MUI Imports
 
-import TableBasic, { DataGridDataRealState, RealStateTypeTable } from './components/TableBasic'
+import { DataGridDataRealState, RealStateTypeTable } from './components/TableBasic'
 import {
   Accordion,
   AccordionDetails,
@@ -21,6 +21,8 @@ import {
 import { ChangeEvent, useEffect, useState } from 'react'
 import EditIcon from '@mui/icons-material/Edit'
 
+import PercentIcon from '@mui/icons-material/Percent'
+
 import { GridColDef } from '@mui/x-data-grid'
 
 import { format } from 'date-fns'
@@ -33,6 +35,13 @@ import { getRegionRequest, Region } from 'src/requests/regionRequest'
 import LoadingOverlay from 'src/components/GlobalLoading'
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward'
 
+import HomeIcon from '@mui/icons-material/Home'
+import EuroSymbolIcon from '@mui/icons-material/EuroSymbol'
+
+import LocalAtmIcon from '@mui/icons-material/LocalAtm'
+import LocationOnIcon from '@mui/icons-material/LocationOn'
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth'
+
 export type DateType = Date | null | undefined
 
 export interface CellType {
@@ -41,6 +50,20 @@ export interface CellType {
 interface dados {
   label: string
   value: string
+}
+
+export function breakName(titulo: string, limite = 22) {
+  if (titulo.length <= limite) return titulo
+
+  const palavras = titulo.split(' ')
+  let resultado = ''
+
+  for (const palavra of palavras) {
+    if ((resultado + palavra).length + 3 > limite) break
+    resultado += (resultado ? ' ' : '') + palavra
+  }
+
+  return resultado + '...'
 }
 
 const RealState = () => {
@@ -225,6 +248,9 @@ const RealState = () => {
   useEffect(() => {
     getRegionOptions()
   }, [])
+  function pegarPrimeiraPalavra(texto: string) {
+    return texto.split(/[\s_]/)[0]
+  }
 
   const handleArea = (e: SelectChangeEvent<string>): void => {
     const dataOptions = regionOptions.filter(item => item.area_region === e.target.value)
@@ -402,7 +428,6 @@ const RealState = () => {
       window.removeEventListener('keydown', handleKeyDown)
     }
   }, [])
-  // ** States
 
   return (
     <Grid container spacing={6} sx={{ padding: '1rem' }}>
@@ -739,10 +764,147 @@ const RealState = () => {
       </Grid>
       <Grid item xs={12}>
         {data.rows.length ? (
-          <TableBasic columns={data.columns} rows={data.rows} />
+          <Box sx={{ display: 'flex', flexDirection: 'column', height: '70vh', overflowY: 'scroll', gap: '0.4rem' }}>
+            {data.rows.map((item, i) => (
+              <Box
+                key={i}
+                sx={{
+                  display: 'flex',
+                  flexWrap: 'wrap',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  gap: '0.7rem',
+                  border: '1px solid #ccc',
+                  borderRadius: '1rem',
+                  boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                  backgroundColor: '#fff',
+                  width: '100%'
+                }}
+              >
+                {/* Imagem fixa */}
+                <Box
+                  onClick={() => {
+                    window.open(`/real-state/real-state-by-id/?id=${item.id}`, '_blank')
+                  }}
+                  sx={{
+                    width: '80px',
+                    height: '80px',
+                    cursor: 'pointer',
+                    border: '1px solid #000',
+                    borderRadius: '1rem',
+                    overflow: 'hidden',
+                    flexShrink: 0
+                  }}
+                >
+                  <img
+                    src={
+                      item.srcImg?.length !== 0
+                        ? `https://atlamproperties.com/uploads/${item.srcImg}`
+                        : '/images/logo100.png'
+                    }
+                    onError={e => {
+                      e.currentTarget.onerror = null
+                      e.currentTarget.src = '/images/logo100.png'
+                    }}
+                    alt='Real State Icon'
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover'
+                    }}
+                  />
+                </Box>
+
+                {/* Conteúdo responsivo */}
+                <Box
+                  sx={{
+                    display: 'grid',
+                    gridTemplateColumns: {
+                      xs: '1fr', // empilha tudo em telas muito pequenas
+                      sm: '150px repeat(2, minmax(100px, 1fr))', // até 3 colunas
+                      md: '150px repeat(7, minmax(100px, 1fr))' // layout completo
+                    },
+                    flex: 1,
+                    gap: '0.5rem',
+                    width: '100%'
+                  }}
+                >
+                  {/* Cada item agora expande */}
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <HomeIcon fontSize='small' />
+                    <Typography variant='body2' title={item.name}>
+                      {breakName(item.name)}
+                    </Typography>
+                  </Box>
+
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    {/* <Typography variant='body2' sx={{ fontWeight: 'bold' }}>
+                      Type -
+                    </Typography> */}
+                    <Typography variant='body2'>{pegarPrimeiraPalavra(item.type)}</Typography>
+                  </Box>
+
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <LocationOnIcon fontSize='small' />
+                    <Typography variant='body2'>{item.region}</Typography>
+                  </Box>
+
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <Typography variant='body2'>ID: {item.id_number}</Typography>
+                  </Box>
+
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <LocalAtmIcon fontSize='small' />
+                    <EuroSymbolIcon fontSize='small' />
+                    <Typography variant='body2'>{item.price}</Typography>
+                  </Box>
+
+                  {/* Datas com legenda */}
+                  <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                    <Typography variant='caption' sx={{ opacity: 0.6 }}>
+                      Available From
+                    </Typography>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                      <CalendarMonthIcon fontSize='small' />
+                      <Typography variant='body2'>{format(new Date(item.available_date), 'dd/MM/yyyy')}</Typography>
+                    </Box>
+                  </Box>
+
+                  <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                    <Typography variant='caption' sx={{ opacity: 0.6 }}>
+                      Last Updated
+                    </Typography>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                      <CalendarMonthIcon fontSize='small' />
+                      <Typography variant='body2'>{format(new Date(item.inclusion_date), 'dd/MM/yyyy')}</Typography>
+                    </Box>
+                  </Box>
+
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <Button
+                      variant='outlined'
+                      color='primary'
+                      onClick={() => {
+                        router.push(`/real-state/register/?id=${item.id}`)
+                      }}
+                    >
+                      <EditIcon fontSize='small' />
+                    </Button>
+                  </Box>
+                </Box>
+              </Box>
+            ))}
+          </Box>
         ) : (
+          // <TableBasic columns={data.columns} rows={data.rows} />
           <Typography>Data not exists, please research your filters</Typography>
         )}
+        <Box sx={{ display: 'flex', justifyContent: 'end' }}>
+          <Box sx={{ display: 'flex', gap: '0.4rem' }}>
+            <PercentIcon fontSize='small' />
+            <Typography>{`Total items: ${data.rows.length}`}</Typography>
+          </Box>
+        </Box>
       </Grid>
       <LoadingOverlay loading={loading} message='Loading informations' />
     </Grid>

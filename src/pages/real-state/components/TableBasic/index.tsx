@@ -10,13 +10,15 @@ export interface RealStateTypeTable {
   id: string
   id_number: number
   name: string
-  type: string
-  region: string
   address: string
   area: number
   inclusion_date: string
+  price: number
+  region: string
+  type: string
   available_date: string
-  srcImg?: string
+  listedBy: string
+  srcImg: string
 }
 
 export interface DataGridDataRealState {

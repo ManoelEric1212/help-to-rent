@@ -5,7 +5,7 @@ import { iconsAdditional } from 'src/pages/real-state/real-state-by-id'
 
 import { getRealStateById, RealStateType } from 'src/requests/realStateRequest'
 import { FormatRealStateToForm } from 'src/utils/format-real-state-to-form'
-
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth'
 import HomeIcon from '@mui/icons-material/Home'
 import WhatsAppIcon from '@mui/icons-material/WhatsApp'
 import AcUnitIcon from '@mui/icons-material/AcUnit'
@@ -28,6 +28,7 @@ import CarouselComponent from './carroussel'
 import { useRouter } from 'next/router'
 import { shareToWhatsAppNumber } from 'src/@core/components/WhatssAppComponent'
 import ButtonRequest from './modalWhats'
+import { format } from 'date-fns'
 
 const DetailsRealStateComponent = () => {
   // const router = useRouter()
@@ -229,9 +230,11 @@ const DetailsRealStateComponent = () => {
                 )} in ${realStateById?.region} - € ${realStateById?.mensalRent}`}</Typography>
               ) : (
                 <Typography>
-                  {`${realStateById?.roomsNumber} - Bedroom ${formatLabel(realStateById?.type ?? '')} ${formatLabel(
-                    realStateById?.intentionStatus ?? ''
-                  )} in ${realStateById?.region} - € ${realStateById?.mensalRent}`}
+                  {`${realStateById?.roomsNumber} - ${
+                    realStateById?.roomsNumber && realStateById.roomsNumber > 1 ? 'Bedrooms' : 'Bedroom'
+                  } ${formatLabel(realStateById?.type ?? '')} ${formatLabel(realStateById?.intentionStatus ?? '')} in ${
+                    realStateById?.region
+                  } - € ${realStateById?.mensalRent}`}
                 </Typography>
               )}
             </Box>
@@ -246,7 +249,7 @@ const DetailsRealStateComponent = () => {
                 textAlign: { xs: 'center', sm: 'left' }
               }}
             >
-              {/* <Grid item xs={12} sm='auto'>
+              <Grid item xs={12} sm='auto'>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
                   <CalendarMonthIcon fontSize='large' />
                   <Box>
@@ -258,9 +261,9 @@ const DetailsRealStateComponent = () => {
                     )}
                   </Box>
                 </Box>
-              </Grid> */}
+              </Grid>
 
-              {/* <Grid item xs={12} sm='auto'>
+              <Grid item xs={12} sm='auto'>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
                   <CalendarMonthIcon fontSize='large' />
                   <Box>
@@ -270,7 +273,7 @@ const DetailsRealStateComponent = () => {
                     )}
                   </Box>
                 </Box>
-              </Grid> */}
+              </Grid>
             </Grid>
 
             <Box sx={{ padding: '0.5rem' }}>{previews.length && <CarouselComponent images={previews} />}</Box>

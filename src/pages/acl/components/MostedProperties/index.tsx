@@ -285,7 +285,9 @@ const MostedItems2 = () => {
                     {property.roomsNumber !== 0 ? (
                       <Box sx={{ display: 'flex', gap: '0.4rem' }}>
                         <HotelOutlinedIcon />
-                        <Typography>{`${property.roomsNumber} - Beds`}</Typography>
+                        <Typography>{`${property.roomsNumber}${
+                          property.roomsNumber > 1 ? ' - Beds' : ' - Bed'
+                        }`}</Typography>
                       </Box>
                     ) : (
                       <></>

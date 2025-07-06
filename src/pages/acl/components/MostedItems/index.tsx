@@ -5,10 +5,12 @@ import { images, RealStateType } from 'src/requests/realStateRequest'
 import BathtubOutlinedIcon from '@mui/icons-material/BathtubOutlined'
 import HotelOutlinedIcon from '@mui/icons-material/HotelOutlined'
 import { useItems } from 'src/context/ItemsContext'
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth'
 
 // import { useRouter } from 'next/router'
 import LoadingOverlay from 'src/components/GlobalLoading'
 import { formatLabel } from '../MostedProperties'
+import { format } from 'date-fns'
 
 interface imageToPageType {
   id: string
@@ -23,6 +25,8 @@ interface imageToPageType {
   type: string
   subCategogory: string
   urlFirstImage?: string
+  updateAt: string
+  available: string
 }
 
 const MostedItems = () => {
@@ -67,7 +71,9 @@ const MostedItems = () => {
           urlFirstImage: item.images?.length
             ? buildImageUrl(item.images[verifyFavoriteImage(item.images)].url)
             : '/images/malta2.JPG',
-          status: item.status
+          status: item.status,
+          available: item.availabilityDate,
+          updateAt: item.updated_at
         }
       })
 
@@ -209,7 +215,9 @@ const MostedItems = () => {
                   {property.roomsNumber !== 0 ? (
                     <Box sx={{ display: 'flex', gap: '0.4rem' }}>
                       <HotelOutlinedIcon />
-                      <Typography>{`${property.roomsNumber} - Beds`}</Typography>
+                      <Typography>{`${property.roomsNumber}${
+                        property.roomsNumber > 1 ? ' - Beds' : ' - Bed'
+                      }`}</Typography>
                     </Box>
                   ) : (
                     <></>
@@ -224,6 +232,28 @@ const MostedItems = () => {
                     <Typography>{`${property.roomsNumber} - Beds`}</Typography>
                   </Box> */}
                 </Grid>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                  <CalendarMonthIcon />
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+                    <Typography>LAST UPDATE:</Typography>
+                    {property && (
+                      <Typography sx={{ fontWeight: 'bold' }}>
+                        {format(new Date(property.updateAt ?? ''), 'dd/MM/yyyy')}
+                      </Typography>
+                    )}
+                  </Box>
+                </Box>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                  <CalendarMonthIcon />
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+                    <Typography>AVAILABLE FROM:</Typography>
+                    {property && (
+                      <Typography sx={{ fontWeight: 'bold' }}>
+                        {format(new Date(property.available ?? ''), 'dd/MM/yyyy')}
+                      </Typography>
+                    )}
+                  </Box>
+                </Box>
               </CardContent>
             </Card>
           </Grid>
