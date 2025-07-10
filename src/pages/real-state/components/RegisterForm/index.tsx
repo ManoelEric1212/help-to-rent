@@ -555,6 +555,7 @@ const RegisterRealStateComponent = () => {
 
   const watchAreaRegion = watch('area_region')
   const watchIntentionStatus = watch('intentionStatus')
+  const subIntentionStatusW = watch('subIntentionStatus')
 
   const formatSubIntentionStatus = (intention: string) => {
     switch (intention) {
@@ -748,7 +749,17 @@ const RegisterRealStateComponent = () => {
             )}
 
             <Grid container spacing={6}>
-              <Grid item sm={3} xs={12}>
+              <Grid
+                item
+                sm={
+                  subIntentionStatusW === 'SHORT_LET' ||
+                  subIntentionStatusW === 'COMMERCIAL' ||
+                  watchIntentionStatus === 'COMMERCIAL'
+                    ? 2
+                    : 3
+                }
+                xs={12}
+              >
                 <FormControl fullWidth sx={{ mb: 3 }}>
                   <Controller
                     name='mensalRent'
@@ -770,8 +781,56 @@ const RegisterRealStateComponent = () => {
                   )}
                 </FormControl>
               </Grid>
+              {subIntentionStatusW === 'SHORT_LET' ||
+              subIntentionStatusW === 'COMMERCIAL' ||
+              watchIntentionStatus === 'COMMERCIAL' ? (
+                <Grid
+                  item
+                  sm={
+                    subIntentionStatusW === 'SHORT_LET' ||
+                    subIntentionStatusW === 'COMMERCIAL' ||
+                    watchIntentionStatus === 'COMMERCIAL'
+                      ? 2
+                      : 3
+                  }
+                  xs={12}
+                >
+                  <FormControl fullWidth sx={{ mb: 3 }}>
+                    <Controller
+                      name='parameters'
+                      control={control}
+                      rules={{ required: true }}
+                      render={({ field: { value, onChange, onBlur } }) => (
+                        <TextField
+                          label={'Daily Rate'}
+                          type='number'
+                          value={value}
+                          onBlur={onBlur}
+                          onChange={onChange}
+                          error={Boolean(errors.parameters)}
+                        />
+                      )}
+                    />
+                    {errors.parameters && (
+                      <FormHelperText sx={{ color: 'error.main' }}>{errors.parameters.message}</FormHelperText>
+                    )}
+                  </FormControl>
+                </Grid>
+              ) : (
+                <></>
+              )}
 
-              <Grid item sm={3} xs={12}>
+              <Grid
+                item
+                sm={
+                  subIntentionStatusW === 'SHORT_LET' ||
+                  subIntentionStatusW === 'COMMERCIAL' ||
+                  watchIntentionStatus === 'COMMERCIAL'
+                    ? 2
+                    : 3
+                }
+                xs={12}
+              >
                 <FormControl fullWidth sx={{ mb: 3 }}>
                   <Controller
                     name='area_region'

@@ -270,12 +270,12 @@ const MostedItems2 = () => {
                   <Typography variant='h6' fontWeight='bold'>
                     {property.title}
                   </Typography>
-                  <Typography variant='body2' color='text.secondary'>
+                  <Typography variant='body2' color='text.secondary' sx={{ fontSize: '0.85rem' }}>
                     {formatLabel(property.type)}
                   </Typography>
-                  <Grid sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <Grid sx={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem' }}>
                     {property.bathNumber !== 0 ? (
-                      <Box sx={{ display: 'flex', gap: '0.4rem' }}>
+                      <Box sx={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
                         <BathtubOutlinedIcon />
                         <Typography>{`${property.bathNumber} - Baths`}</Typography>
                       </Box>
@@ -283,7 +283,7 @@ const MostedItems2 = () => {
                       <></>
                     )}
                     {property.roomsNumber !== 0 ? (
-                      <Box sx={{ display: 'flex', gap: '0.4rem' }}>
+                      <Box sx={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
                         <HotelOutlinedIcon />
                         <Typography>{`${property.roomsNumber}${
                           property.roomsNumber > 1 ? ' - Beds' : ' - Bed'

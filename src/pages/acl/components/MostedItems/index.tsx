@@ -200,12 +200,12 @@ const MostedItems = () => {
                 <Typography variant='h6' fontWeight='bold'>
                   {property.title}
                 </Typography>
-                <Typography variant='body2' color='text.secondary'>
+                <Typography variant='body2' color='text.secondary' sx={{ fontSize: '0.85rem' }}>
                   {formatLabel(property.type)}
                 </Typography>
-                <Grid sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                <Grid sx={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem' }}>
                   {property.bathNumber !== 0 ? (
-                    <Box sx={{ display: 'flex', gap: '0.4rem' }}>
+                    <Box sx={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
                       <BathtubOutlinedIcon />
                       <Typography>{`${property.bathNumber} - Baths`}</Typography>
                     </Box>
@@ -213,7 +213,7 @@ const MostedItems = () => {
                     <></>
                   )}
                   {property.roomsNumber !== 0 ? (
-                    <Box sx={{ display: 'flex', gap: '0.4rem' }}>
+                    <Box sx={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
                       <HotelOutlinedIcon />
                       <Typography>{`${property.roomsNumber}${
                         property.roomsNumber > 1 ? ' - Beds' : ' - Bed'
@@ -232,10 +232,10 @@ const MostedItems = () => {
                     <Typography>{`${property.roomsNumber} - Beds`}</Typography>
                   </Box> */}
                 </Grid>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.85rem' }}>
                   <CalendarMonthIcon />
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
-                    <Typography>LAST UPDATE:</Typography>
+                    <Typography>Last Update:</Typography>
                     {property && (
                       <Typography sx={{ fontWeight: 'bold' }}>
                         {format(new Date(property.updateAt ?? ''), 'dd/MM/yyyy')}
@@ -243,10 +243,10 @@ const MostedItems = () => {
                     )}
                   </Box>
                 </Box>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.85rem' }}>
                   <CalendarMonthIcon />
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
-                    <Typography>AVAILABLE FROM:</Typography>
+                    <Typography>Available From:</Typography>
                     {property && (
                       <Typography sx={{ fontWeight: 'bold' }}>
                         {format(new Date(property.available ?? ''), 'dd/MM/yyyy')}
