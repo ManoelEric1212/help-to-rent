@@ -267,30 +267,31 @@ const MostedItems2 = () => {
 
                 {/* Conteúdo do Card */}
                 <CardContent>
-                  <Typography variant='h6' fontWeight='bold'>
+                  <Typography fontWeight='bold' sx={{ fontSize: '1.2rem' }}>
                     {property.title}
                   </Typography>
                   <Typography variant='body2' color='text.secondary' sx={{ fontSize: '0.85rem' }}>
                     {formatLabel(property.type)}
                   </Typography>
-                  <Grid sx={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem' }}>
-                    {property.bathNumber !== 0 ? (
-                      <Box sx={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
-                        <BathtubOutlinedIcon />
-                        <Typography>{`${property.bathNumber} - Baths`}</Typography>
-                      </Box>
-                    ) : (
-                      <></>
-                    )}
+                  <Grid sx={{ display: 'flex', gap: '1.5rem', fontSize: '0.85rem', alignItems: 'center' }}>
                     {property.roomsNumber !== 0 ? (
                       <Box sx={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
-                        <HotelOutlinedIcon />
-                        <Typography>{`${property.roomsNumber}${
+                        <HotelOutlinedIcon fontSize='small' />
+                        <Typography sx={{ fontSize: '0.95rem' }}>{`${property.roomsNumber}${
                           property.roomsNumber > 1 ? ' - Beds' : ' - Bed'
                         }`}</Typography>
                       </Box>
                     ) : (
-                      <></>
+                      <Box sx={{ color: 'transparent' }}>A</Box>
+                    )}
+
+                    {property.bathNumber !== 0 ? (
+                      <Box sx={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
+                        <BathtubOutlinedIcon fontSize='small' />
+                        <Typography sx={{ fontSize: '0.95rem' }}>{`${property.bathNumber} - Baths`}</Typography>
+                      </Box>
+                    ) : (
+                      <Box sx={{ color: 'transparent' }}>A</Box>
                     )}
                   </Grid>
                 </CardContent>

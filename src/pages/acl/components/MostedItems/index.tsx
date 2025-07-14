@@ -197,61 +197,55 @@ const MostedItems = () => {
 
               {/* Conteúdo do Card */}
               <CardContent>
-                <Typography variant='h6' fontWeight='bold'>
+                <Typography fontWeight='bold' sx={{ fontSize: '1.2rem' }}>
                   {property.title}
                 </Typography>
                 <Typography variant='body2' color='text.secondary' sx={{ fontSize: '0.85rem' }}>
                   {formatLabel(property.type)}
                 </Typography>
-                <Grid sx={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem' }}>
-                  {property.bathNumber !== 0 ? (
-                    <Box sx={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
-                      <BathtubOutlinedIcon />
-                      <Typography>{`${property.bathNumber} - Baths`}</Typography>
-                    </Box>
-                  ) : (
-                    <></>
-                  )}
+                <Grid sx={{ display: 'flex', gap: '1.5rem', fontSize: '0.85rem', alignItems: 'center' }}>
                   {property.roomsNumber !== 0 ? (
                     <Box sx={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
-                      <HotelOutlinedIcon />
-                      <Typography>{`${property.roomsNumber}${
+                      <HotelOutlinedIcon fontSize='small' />
+                      <Typography sx={{ fontSize: '0.95rem' }}>{`${property.roomsNumber}${
                         property.roomsNumber > 1 ? ' - Beds' : ' - Bed'
                       }`}</Typography>
                     </Box>
                   ) : (
-                    <></>
+                    <Box sx={{ color: 'transparent' }}>A</Box>
                   )}
-                  {/* <Box sx={{ display: 'flex', gap: '0.4rem' }}>
-                    <BathtubOutlinedIcon />
-                    <Typography>{`${property.bathNumber} - Baths`}</Typography>
-                  </Box>
 
-                  <Box sx={{ display: 'flex', gap: '0.4rem' }}>
-                    <HotelOutlinedIcon />
-                    <Typography>{`${property.roomsNumber} - Beds`}</Typography>
-                  </Box> */}
+                  {property.bathNumber !== 0 ? (
+                    <Box sx={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
+                      <BathtubOutlinedIcon fontSize='small' />
+                      <Typography sx={{ fontSize: '0.95rem' }}>{`${property.bathNumber} - Baths`}</Typography>
+                    </Box>
+                  ) : (
+                    <Box sx={{ color: 'transparent' }}>A</Box>
+                  )}
                 </Grid>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.85rem' }}>
-                  <CalendarMonthIcon />
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
-                    <Typography>Last Update:</Typography>
-                    {property && (
-                      <Typography sx={{ fontWeight: 'bold' }}>
-                        {format(new Date(property.updateAt ?? ''), 'dd/MM/yyyy')}
-                      </Typography>
-                    )}
+                <Box sx={{ display: 'flex', flexDirection: 'column', marginTop: '0.5rem' }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                    <CalendarMonthIcon fontSize='small' />
+                    <Box sx={{ display: 'flex', gap: '0.5rem', width: '100%', alignItems: 'center' }}>
+                      <Typography sx={{ fontSize: '0.85rem' }}>Last Update:</Typography>
+                      {property && (
+                        <Typography sx={{ fontWeight: 'bold', fontSize: '0.85rem' }}>
+                          {format(new Date(property.updateAt ?? ''), 'dd/MM/yyyy')}
+                        </Typography>
+                      )}
+                    </Box>
                   </Box>
-                </Box>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.85rem' }}>
-                  <CalendarMonthIcon />
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
-                    <Typography>Available From:</Typography>
-                    {property && (
-                      <Typography sx={{ fontWeight: 'bold' }}>
-                        {format(new Date(property.available ?? ''), 'dd/MM/yyyy')}
-                      </Typography>
-                    )}
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                    <CalendarMonthIcon fontSize='small' />
+                    <Box sx={{ display: 'flex', gap: '0.5rem', width: '100%', alignItems: 'center' }}>
+                      <Typography sx={{ fontSize: '0.85rem' }}>Available From:</Typography>
+                      {property && (
+                        <Typography sx={{ fontWeight: 'bold', fontSize: '0.85rem' }}>
+                          {format(new Date(property.available ?? ''), 'dd/MM/yyyy')}
+                        </Typography>
+                      )}
+                    </Box>
                   </Box>
                 </Box>
               </CardContent>
