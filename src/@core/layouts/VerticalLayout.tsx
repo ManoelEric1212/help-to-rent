@@ -69,7 +69,9 @@ const VerticalLayout = (props: LayoutProps) => {
     <>
       <VerticalLayoutWrapper className='layout-wrapper'>
         {/* Navigation Menu */}
-        {(navHidden && !(navHidden && settings.lastLayout === 'horizontal')) || auth.user?.role === 'client' ? null : (
+        {(navHidden && !(navHidden && settings.lastLayout === 'horizontal')) ||
+        auth.user?.role === 'client' ||
+        auth.user === null ? null : (
           <Navigation
             navWidth={navWidth}
             navVisible={navVisible}
@@ -93,7 +95,7 @@ const VerticalLayout = (props: LayoutProps) => {
           sx={{ ...(contentHeightFixed && { maxHeight: '100vh' }) }}
         >
           {/* AppBar Component */}
-          {auth.user?.role !== 'client' && (
+          {auth.user?.role !== 'client' && auth.user !== null && (
             <AppBar
               toggleNavVisibility={toggleNavVisibility}
               appBarContent={verticalLayoutProps.appBar?.content}

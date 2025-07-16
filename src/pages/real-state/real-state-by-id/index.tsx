@@ -8,6 +8,7 @@ import { FormatRealStateToForm } from 'src/utils/format-real-state-to-form'
 import { useEffect, useState } from 'react'
 import ImageCarousel from './Carousel'
 import { format } from 'date-fns'
+import BathtubOutlinedIcon from '@mui/icons-material/BathtubOutlined'
 
 import MapRegisterComponentElement from 'src/components/MapPointComponent'
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth'
@@ -266,6 +267,19 @@ const RegisterRealState = () => {
                         <Typography>{item.label}</Typography>
                       </Box>
                     ))}
+
+                <Grid sx={{ display: 'flex', gap: '1.5rem', fontSize: '0.85rem', alignItems: 'center' }}>
+                  {realStateById && realStateById?.bathNumber !== 0 ? (
+                    <Box sx={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
+                      <BathtubOutlinedIcon fontSize='small' />
+                      <Typography sx={{ fontSize: '0.95rem' }}>{`${realStateById?.bathNumber} - ${
+                        realStateById?.bathNumber > 1 ? 'Baths' : 'Bath'
+                      }`}</Typography>
+                    </Box>
+                  ) : (
+                    <></>
+                  )}
+                </Grid>
               </Box>
             </Box>
           </Card>

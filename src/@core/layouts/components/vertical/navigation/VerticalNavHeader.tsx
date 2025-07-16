@@ -118,21 +118,9 @@ const VerticalNavHeader = (props: Props) => {
       ) : (
         <LinkStyled href='/home'>
           {navCollapsed && !navHover ? (
-            <img
-              src='/images/favicon.png'
-              alt='Real State Icon'
-              style={{
-                width: '40px'
-              }}
-            />
+            <img src='/images/favicon.png' alt='Real State Icon' />
           ) : (
-            <img
-              src='/images/logo2.png'
-              alt='Real State Icon'
-              style={{
-                width: '170px'
-              }}
-            />
+            <img src='/images/logo20.png' alt='Real State Icon' />
           )}
         </LinkStyled>
       )}
